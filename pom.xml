@@ -35,6 +35,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-webmvc</artifactId>
+		    <version>5.0.3.RELEASE</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.pengrad</groupId>
+		    <artifactId>java-telegram-bot-api</artifactId>
+		    <version>3.5.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
