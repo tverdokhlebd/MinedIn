@@ -13,7 +13,9 @@ public interface PoolAccountExecutor {
      *
      * @param walletAddress the wallet address
      * @return ETH account
+     * @throws PoolAccountExecutorException if there is any error in request executing
+     * @throws PoolAccountException if there is any error in account creating
      */
-    PoolAccount getETHAccount(String walletAddress);
+    PoolAccount getETHAccount(String walletAddress) throws PoolAccountExecutorException, PoolAccountException;
 
 }
