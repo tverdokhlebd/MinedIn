@@ -41,7 +41,10 @@ public class DwarfpoolAccountExecutor implements PoolAccountExecutor {
         Request request = new Request.Builder().url(API_URL + walletAddress).build();
         DwarfpoolAccount account = null;
         try (Response response = httpClient.newCall(request).execute()) {
-            JSONObject jsonResponse = new JSONObject(response.body().toString());
+            if (!response.isSuccessful()) {
+                throw new PoolAccountExecutorException(response.code());
+            }
+            JSONObject jsonResponse = new JSONObject(response.body().string());
             account = DwarfpoolAccount.create(jsonResponse);
         } catch (IOException e) {
             throw new PoolAccountExecutorException(e);
