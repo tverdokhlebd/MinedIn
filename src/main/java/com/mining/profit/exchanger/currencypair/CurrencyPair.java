@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class CurrencyPair {
 
     /** Pair name. */
-    private final String pair;
+    private final String pairName;
     /** Buy price. */
     private final BigDecimal buyPrice;
     /** Sell price. */
@@ -20,13 +20,13 @@ public class CurrencyPair {
     /**
      * Creates the currency pair instance.
      *
-     * @param pair pair name
+     * @param pairName pair name
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    public CurrencyPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
+    public CurrencyPair(String pairName, BigDecimal buyPrice, BigDecimal sellPrice) {
         super();
-        this.pair = pair;
+        this.pairName = pairName;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
     }
@@ -36,8 +36,8 @@ public class CurrencyPair {
      *
      * @return the pair
      */
-    public String getPair() {
-        return pair;
+    public String getPairName() {
+        return pairName;
     }
 
     /**
