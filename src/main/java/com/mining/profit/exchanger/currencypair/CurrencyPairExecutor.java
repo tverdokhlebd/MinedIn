@@ -6,20 +6,20 @@ package com.mining.profit.exchanger.currencypair;
  * @author Dmitry Tverdokhleb
  *
  */
-public interface ExchangerCurrencyPairExecutor {
+public interface CurrencyPairExecutor {
 
     /**
      * Returns ETH/USD currency pair.
      *
      * @return ETH/USD currency pair
      */
-    ExchangerCurrencyPair getETHUSDPair();
+    CurrencyPair getETHUSDPair();
 
     /**
      * Returns ETH/UAH currency pair.
      *
      * @return ETH/UAH currency pair
      */
-    ExchangerCurrencyPair getETHUAHPair();
+    CurrencyPair getETHUAHPair();
 
 }

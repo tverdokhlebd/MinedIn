@@ -1,7 +1,7 @@
 package com.mining.profit.worker;
 
-import com.mining.profit.exchanger.currencypair.ExchangerCurrencyPairExecutor;
-import com.mining.profit.pool.account.PoolAccountExecutor;
+import com.mining.profit.exchanger.currencypair.CurrencyPairExecutor;
+import com.mining.profit.pool.account.AccountExecutor;
 
 /**
  * Class for calculating of profit.
@@ -12,9 +12,9 @@ import com.mining.profit.pool.account.PoolAccountExecutor;
 public class ProfitWorker {
 
     /** Pool account executor. */
-    private final PoolAccountExecutor poolAccountExecutor;
+    private final AccountExecutor poolAccountExecutor;
     /** Exchanger currency pair executor. */
-    private final ExchangerCurrencyPairExecutor exchangerCurrencyPairExecutor;
+    private final CurrencyPairExecutor exchangerCurrencyPairExecutor;
 
     /**
      * Creates the profit calculation instance.
@@ -22,7 +22,7 @@ public class ProfitWorker {
      * @param poolAccountExecutor pool account executor
      * @param exchangerCurrencyPairExecutor exchanger currency pair executor
      */
-    public ProfitWorker(PoolAccountExecutor poolAccountExecutor, ExchangerCurrencyPairExecutor exchangerCurrencyPairExecutor) {
+    public ProfitWorker(AccountExecutor poolAccountExecutor, CurrencyPairExecutor exchangerCurrencyPairExecutor) {
         super();
         this.poolAccountExecutor = poolAccountExecutor;
         this.exchangerCurrencyPairExecutor = exchangerCurrencyPairExecutor;

@@ -6,7 +6,7 @@ package com.mining.profit.pool.account;
  * @author Dmitry Tverdokhleb
  *
  */
-public class PoolAccountExecutorException extends Exception {
+public class AccountExecutorException extends Exception {
 
     /** HTTP status code. */
     private int code;
@@ -18,7 +18,7 @@ public class PoolAccountExecutorException extends Exception {
      *
      * @param cause the cause
      */
-    public PoolAccountExecutorException(Throwable cause) {
+    public AccountExecutorException(Throwable cause) {
         super(cause);
     }
 
@@ -27,7 +27,7 @@ public class PoolAccountExecutorException extends Exception {
      *
      * @param code HTTP status code
      */
-    public PoolAccountExecutorException(int code) {
+    public AccountExecutorException(int code) {
         super();
         this.code = code;
     }

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author Dmitry Tverdokhleb
  *
  */
-public class PoolAccount {
+public class Account {
 
     /** Wallet address. */
     private final String walletAddress;
@@ -21,7 +21,7 @@ public class PoolAccount {
      * @param walletAddress wallet address
      * @param walletBalance wallet balance
      */
-    public PoolAccount(String walletAddress, BigDecimal walletBalance) {
+    public Account(String walletAddress, BigDecimal walletBalance) {
         super();
         this.walletAddress = walletAddress;
         this.walletBalance = walletBalance;

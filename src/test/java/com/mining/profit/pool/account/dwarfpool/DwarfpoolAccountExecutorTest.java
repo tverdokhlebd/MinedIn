@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.mining.profit.pool.account.PoolAccount;
-import com.mining.profit.pool.account.PoolAccountException;
-import com.mining.profit.pool.account.PoolAccountExecutor;
-import com.mining.profit.pool.account.PoolAccountExecutorException;
+import com.mining.profit.pool.account.Account;
+import com.mining.profit.pool.account.AccountException;
+import com.mining.profit.pool.account.AccountExecutor;
+import com.mining.profit.pool.account.AccountExecutorException;
 
 import net.minidev.json.JSONObject;
 import okhttp3.Interceptor;
@@ -21,6 +21,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+/**
+ * Tests of Dwarfpool executor.
+ *
+ * @author Dmitry Tverdokhleb
+ *
+ */
 @SpringBootTest
 public class DwarfpoolAccountExecutorTest {
 
@@ -29,7 +35,7 @@ public class DwarfpoolAccountExecutorTest {
     private static final String API_URL_WITH_WALLET_ADDRESS = "http://dwarfpool.com/eth/api?wallet=" + WALLET_ADDRESS;
 
     @Test
-    public void getETHAccountWithCorrectResponse() throws PoolAccountExecutorException, PoolAccountException {
+    public void getETHAccountWithCorrectResponse() throws AccountExecutorException, AccountException {
         BigDecimal walletBalance = new BigDecimal("0.45431668");
         Interceptor replaceJSONInterceptor = chain -> {
             Request request = chain.request();
@@ -41,14 +47,14 @@ public class DwarfpoolAccountExecutorTest {
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        PoolAccountExecutor poolAccountExecutor = new DwarfpoolAccountExecutor(httpClient);
-        PoolAccount poolAccount = poolAccountExecutor.getETHAccount(WALLET_ADDRESS);
-        assertEquals(WALLET_ADDRESS, poolAccount.getWalletAddress());
-        assertEquals(walletBalance, poolAccount.getWalletBalance());
+        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
+        assertEquals(WALLET_ADDRESS, account.getWalletAddress());
+        assertEquals(walletBalance, account.getWalletBalance());
     }
 
-    @Test(expected = PoolAccountException.class)
-    public void getETHAccountWithIncorrectResponse() throws PoolAccountExecutorException, PoolAccountException {
+    @Test(expected = AccountException.class)
+    public void getETHAccountWithIncorrectResponse() throws AccountExecutorException, AccountException {
         Interceptor replaceJSONInterceptor = chain -> {
             Request request = chain.request();
             JSONObject bodyJSON = new JSONObject();
@@ -58,12 +64,12 @@ public class DwarfpoolAccountExecutorTest {
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        PoolAccountExecutor poolAccountExecutor = new DwarfpoolAccountExecutor(httpClient);
-        poolAccountExecutor.getETHAccount(WALLET_ADDRESS);
+        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        accountExecutor.getETHAccount(WALLET_ADDRESS);
     }
 
-    @Test(expected = PoolAccountException.class)
-    public void getETHAccountWithIncorrectJSON() throws PoolAccountExecutorException, PoolAccountException {
+    @Test(expected = AccountException.class)
+    public void getETHAccountWithIncorrectJSON() throws AccountExecutorException, AccountException {
         BigDecimal walletBalance = new BigDecimal("0.45431668");
         Interceptor replaceJSONInterceptor = chain -> {
             Request request = chain.request();
@@ -74,20 +80,20 @@ public class DwarfpoolAccountExecutorTest {
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        PoolAccountExecutor poolAccountExecutor = new DwarfpoolAccountExecutor(httpClient);
-        poolAccountExecutor.getETHAccount(WALLET_ADDRESS);
+        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        accountExecutor.getETHAccount(WALLET_ADDRESS);
     }
 
-    @Test(expected = PoolAccountExecutorException.class)
-    public void getETHAccountWith500Error() throws PoolAccountExecutorException, PoolAccountException {
+    @Test(expected = AccountExecutorException.class)
+    public void getETHAccountWith500Error() throws AccountExecutorException, AccountException {
         Interceptor replaceJSONInterceptor = chain -> {
             Request request = chain.request();
             ResponseBody body = ResponseBody.create(MEDIA_JSON, "");
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(500).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        PoolAccountExecutor poolAccountExecutor = new DwarfpoolAccountExecutor(httpClient);
-        poolAccountExecutor.getETHAccount(WALLET_ADDRESS);
+        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        accountExecutor.getETHAccount(WALLET_ADDRESS);
     }
 
 }

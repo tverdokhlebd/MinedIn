@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author Dmitry Tverdokhleb
  *
  */
-public class ExchangerCurrencyPair {
+public class CurrencyPair {
 
     /** Pair name. */
     private final String pair;
@@ -24,7 +24,7 @@ public class ExchangerCurrencyPair {
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    public ExchangerCurrencyPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
+    public CurrencyPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
         super();
         this.pair = pair;
         this.buyPrice = buyPrice;

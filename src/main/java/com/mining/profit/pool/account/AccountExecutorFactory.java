@@ -10,7 +10,7 @@ import okhttp3.OkHttpClient;
  * @author Dmitry Tverdokhleb
  *
  */
-public class PoolAccountExecutorFactory {
+public class AccountExecutorFactory {
 
     /**
      * Enumeration of pool account executor type.
@@ -28,7 +28,7 @@ public class PoolAccountExecutorFactory {
      * @param type type of pool account executor
      * @return pool account executor
      */
-    public static PoolAccountExecutor getPoolAccountExecutor(PoolAccountExecutorType type) {
+    public static AccountExecutor getPoolAccountExecutor(PoolAccountExecutorType type) {
         OkHttpClient httpClient = new OkHttpClient();
         switch (type) {
         case DWARFPOOL: {

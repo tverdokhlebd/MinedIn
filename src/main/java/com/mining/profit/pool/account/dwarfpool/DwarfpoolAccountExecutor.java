@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
-import com.mining.profit.pool.account.PoolAccount;
-import com.mining.profit.pool.account.PoolAccountException;
-import com.mining.profit.pool.account.PoolAccountExecutor;
-import com.mining.profit.pool.account.PoolAccountExecutorException;
+import com.mining.profit.pool.account.Account;
+import com.mining.profit.pool.account.AccountException;
+import com.mining.profit.pool.account.AccountExecutor;
+import com.mining.profit.pool.account.AccountExecutorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -19,7 +19,7 @@ import okhttp3.Response;
  * @author Dmitry Tverdokhleb
  *
  */
-public class DwarfpoolAccountExecutor implements PoolAccountExecutor {
+public class DwarfpoolAccountExecutor implements AccountExecutor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
@@ -37,17 +37,17 @@ public class DwarfpoolAccountExecutor implements PoolAccountExecutor {
     }
 
     @Override
-    public PoolAccount getETHAccount(String walletAddress) throws PoolAccountException, PoolAccountExecutorException {
+    public Account getETHAccount(String walletAddress) throws AccountException, AccountExecutorException {
         Request request = new Request.Builder().url(API_URL + walletAddress).build();
         DwarfpoolAccount account = null;
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new PoolAccountExecutorException(response.code());
+                throw new AccountExecutorException(response.code());
             }
             JSONObject jsonResponse = new JSONObject(response.body().string());
             account = DwarfpoolAccount.create(jsonResponse);
         } catch (IOException e) {
-            throw new PoolAccountExecutorException(e);
+            throw new AccountExecutorException(e);
         }
         return account;
     }

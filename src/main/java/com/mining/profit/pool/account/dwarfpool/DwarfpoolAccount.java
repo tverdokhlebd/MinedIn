@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mining.profit.pool.account.PoolAccount;
-import com.mining.profit.pool.account.PoolAccountException;
+import com.mining.profit.pool.account.Account;
+import com.mining.profit.pool.account.AccountException;
 
 /**
  * Class for representing Dwarfpool account.
@@ -14,7 +14,7 @@ import com.mining.profit.pool.account.PoolAccountException;
  * @author Dmitry Tverdokhleb
  *
  */
-public class DwarfpoolAccount extends PoolAccount {
+public class DwarfpoolAccount extends Account {
 
     /**
      * Creates the Dwarfpool account instance.
@@ -31,15 +31,15 @@ public class DwarfpoolAccount extends PoolAccount {
      *
      * @param jsonAccount account in JSON format
      * @return Dwarfpool account instance
-     * @throws PoolAccountException if there is any error in account creating
+     * @throws AccountException if there is any error in account creating
      */
-    public static DwarfpoolAccount create(JSONObject jsonAccount) throws PoolAccountException {
+    public static DwarfpoolAccount create(JSONObject jsonAccount) throws AccountException {
         try {
             String wallet = jsonAccount.getString("wallet");
             BigDecimal walletBalance = new BigDecimal(jsonAccount.getString("wallet_balance"));
             return new DwarfpoolAccount(wallet, walletBalance);
         } catch (JSONException e) {
-            throw new PoolAccountException(e);
+            throw new AccountException(e);
         }
     }
 

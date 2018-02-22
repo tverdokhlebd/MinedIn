@@ -6,7 +6,7 @@ package com.mining.profit.pool.account;
  * @author Dmitry Tverdokhleb
  *
  */
-public class PoolAccountException extends Exception {
+public class AccountException extends Exception {
 
     private static final long serialVersionUID = -1553863222669549323L;
 
@@ -15,7 +15,7 @@ public class PoolAccountException extends Exception {
      *
      * @param cause the cause
      */
-    public PoolAccountException(Throwable cause) {
+    public AccountException(Throwable cause) {
         super(cause);
     }
 
