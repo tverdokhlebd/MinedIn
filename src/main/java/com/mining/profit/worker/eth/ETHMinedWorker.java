@@ -41,9 +41,9 @@ public class ETHMinedWorker implements MinedWorker {
             Account account = accountExecutor.getETHAccount(walletAddress);
             BigDecimal walletBalance = account.getWalletBalance();
             CurrencyPair currencyPair = currencyPairExecutor.getETHUSDPair();
-            BigDecimal usdSaleRate = currencyPair.getSellPrice();
-            BigDecimal balanceInUSD = walletBalance.multiply(usdSaleRate);
-            return new MinedResult(walletBalance, balanceInUSD, usdSaleRate);
+            BigDecimal usdBuyRate = currencyPair.getBuyPrice();
+            BigDecimal balanceInUSD = walletBalance.multiply(usdBuyRate);
+            return new MinedResult(walletBalance, balanceInUSD, usdBuyRate);
         } catch (Exception e) {
             throw new MinedWorkerException();
         }
