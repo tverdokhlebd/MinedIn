@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Entry point.
- * 
+ *
  * @author Dmitry Tverdokhleb
  *
  */
@@ -15,4 +15,5 @@ public class MiningProfitApplication {
     public static void main(String[] args) {
         SpringApplication.run(MiningProfitApplication.class, args);
     }
+
 }
