@@ -18,7 +18,7 @@ public class AccountExecutorFactory {
      * @author Dmitry Tverdokhleb
      *
      */
-    public static enum PoolAccountExecutorType {
+    public static enum AccountExecutorType {
         DWARFPOOL
     }
 
@@ -28,7 +28,7 @@ public class AccountExecutorFactory {
      * @param type type of pool account executor
      * @return pool account executor
      */
-    public static AccountExecutor getPoolAccountExecutor(PoolAccountExecutorType type) {
+    public static AccountExecutor getAccountExecutor(AccountExecutorType type) {
         OkHttpClient httpClient = new OkHttpClient();
         switch (type) {
         case DWARFPOOL: {
