@@ -1,4 +1,4 @@
-package com.mining.profit.model;
+package com.mining.profit.db.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
