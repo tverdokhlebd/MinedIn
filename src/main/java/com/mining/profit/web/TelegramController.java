@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mining.profit.bot.TelegramBot;
 import com.mining.profit.db.model.Configuration;
 import com.mining.profit.db.repository.ConfigurationRepository;
-import com.pengrad.telegrambot.BotUtils;
-import com.pengrad.telegrambot.model.Update;
 
 /**
  * REST controller for Telegram API.
@@ -24,13 +23,19 @@ public class TelegramController {
     @Autowired
     ConfigurationRepository configurationRepository;
 
+    /**
+     * Processes incoming updates from bot.
+     *
+     * @param token telegram token
+     * @param body POST body
+     */
     @RequestMapping("/updates/{token}")
     public void updates(@PathVariable("token") String token, @RequestBody String body) {
         Configuration configuration = configurationRepository.findAll().get(0);
         if (!configuration.getTelegramToken().equals(token)) {
             return;
         }
-        Update update = BotUtils.parseUpdate(body);
+        new TelegramBot(token).process(body);
     }
 
 }
