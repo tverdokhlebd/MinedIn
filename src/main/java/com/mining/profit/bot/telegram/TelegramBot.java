@@ -1,4 +1,4 @@
-package com.mining.profit.bot;
+package com.mining.profit.bot.telegram;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
@@ -7,6 +7,9 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mining.profit.bot.Bot;
+import com.mining.profit.bot.BotCommand;
+import com.mining.profit.bot.BotException;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
