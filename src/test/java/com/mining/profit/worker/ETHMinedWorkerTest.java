@@ -1,6 +1,6 @@
 package com.mining.profit.worker;
 
-import static com.mining.profit.worker.MinedWorkerFactory.MinedWorkerType.ETH;
+import static com.mining.profit.coin.Coin.ETH;
 import static okhttp3.Protocol.HTTP_2;
 import static org.junit.Assert.assertEquals;
 

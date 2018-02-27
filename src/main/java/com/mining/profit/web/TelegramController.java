@@ -1,14 +1,12 @@
 package com.mining.profit.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mining.profit.bot.telegram.TelegramUpdatesBot;
-import com.mining.profit.db.model.Configuration;
-import com.mining.profit.db.repository.ConfigurationRepository;
 
 /**
  * REST controller for Telegram API.
@@ -20,8 +18,8 @@ import com.mining.profit.db.repository.ConfigurationRepository;
 @RequestMapping("/telegram")
 public class TelegramController {
 
-    @Autowired
-    ConfigurationRepository configurationRepository;
+    @Value("${telegram.token}")
+    private String telegramToken;
 
     /**
      * Processes incoming updates from bot.
@@ -31,8 +29,7 @@ public class TelegramController {
      */
     @RequestMapping("/updates/{token}")
     public void updates(@PathVariable("token") String token, @RequestBody String body) {
-        Configuration configuration = configurationRepository.findAll().get(0);
-        if (!configuration.getTelegramToken().equals(token)) {
+        if (!telegramToken.equals(token)) {
             return;
         }
         new TelegramUpdatesBot(token).process(body);
