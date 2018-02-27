@@ -13,7 +13,7 @@ public interface MinedWorker {
      *
      * @param walletAddress the wallet address
      * @return mined result
-     * @throws MinedWorkerException
+     * @throws MinedWorkerException if there is any error in calculating
      */
     MinedResult calculate(String walletAddress) throws MinedWorkerException;
 

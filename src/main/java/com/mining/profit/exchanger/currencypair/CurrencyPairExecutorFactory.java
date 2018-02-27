@@ -1,5 +1,6 @@
 package com.mining.profit.exchanger.currencypair;
 
+import com.mining.profit.exchanger.Exchanger;
 import com.mining.profit.exchanger.currencypair.exmo.ExmoCurrencyPairExecutor;
 
 import okhttp3.OkHttpClient;
@@ -13,29 +14,19 @@ import okhttp3.OkHttpClient;
 public class CurrencyPairExecutorFactory {
 
     /**
-     * Enumeration of currency pair executor type.
-     *
-     * @author Dmitry Tverdokhleb
-     *
-     */
-    public static enum CurrencyPairExecutorType {
-        EXMO
-    }
-
-    /**
      * Returns currency pair executor.
      *
-     * @param type type of currency pair executor
+     * @param exchanger exchanger name
      * @return currency pair executor
      */
-    public static CurrencyPairExecutor getCurrencyPairExecutor(CurrencyPairExecutorType type) {
+    public static CurrencyPairExecutor getCurrencyPairExecutor(Exchanger exchanger) {
         OkHttpClient httpClient = new OkHttpClient();
-        switch (type) {
+        switch (exchanger) {
         case EXMO: {
             return new ExmoCurrencyPairExecutor(httpClient);
         }
         default:
-            throw new IllegalArgumentException(type.name());
+            throw new IllegalArgumentException(exchanger.name());
         }
     }
 

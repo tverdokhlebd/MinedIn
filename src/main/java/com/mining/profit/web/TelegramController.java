@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mining.profit.bot.telegram.TelegramBot;
+import com.mining.profit.bot.telegram.TelegramUpdatesBot;
 import com.mining.profit.db.model.Configuration;
 import com.mining.profit.db.repository.ConfigurationRepository;
 
@@ -35,7 +35,7 @@ public class TelegramController {
         if (!configuration.getTelegramToken().equals(token)) {
             return;
         }
-        new TelegramBot(token).process(body);
+        new TelegramUpdatesBot(token).process(body);
     }
 
 }
