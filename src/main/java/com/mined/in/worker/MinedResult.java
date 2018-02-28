@@ -14,21 +14,25 @@ public class MinedResult {
     private final BigDecimal coinsBalance;
     /** Balance in USD. */
     private final BigDecimal usdBalance;
-    /** Rate of USD. */
-    private final BigDecimal usdRate;
+    /** Buy price. */
+    private final BigDecimal buyPrice;
+    /** Sell price. */
+    private final BigDecimal sellPrice;
 
     /**
      * Creates the mined result instance.
      *
      * @param coinsBalance balance of coins
      * @param usdBalance balance in USD
-     * @param usdRate rate of USD
+     * @param buyPrice buy price
+     * @param sellPrice sell price
      */
-    public MinedResult(BigDecimal coinsBalance, BigDecimal usdBalance, BigDecimal usdRate) {
+    public MinedResult(BigDecimal coinsBalance, BigDecimal usdBalance, BigDecimal buyPrice, BigDecimal sellPrice) {
         super();
         this.coinsBalance = coinsBalance;
         this.usdBalance = usdBalance;
-        this.usdRate = usdRate;
+        this.buyPrice = buyPrice;
+        this.sellPrice = sellPrice;
     }
 
     /**
@@ -50,12 +54,21 @@ public class MinedResult {
     }
 
     /**
-     * Gets the USD rate.
+     * Gets the buy price.
      *
-     * @return the USD rate
+     * @return the buy price
      */
-    public BigDecimal getUsdRate() {
-        return usdRate;
+    public BigDecimal getBuyPrice() {
+        return buyPrice;
+    }
+
+    /**
+     * Gets the sell price.
+     *
+     * @return the sell price
+     */
+    public BigDecimal getSellPrice() {
+        return sellPrice;
     }
 
 }

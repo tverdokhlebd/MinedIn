@@ -166,10 +166,14 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param minedResult mined result
      */
     private void sendMinedResult(Object chatId, Integer messageId, Coin coin, Pool pool, Exchanger exchanger, MinedResult minedResult) {
-        String message = LOCALIZATION.getString("selected_coin_pool_exchanger");
-        message = String.format(message, coin.getSymbol(), pool.getName(), exchanger.getName(), minedResult.getCoinsBalance(),
-                minedResult.getUsdBalance(), minedResult.getUsdRate());
-        editMessage(chatId, messageId, message, true, null);
+        String currentBalance = LOCALIZATION.getString("current_balance");
+        currentBalance = String.format(currentBalance, pool.getWebsite(), pool.getName().toUpperCase(), minedResult.getCoinsBalance(),
+                coin.getWebsite(), coin.getSymbol());
+        String minedResultMsg = LOCALIZATION.getString("mined_result");
+        minedResultMsg = String.format(minedResultMsg, exchanger.getWebsite(), exchanger.getName().toUpperCase(),
+                minedResult.getUsdBalance(), minedResult.getBuyPrice(), minedResult.getSellPrice());
+        String formattedMessage = currentBalance + "\n---\n" + minedResultMsg;
+        editMessage(chatId, messageId, formattedMessage, true, null);
     }
 
     /**
@@ -187,7 +191,7 @@ public class TelegramUpdatesBot implements BotUpdates {
             keyboardButtonArray[i] = new InlineKeyboardButton(coinSymbol).callbackData(coinSymbol);
         }
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        sendMessage(chatId, LOCALIZATION.getString("select_coin"), false, replyToMessageId, keyboardMarkup);
+        sendMessage(chatId, LOCALIZATION.getString("coin"), false, replyToMessageId, keyboardMarkup);
     }
 
     /**
@@ -207,7 +211,7 @@ public class TelegramUpdatesBot implements BotUpdates {
             keyboardButtonArray[i] = new InlineKeyboardButton(poolName).callbackData(callbackData);
         }
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        editMessage(chatId, messageId, LOCALIZATION.getString("select_pool"), false, keyboardMarkup);
+        editMessage(chatId, messageId, LOCALIZATION.getString("pool"), false, keyboardMarkup);
     }
 
     /**
@@ -227,7 +231,7 @@ public class TelegramUpdatesBot implements BotUpdates {
             keyboardButtonArray[i] = new InlineKeyboardButton(exchangerName).callbackData(callbackData);
         }
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        editMessage(chatId, messageId, LOCALIZATION.getString("select_exchanger"), false, keyboardMarkup);
+        editMessage(chatId, messageId, LOCALIZATION.getString("exchanger"), false, keyboardMarkup);
     }
 
     /**
