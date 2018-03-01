@@ -13,9 +13,8 @@ public interface AccountExecutor {
      *
      * @param walletAddress the wallet address
      * @return ETH account
-     * @throws AccountExecutorException if there is any error in request executing
-     * @throws AccountException if there is any error in account creating
+     * @throws AccountExecutorException if there is any error in account creating
      */
-    Account getETHAccount(String walletAddress) throws AccountExecutorException, AccountException;
+    Account getETHAccount(String walletAddress) throws AccountExecutorException;
 
 }

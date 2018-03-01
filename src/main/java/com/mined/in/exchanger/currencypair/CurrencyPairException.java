@@ -8,6 +8,7 @@ package com.mined.in.exchanger.currencypair;
  */
 public class CurrencyPairException extends Exception {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -1553863222669549323L;
 
     /**

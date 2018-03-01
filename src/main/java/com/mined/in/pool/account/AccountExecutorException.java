@@ -8,28 +8,52 @@ package com.mined.in.pool.account;
  */
 public class AccountExecutorException extends Exception {
 
-    /** HTTP status code. */
-    private int code;
-
+    /** Error code. */
+    private final ErrorCode errorCode;
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -448307664169612373L;
 
     /**
-     * Creates the exception instance for working with pool account executor.
+     * Enumeration of error code.
      *
-     * @param cause the cause
+     * @author Dmitry Tverdokhleb
+     *
      */
-    public AccountExecutorException(Throwable cause) {
-        super(cause);
+    public static enum ErrorCode {
+
+        HTTP_ERROR, API_ERROR, JSON_ERROR
+
     }
 
     /**
      * Creates the exception instance for working with pool account executor.
      *
-     * @param code HTTP status code
+     * @param errorCode error code
+     * @param message the detail message
      */
-    public AccountExecutorException(int code) {
-        super();
-        this.code = code;
+    public AccountExecutorException(ErrorCode errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * Creates the exception instance for working with pool account executor.
+     *
+     * @param errorCode error code
+     * @param cause the cause
+     */
+    public AccountExecutorException(ErrorCode errorCode, Throwable cause) {
+        super(cause);
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * Gets the error code.
+     *
+     * @return the error code
+     */
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 
 }

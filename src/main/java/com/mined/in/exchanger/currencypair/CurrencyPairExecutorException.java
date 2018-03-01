@@ -10,7 +10,7 @@ public class CurrencyPairExecutorException extends Exception {
 
     /** HTTP status code. */
     private int code;
-
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -448307664169612373L;
 
     /**

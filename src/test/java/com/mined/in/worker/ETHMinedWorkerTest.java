@@ -69,7 +69,8 @@ public class ETHMinedWorkerTest {
         MinedResult result = worker.calculate(WALLET_ADDRESS);
         assertEquals(walletBalance, result.getCoinsBalance());
         assertEquals(walletBalance.multiply(buyPrice), result.getUsdBalance());
-        assertEquals(buyPrice, result.getUsdRate());
+        assertEquals(buyPrice, result.getBuyPrice());
+        assertEquals(sellPrice, result.getSellPrice());
     }
 
     @Test(expected = MinedWorkerException.class)

@@ -8,6 +8,7 @@ package com.mined.in.worker;
  */
 public class MinedWorkerException extends Exception {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 3495018965015002690L;
 
     /**
