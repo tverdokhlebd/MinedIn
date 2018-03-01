@@ -1,5 +1,7 @@
 package com.mined.in.pool.account;
 
+import com.mined.in.error.ErrorCode;
+
 /**
  * Exception for working with pool account executor.
  *
@@ -12,18 +14,6 @@ public class AccountExecutorException extends Exception {
     private final ErrorCode errorCode;
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -448307664169612373L;
-
-    /**
-     * Enumeration of error code.
-     *
-     * @author Dmitry Tverdokhleb
-     *
-     */
-    public static enum ErrorCode {
-
-        HTTP_ERROR, API_ERROR, JSON_ERROR
-
-    }
 
     /**
      * Creates the exception instance for working with pool account executor.

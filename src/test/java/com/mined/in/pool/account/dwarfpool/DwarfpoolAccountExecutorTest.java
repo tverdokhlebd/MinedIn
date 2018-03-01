@@ -1,5 +1,8 @@
 package com.mined.in.pool.account.dwarfpool;
 
+import static com.mined.in.error.ErrorCode.API_ERROR;
+import static com.mined.in.error.ErrorCode.HTTP_ERROR;
+import static com.mined.in.error.ErrorCode.JSON_ERROR;
 import static okhttp3.Protocol.HTTP_2;
 import static org.junit.Assert.assertEquals;
 
@@ -70,7 +73,7 @@ public class DwarfpoolAccountExecutorTest {
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
-            assertEquals(AccountExecutorException.ErrorCode.JSON_ERROR, e.getErrorCode());
+            assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
         }
     }
@@ -91,7 +94,7 @@ public class DwarfpoolAccountExecutorTest {
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
-            assertEquals(AccountExecutorException.ErrorCode.API_ERROR, e.getErrorCode());
+            assertEquals(API_ERROR, e.getErrorCode());
             assertEquals(errorCode, e.getMessage());
             throw e;
         }
@@ -109,7 +112,7 @@ public class DwarfpoolAccountExecutorTest {
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
-            assertEquals(AccountExecutorException.ErrorCode.HTTP_ERROR, e.getErrorCode());
+            assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
         }
     }

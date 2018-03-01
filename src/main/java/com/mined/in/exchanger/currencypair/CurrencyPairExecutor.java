@@ -13,8 +13,7 @@ public interface CurrencyPairExecutor {
      *
      * @return ETH/USD currency pair
      * @throws CurrencyPairExecutorException if there is any error in request executing
-     * @throws CurrencyPairException if there is any error in currency pair creating
      */
-    CurrencyPair getETHUSDPair() throws CurrencyPairExecutorException, CurrencyPairException;
+    CurrencyPair getETHUSDPair() throws CurrencyPairExecutorException;
 
 }

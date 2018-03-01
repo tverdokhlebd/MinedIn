@@ -1,5 +1,9 @@
 package com.mined.in.pool.account.dwarfpool;
 
+import static com.mined.in.error.ErrorCode.API_ERROR;
+import static com.mined.in.error.ErrorCode.HTTP_ERROR;
+import static com.mined.in.error.ErrorCode.JSON_ERROR;
+
 import java.io.IOException;
 
 import org.json.JSONException;
@@ -42,15 +46,15 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
         DwarfpoolAccount account = null;
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new AccountExecutorException(AccountExecutorException.ErrorCode.HTTP_ERROR, response.message());
+                throw new AccountExecutorException(HTTP_ERROR, response.message());
             }
             JSONObject jsonResponse = new JSONObject(response.body().string());
             checkError(jsonResponse);
             account = DwarfpoolAccount.create(jsonResponse);
         } catch (JSONException e) {
-            throw new AccountExecutorException(AccountExecutorException.ErrorCode.JSON_ERROR, e);
+            throw new AccountExecutorException(JSON_ERROR, e);
         } catch (IOException e) {
-            throw new AccountExecutorException(AccountExecutorException.ErrorCode.HTTP_ERROR, e);
+            throw new AccountExecutorException(HTTP_ERROR, e);
         }
         return account;
     }
@@ -65,7 +69,7 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
         boolean error = jsonResponse.getBoolean("error");
         if (error) {
             String errorCode = jsonResponse.getString("error_code");
-            throw new AccountExecutorException(AccountExecutorException.ErrorCode.API_ERROR, errorCode);
+            throw new AccountExecutorException(API_ERROR, errorCode);
         }
     }
 
