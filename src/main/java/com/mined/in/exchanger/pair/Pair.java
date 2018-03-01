@@ -1,14 +1,14 @@
-package com.mined.in.exchanger.currencypair;
+package com.mined.in.exchanger.pair;
 
 import java.math.BigDecimal;
 
 /**
- * Class for representing currency pair of exchanger.
+ * Class for representing pair of exchanger.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class CurrencyPair {
+public class Pair {
 
     /** Pair name. */
     private final String pairName;
@@ -18,13 +18,13 @@ public class CurrencyPair {
     private final BigDecimal sellPrice;
 
     /**
-     * Creates the currency pair instance.
+     * Creates the pair instance.
      *
      * @param pairName pair name
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    public CurrencyPair(String pairName, BigDecimal buyPrice, BigDecimal sellPrice) {
+    public Pair(String pairName, BigDecimal buyPrice, BigDecimal sellPrice) {
         super();
         this.pairName = pairName;
         this.buyPrice = buyPrice;

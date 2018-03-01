@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import com.mined.in.bot.BotUpdates;
 import com.mined.in.coin.Coin;
 import com.mined.in.exchanger.Exchanger;
-import com.mined.in.exchanger.currencypair.CurrencyPairExecutor;
-import com.mined.in.exchanger.currencypair.CurrencyPairExecutorException;
-import com.mined.in.exchanger.currencypair.CurrencyPairExecutorFactory;
+import com.mined.in.exchanger.pair.PairExecutor;
+import com.mined.in.exchanger.pair.PairExecutorException;
+import com.mined.in.exchanger.pair.PairExecutorFactory;
 import com.mined.in.pool.Pool;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
@@ -95,9 +95,9 @@ public class TelegramUpdatesBot implements BotUpdates {
      *
      * @param callbackQuery callback query
      * @throws AccountExecutorException if there is any error in account creating
-     * @throws CurrencyPairExecutorException if there is any error in pair creating
+     * @throws PairExecutorException if there is any error in pair creating
      */
-    private void processCallbackQuery(CallbackQuery callbackQuery) throws AccountExecutorException, CurrencyPairExecutorException {
+    private void processCallbackQuery(CallbackQuery callbackQuery) throws AccountExecutorException, PairExecutorException {
         String data = callbackQuery.data();
         if (data == null || data.isEmpty()) {
             return;
@@ -130,10 +130,10 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param stepData data of current step
      * @param walletAddress wallet address
      * @throws AccountExecutorException if there is any error in account creating
-     * @throws CurrencyPairExecutorException if there is any error in pair creating
+     * @throws PairExecutorException if there is any error in pair creating
      */
     private void calculateAndSendMinedResult(Object chatId, Integer messageId, TelegramStepData stepData, String walletAddress)
-            throws AccountExecutorException, CurrencyPairExecutorException {
+            throws AccountExecutorException, PairExecutorException {
         Coin coin = stepData.getCoin();
         Pool pool = stepData.getPool();
         Exchanger exchanger = stepData.getExchanger();
@@ -150,13 +150,13 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param exchanger exchange type
      * @return mined result
      * @throws AccountExecutorException if there is any error in account creating
-     * @throws CurrencyPairExecutorException if there is any error in pair creating
+     * @throws PairExecutorException if there is any error in pair creating
      */
     private MinedResult calculateMined(String walletAddress, Coin coin, Pool pool, Exchanger exchanger)
-            throws AccountExecutorException, CurrencyPairExecutorException {
+            throws AccountExecutorException, PairExecutorException {
         AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(pool);
-        CurrencyPairExecutor currencyPairExecutor = CurrencyPairExecutorFactory.getCurrencyPairExecutor(exchanger);
-        MinedWorker minedWorker = MinedWorkerFactory.getAccountExecutor(coin, accountExecutor, currencyPairExecutor);
+        PairExecutor pairExecutor = PairExecutorFactory.getPairExecutor(exchanger);
+        MinedWorker minedWorker = MinedWorkerFactory.getAccountExecutor(coin, accountExecutor, pairExecutor);
         return minedWorker.calculate(walletAddress);
     }
 

@@ -1,4 +1,4 @@
-package com.mined.in.exchanger.currencypair.exmo;
+package com.mined.in.exchanger.pair.exmo;
 
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
 import static okhttp3.Protocol.HTTP_2;
@@ -10,9 +10,10 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.error.ErrorCode;
-import com.mined.in.exchanger.currencypair.CurrencyPair;
-import com.mined.in.exchanger.currencypair.CurrencyPairExecutor;
-import com.mined.in.exchanger.currencypair.CurrencyPairExecutorException;
+import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairExecutor;
+import com.mined.in.exchanger.pair.PairExecutorException;
+import com.mined.in.exchanger.pair.exmo.ExmoPairExecutor;
 
 import net.minidev.json.JSONObject;
 import okhttp3.Interceptor;
@@ -29,14 +30,14 @@ import okhttp3.ResponseBody;
  *
  */
 @SpringBootTest
-public class ExmoCurrencyPairExecutorTest {
+public class ExmoPairExecutorTest {
 
     private static final MediaType MEDIA_JSON = MediaType.parse("application/json");
     private static final String API_URL = "https://api.exmo.com/v1/ticker/";
 
     @Test
-    public void getETHUSDPairWithCorrectResponse() throws CurrencyPairExecutorException {
-        String currencyPairName = "ETH_USD";
+    public void getETHUSDPairWithCorrectResponse() throws PairExecutorException {
+        String pairName = "ETH_USD";
         BigDecimal buyPrice = new BigDecimal("700");
         BigDecimal sellPrice = new BigDecimal("702");
         Interceptor replaceJSONInterceptor = chain -> {
@@ -46,21 +47,21 @@ public class ExmoCurrencyPairExecutorTest {
             ethUSDJson.put("buy_price", buyPrice.toString());
             ethUSDJson.put("sell_price", sellPrice.toString());
             JSONObject bodyJSON = new JSONObject();
-            bodyJSON.put(currencyPairName, ethUSDJson);
+            bodyJSON.put(pairName, ethUSDJson);
             ResponseBody body = ResponseBody.create(MEDIA_JSON, bodyJSON.toJSONString());
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        CurrencyPairExecutor currencyPairExecutor = new ExmoCurrencyPairExecutor(httpClient);
-        CurrencyPair currencyPair = currencyPairExecutor.getETHUSDPair();
-        assertEquals(currencyPairName, currencyPair.getPairName());
-        assertEquals(buyPrice, currencyPair.getBuyPrice());
-        assertEquals(sellPrice, currencyPair.getSellPrice());
+        PairExecutor pairExecutor = new ExmoPairExecutor(httpClient);
+        Pair pair = pairExecutor.getETHUSDPair();
+        assertEquals(pairName, pair.getPairName());
+        assertEquals(buyPrice, pair.getBuyPrice());
+        assertEquals(sellPrice, pair.getSellPrice());
     }
 
-    @Test(expected = CurrencyPairExecutorException.class)
-    public void getETHUSDPairWithIncorrectJSON() throws CurrencyPairExecutorException {
-        String currencyPairName = "ETH_USD";
+    @Test(expected = PairExecutorException.class)
+    public void getETHUSDPairWithIncorrectJSON() throws PairExecutorException {
+        String pairName = "ETH_USD";
         BigDecimal buyPrice = new BigDecimal("700");
         BigDecimal sellPrice = new BigDecimal("702");
         Interceptor replaceJSONInterceptor = chain -> {
@@ -70,32 +71,32 @@ public class ExmoCurrencyPairExecutorTest {
             ethUSDJson.put("buyprice", buyPrice.toString());
             ethUSDJson.put("sellprice", sellPrice.toString());
             JSONObject bodyJSON = new JSONObject();
-            bodyJSON.put(currencyPairName, ethUSDJson);
+            bodyJSON.put(pairName, ethUSDJson);
             ResponseBody body = ResponseBody.create(MEDIA_JSON, bodyJSON.toJSONString());
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        CurrencyPairExecutor currencyPairExecutor = new ExmoCurrencyPairExecutor(httpClient);
+        PairExecutor pairExecutor = new ExmoPairExecutor(httpClient);
         try {
-            currencyPairExecutor.getETHUSDPair();
-        } catch (CurrencyPairExecutorException e) {
+            pairExecutor.getETHUSDPair();
+        } catch (PairExecutorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
         }
     }
 
-    @Test(expected = CurrencyPairExecutorException.class)
-    public void getETHUSDPairWith500Error() throws CurrencyPairExecutorException {
+    @Test(expected = PairExecutorException.class)
+    public void getETHUSDPairWith500Error() throws PairExecutorException {
         Interceptor replaceJSONInterceptor = chain -> {
             Request request = chain.request();
             ResponseBody body = ResponseBody.create(MEDIA_JSON, "");
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(500).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        CurrencyPairExecutor currencyPairExecutor = new ExmoCurrencyPairExecutor(httpClient);
+        PairExecutor pairExecutor = new ExmoPairExecutor(httpClient);
         try {
-            currencyPairExecutor.getETHUSDPair();
-        } catch (CurrencyPairExecutorException e) {
+            pairExecutor.getETHUSDPair();
+        } catch (PairExecutorException e) {
             assertEquals(ErrorCode.HTTP_ERROR, e.getErrorCode());
             throw e;
         }

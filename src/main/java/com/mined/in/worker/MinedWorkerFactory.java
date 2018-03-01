@@ -1,7 +1,7 @@
 package com.mined.in.worker;
 
 import com.mined.in.coin.Coin;
-import com.mined.in.exchanger.currencypair.CurrencyPairExecutor;
+import com.mined.in.exchanger.pair.PairExecutor;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.worker.eth.ETHMinedWorker;
 
@@ -18,13 +18,13 @@ public class MinedWorkerFactory {
      *
      * @param coin coin name
      * @param accountExecutor pool account executor
-     * @param currencyPairExecutor exchanger currency pair executor
+     * @param pairExecutor exchanger pair executor
      * @return mined worker
      */
-    public static MinedWorker getAccountExecutor(Coin coin, AccountExecutor accountExecutor, CurrencyPairExecutor currencyPairExecutor) {
+    public static MinedWorker getAccountExecutor(Coin coin, AccountExecutor accountExecutor, PairExecutor pairExecutor) {
         switch (coin) {
         case ETH: {
-            return new ETHMinedWorker(accountExecutor, currencyPairExecutor);
+            return new ETHMinedWorker(accountExecutor, pairExecutor);
         }
         default:
             throw new IllegalArgumentException(coin.name());

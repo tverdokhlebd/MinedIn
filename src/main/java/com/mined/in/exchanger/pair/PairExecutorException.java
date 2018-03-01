@@ -1,14 +1,14 @@
-package com.mined.in.exchanger.currencypair;
+package com.mined.in.exchanger.pair;
 
 import com.mined.in.error.ErrorCode;
 
 /**
- * Exception for working with currency pair executor.
+ * Exception for working with pair executor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class CurrencyPairExecutorException extends Exception {
+public class PairExecutorException extends Exception {
 
     /** Error code. */
     private final ErrorCode errorCode;
@@ -21,7 +21,7 @@ public class CurrencyPairExecutorException extends Exception {
      * @param errorCode error code
      * @param message the detail message
      */
-    public CurrencyPairExecutorException(ErrorCode errorCode, String message) {
+    public PairExecutorException(ErrorCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
@@ -32,7 +32,7 @@ public class CurrencyPairExecutorException extends Exception {
      * @param errorCode error code
      * @param cause the cause
      */
-    public CurrencyPairExecutorException(ErrorCode errorCode, Throwable cause) {
+    public PairExecutorException(ErrorCode errorCode, Throwable cause) {
         super(cause);
         this.errorCode = errorCode;
     }
