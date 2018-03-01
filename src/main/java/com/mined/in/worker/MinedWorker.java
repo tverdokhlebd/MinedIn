@@ -1,5 +1,8 @@
 package com.mined.in.worker;
 
+import com.mined.in.exchanger.currencypair.CurrencyPairExecutorException;
+import com.mined.in.pool.account.AccountExecutorException;
+
 /**
  * Interface for calculating of mined.
  *
@@ -13,8 +16,9 @@ public interface MinedWorker {
      *
      * @param walletAddress the wallet address
      * @return mined result
-     * @throws MinedWorkerException if there is any error in calculating
+     * @throws AccountExecutorException if there is any error in account creating
+     * @throws CurrencyPairExecutorException if there is any error in pair creating
      */
-    MinedResult calculate(String walletAddress) throws MinedWorkerException;
+    MinedResult calculate(String walletAddress) throws AccountExecutorException, CurrencyPairExecutorException;
 
 }

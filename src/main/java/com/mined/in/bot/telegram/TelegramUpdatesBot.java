@@ -13,13 +13,14 @@ import com.mined.in.bot.BotUpdates;
 import com.mined.in.coin.Coin;
 import com.mined.in.exchanger.Exchanger;
 import com.mined.in.exchanger.currencypair.CurrencyPairExecutor;
+import com.mined.in.exchanger.currencypair.CurrencyPairExecutorException;
 import com.mined.in.exchanger.currencypair.CurrencyPairExecutorFactory;
 import com.mined.in.pool.Pool;
 import com.mined.in.pool.account.AccountExecutor;
+import com.mined.in.pool.account.AccountExecutorException;
 import com.mined.in.pool.account.AccountExecutorFactory;
 import com.mined.in.worker.MinedResult;
 import com.mined.in.worker.MinedWorker;
-import com.mined.in.worker.MinedWorkerException;
 import com.mined.in.worker.MinedWorkerFactory;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.model.CallbackQuery;
@@ -93,9 +94,10 @@ public class TelegramUpdatesBot implements BotUpdates {
      * Processes callback query.
      *
      * @param callbackQuery callback query
-     * @throws MinedWorkerException
+     * @throws AccountExecutorException if there is any error in account creating
+     * @throws CurrencyPairExecutorException if there is any error in pair creating
      */
-    private void processCallbackQuery(CallbackQuery callbackQuery) throws MinedWorkerException {
+    private void processCallbackQuery(CallbackQuery callbackQuery) throws AccountExecutorException, CurrencyPairExecutorException {
         String data = callbackQuery.data();
         if (data == null || data.isEmpty()) {
             return;
@@ -127,10 +129,11 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param messageId unique identifier for message
      * @param stepData data of current step
      * @param walletAddress wallet address
-     * @throws MinedWorkerException if there is any error in calculating
+     * @throws AccountExecutorException if there is any error in account creating
+     * @throws CurrencyPairExecutorException if there is any error in pair creating
      */
     private void calculateAndSendMinedResult(Object chatId, Integer messageId, TelegramStepData stepData, String walletAddress)
-            throws MinedWorkerException {
+            throws AccountExecutorException, CurrencyPairExecutorException {
         Coin coin = stepData.getCoin();
         Pool pool = stepData.getPool();
         Exchanger exchanger = stepData.getExchanger();
@@ -146,9 +149,11 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param pool pool type
      * @param exchanger exchange type
      * @return mined result
-     * @throws MinedWorkerException if there is any error in calculating
+     * @throws AccountExecutorException if there is any error in account creating
+     * @throws CurrencyPairExecutorException if there is any error in pair creating
      */
-    private MinedResult calculateMined(String walletAddress, Coin coin, Pool pool, Exchanger exchanger) throws MinedWorkerException {
+    private MinedResult calculateMined(String walletAddress, Coin coin, Pool pool, Exchanger exchanger)
+            throws AccountExecutorException, CurrencyPairExecutorException {
         AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(pool);
         CurrencyPairExecutor currencyPairExecutor = CurrencyPairExecutorFactory.getCurrencyPairExecutor(exchanger);
         MinedWorker minedWorker = MinedWorkerFactory.getAccountExecutor(coin, accountExecutor, currencyPairExecutor);

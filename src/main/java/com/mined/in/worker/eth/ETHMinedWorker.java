@@ -4,11 +4,12 @@ import java.math.BigDecimal;
 
 import com.mined.in.exchanger.currencypair.CurrencyPair;
 import com.mined.in.exchanger.currencypair.CurrencyPairExecutor;
+import com.mined.in.exchanger.currencypair.CurrencyPairExecutorException;
 import com.mined.in.pool.account.Account;
 import com.mined.in.pool.account.AccountExecutor;
+import com.mined.in.pool.account.AccountExecutorException;
 import com.mined.in.worker.MinedResult;
 import com.mined.in.worker.MinedWorker;
-import com.mined.in.worker.MinedWorkerException;
 
 /**
  * Class for calculating of mined.
@@ -36,17 +37,13 @@ public class ETHMinedWorker implements MinedWorker {
     }
 
     @Override
-    public MinedResult calculate(String walletAddress) throws MinedWorkerException {
-        try {
-            Account account = accountExecutor.getETHAccount(walletAddress);
-            BigDecimal walletBalance = account.getWalletBalance();
-            CurrencyPair currencyPair = currencyPairExecutor.getETHUSDPair();
-            BigDecimal usdBuyRate = currencyPair.getBuyPrice();
-            BigDecimal balanceInUSD = walletBalance.multiply(usdBuyRate);
-            return new MinedResult(walletBalance, balanceInUSD, currencyPair.getBuyPrice(), currencyPair.getSellPrice());
-        } catch (Exception e) {
-            throw new MinedWorkerException();
-        }
+    public MinedResult calculate(String walletAddress) throws AccountExecutorException, CurrencyPairExecutorException {
+        Account account = accountExecutor.getETHAccount(walletAddress);
+        BigDecimal walletBalance = account.getWalletBalance();
+        CurrencyPair currencyPair = currencyPairExecutor.getETHUSDPair();
+        BigDecimal usdBuyRate = currencyPair.getBuyPrice();
+        BigDecimal balanceInUSD = walletBalance.multiply(usdBuyRate);
+        return new MinedResult(walletBalance, balanceInUSD, currencyPair.getBuyPrice(), currencyPair.getSellPrice());
     }
 
 }
