@@ -42,8 +42,12 @@ import com.pengrad.telegrambot.response.SendResponse;
  */
 public class TelegramUpdatesBot implements BotUpdates {
 
-    /** Telegram bot. */
+    /** Pengrad telegram bot. */
     private final com.pengrad.telegrambot.TelegramBot bot;
+    /** Unique identifier of chat. */
+    private Object chatId;
+    /** Unique identifier of message. */
+    private Integer messageId;
     /** Logger. */
     private final static Logger LOG = LoggerFactory.getLogger(TelegramUpdatesBot.class);
     /** Localization resources. */
@@ -71,8 +75,17 @@ public class TelegramUpdatesBot implements BotUpdates {
             if (callbackQuery != null) {
                 processCallbackQuery(callbackQuery);
             }
+        } catch (AccountExecutorException e) {
+            String error = String.format(LOCALIZATION.getString("pool_error"), e.getMessage());
+            editMessage(error, true, null);
+            LOG.error("Incoming updates processing error", e);
+        } catch (PairExecutorException e) {
+            String error = String.format(LOCALIZATION.getString("exchanger_error"), e.getMessage());
+            editMessage(error, true, null);
+            LOG.error("Incoming updates processing error", e);
         } catch (Exception e) {
-            LOG.error("Error processing of incoming updates", e);
+            editMessage(LOCALIZATION.getString("unexpected_error"), true, null);
+            LOG.error("Incoming updates processing error", e);
         }
     }
 
@@ -82,11 +95,12 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param message text message
      */
     private void processMessage(Message message) {
-        Long chatId = message.chat().id();
+        chatId = message.chat().id();
+        messageId = message.messageId();
         if (message.text().equalsIgnoreCase("/start")) {
-
+            sendMessage(LOCALIZATION.getString("start"), false, null);
         } else {
-            sendSupportingCoins(chatId, message.messageId());
+            sendSupportingCoins();
         }
     }
 
@@ -100,23 +114,24 @@ public class TelegramUpdatesBot implements BotUpdates {
     private void processCallbackQuery(CallbackQuery callbackQuery) throws AccountExecutorException, PairExecutorException {
         String data = callbackQuery.data();
         if (data == null || data.isEmpty()) {
+            LOG.debug("CallbackQuery data is empty");
             return;
         }
-        Object chatId = callbackQuery.message().chat().id();
-        Integer messageId = callbackQuery.message().messageId();
+        chatId = callbackQuery.message().chat().id();
+        messageId = callbackQuery.message().messageId();
         TelegramStepData stepData = new TelegramStepData(data);
         switch (stepData.getStep()) {
         case COIN: {
-            sendSupportingPools(chatId, messageId, stepData);
+            sendSupportingPools(stepData);
             break;
         }
         case POOL: {
-            sendSupportingExchangers(chatId, messageId, stepData);
+            sendSupportingExchangers(stepData);
             break;
         }
         case EXCHANGER: {
             String walletAddress = callbackQuery.message().replyToMessage().text();
-            calculateAndSendMinedResult(chatId, messageId, stepData, walletAddress);
+            calculateAndSendMinedResult(stepData, walletAddress);
             break;
         }
         }
@@ -125,20 +140,18 @@ public class TelegramUpdatesBot implements BotUpdates {
     /**
      * Calculates and sends mined result.
      *
-     * @param chatId unique identifier for chat
-     * @param messageId unique identifier for message
      * @param stepData data of current step
      * @param walletAddress wallet address
      * @throws AccountExecutorException if there is any error in account creating
      * @throws PairExecutorException if there is any error in pair creating
      */
-    private void calculateAndSendMinedResult(Object chatId, Integer messageId, TelegramStepData stepData, String walletAddress)
+    private void calculateAndSendMinedResult(TelegramStepData stepData, String walletAddress)
             throws AccountExecutorException, PairExecutorException {
         Coin coin = stepData.getCoin();
         Pool pool = stepData.getPool();
         Exchanger exchanger = stepData.getExchanger();
         MinedResult minedResult = calculateMined(walletAddress, coin, pool, exchanger);
-        sendMinedResult(chatId, messageId, coin, pool, exchanger, minedResult);
+        sendMinedResult(coin, pool, exchanger, minedResult);
     }
 
     /**
@@ -163,14 +176,12 @@ public class TelegramUpdatesBot implements BotUpdates {
     /**
      * Sends mined result.
      *
-     * @param chatId unique identifier for chat
-     * @param messageId unique identifier for message
      * @param coin coin type
      * @param pool pool type
      * @param exchanger exchange type
      * @param minedResult mined result
      */
-    private void sendMinedResult(Object chatId, Integer messageId, Coin coin, Pool pool, Exchanger exchanger, MinedResult minedResult) {
+    private void sendMinedResult(Coin coin, Pool pool, Exchanger exchanger, MinedResult minedResult) {
         String currentBalance = LOCALIZATION.getString("current_balance");
         currentBalance = String.format(currentBalance, pool.getWebsite(), pool.getName().toUpperCase(), minedResult.getCoinsBalance(),
                 coin.getWebsite(), coin.getSymbol());
@@ -178,16 +189,15 @@ public class TelegramUpdatesBot implements BotUpdates {
         minedResultMsg = String.format(minedResultMsg, exchanger.getWebsite(), exchanger.getName().toUpperCase(),
                 minedResult.getUsdBalance(), minedResult.getBuyPrice(), minedResult.getSellPrice());
         String formattedMessage = currentBalance + "\n---\n" + minedResultMsg;
-        editMessage(chatId, messageId, formattedMessage, true, null);
+        editMessage(formattedMessage, true, null);
     }
 
     /**
      * Sends supporting coins.
      *
-     * @param chatId unique identifier for chat
      * @param replyToMessageId unique identifier for reply
      */
-    private void sendSupportingCoins(Long chatId, Integer replyToMessageId) {
+    private void sendSupportingCoins() {
         List<Coin> coinList = Arrays.asList(Coin.values());
         InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[coinList.size()];
         for (int i = 0; i < coinList.size(); i++) {
@@ -196,17 +206,15 @@ public class TelegramUpdatesBot implements BotUpdates {
             keyboardButtonArray[i] = new InlineKeyboardButton(coinSymbol).callbackData(coinSymbol);
         }
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        sendMessage(chatId, LOCALIZATION.getString("coin"), false, replyToMessageId, keyboardMarkup);
+        sendMessage(LOCALIZATION.getString("coin"), false, keyboardMarkup);
     }
 
     /**
      * Sends supporting pools.
      *
-     * @param chatId unique identifier for chat
-     * @param messageId unique identifier for message
      * @param stepData data of current step
      */
-    private void sendSupportingPools(Object chatId, Integer messageId, TelegramStepData stepData) {
+    private void sendSupportingPools(TelegramStepData stepData) {
         List<Pool> poolList = Arrays.asList(Pool.values());
         InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[poolList.size()];
         for (int i = 0; i < poolList.size(); i++) {
@@ -216,17 +224,15 @@ public class TelegramUpdatesBot implements BotUpdates {
             keyboardButtonArray[i] = new InlineKeyboardButton(poolName).callbackData(callbackData);
         }
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        editMessage(chatId, messageId, LOCALIZATION.getString("pool"), false, keyboardMarkup);
+        editMessage(LOCALIZATION.getString("pool"), false, keyboardMarkup);
     }
 
     /**
      * Sends supporting exchangers.
      *
-     * @param chatId unique identifier for chat
-     * @param messageId unique identifier for message
      * @param stepData data of current step
      */
-    private void sendSupportingExchangers(Object chatId, Integer messageId, TelegramStepData stepData) {
+    private void sendSupportingExchangers(TelegramStepData stepData) {
         List<Exchanger> exchangerList = Arrays.asList(Exchanger.values());
         InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[exchangerList.size()];
         for (int i = 0; i < exchangerList.size(); i++) {
@@ -236,19 +242,17 @@ public class TelegramUpdatesBot implements BotUpdates {
             keyboardButtonArray[i] = new InlineKeyboardButton(exchangerName).callbackData(callbackData);
         }
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        editMessage(chatId, messageId, LOCALIZATION.getString("exchanger"), false, keyboardMarkup);
+        editMessage(LOCALIZATION.getString("exchanger"), false, keyboardMarkup);
     }
 
     /**
      * Sends a message.
      *
-     * @param chatId unique identifier for chat
      * @param text text of the message
      * @param useHtml use HTML style
-     * @param replyToMessageId unique identifier for reply
      * @param replyMarkup additional interface options
      */
-    private void sendMessage(Long chatId, String text, boolean useHtml, Integer replyToMessageId, Keyboard replyMarkup) {
+    private void sendMessage(String text, boolean useHtml, Keyboard replyMarkup) {
         SendMessage request = new SendMessage(chatId, text);
         if (useHtml) {
             request.parseMode(HTML);
@@ -256,8 +260,8 @@ public class TelegramUpdatesBot implements BotUpdates {
         if (replyMarkup != null) {
             request.replyMarkup(replyMarkup);
         }
-        if (replyToMessageId != null) {
-            request.replyToMessageId(replyToMessageId);
+        if (messageId != null) {
+            request.replyToMessageId(messageId);
         }
         SendResponse sendResponse = bot.execute(request);
         if (!sendResponse.isOk()) {
@@ -268,13 +272,11 @@ public class TelegramUpdatesBot implements BotUpdates {
     /**
      * Edits a message.
      *
-     * @param chatId unique identifier for chat
-     * @param messageId unique identifier for message
      * @param text text of the message
      * @param useHtml use HTML style
      * @param replyMarkup additional interface options
      */
-    private void editMessage(Object chatId, Integer messageId, String text, boolean useHtml, InlineKeyboardMarkup replyMarkup) {
+    private void editMessage(String text, boolean useHtml, InlineKeyboardMarkup replyMarkup) {
         EditMessageText request = new EditMessageText(chatId, messageId, text);
         if (replyMarkup != null) {
             request.replyMarkup(replyMarkup);
