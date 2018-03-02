@@ -1,6 +1,7 @@
 package com.mined.in.exchanger.pair;
 
 import com.mined.in.exchanger.Exchanger;
+import com.mined.in.exchanger.pair.exmo.ExmoLimiter;
 import com.mined.in.exchanger.pair.exmo.ExmoPairExecutor;
 
 import okhttp3.OkHttpClient;
@@ -20,10 +21,11 @@ public class PairExecutorFactory {
      * @return pair executor
      */
     public static PairExecutor getPairExecutor(Exchanger exchanger) {
-        OkHttpClient httpClient = new OkHttpClient();
+        OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         switch (exchanger) {
         case EXMO: {
-            return new ExmoPairExecutor(httpClient);
+            okHttpBuilder.addInterceptor(ExmoLimiter.get());
+            return new ExmoPairExecutor(okHttpBuilder.build());
         }
         default:
             throw new IllegalArgumentException(exchanger.name());
