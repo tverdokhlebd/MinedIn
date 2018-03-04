@@ -1,17 +1,18 @@
 # MinedIn
 MinedIn is the project for calculating the mined result in USD. The implementation is based on open API of pools and exchangers.
 
-Supporting coins:
+<b>Supporting coins:</b>
 - ETH
 
-Supporting pools:
+<b>Supporting pools:</b>
 - Dwarfpool
 
-Supporting exchangers:
+<b>Supporting exchangers:</b>
 - Exmo
 
-Web version: Future...
+<b>Available implementations</b>:
+- <a href="https://t.me/MinedInBot">Telegram bot</a>
 
-Android version: Future...
-
-Telegram Bot: https://t.me/MinedInBot
+<b>In process</b>:
+- Web
+- Android
