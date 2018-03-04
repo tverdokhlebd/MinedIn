@@ -90,6 +90,15 @@ public class TelegramStepData {
     }
 
     /**
+     * Returns string representation of callback query data.
+     *
+     * @return string representation of callback query data
+     */
+    public String getCallbackQueryData() {
+        return coin.getSymbol() + "_" + pool.getName() + "_" + exchanger.getName();
+    }
+
+    /**
      * Gets the coin.
      *
      * @return the coin
