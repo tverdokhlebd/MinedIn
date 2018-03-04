@@ -12,7 +12,9 @@ MinedIn is the project for calculating the mined result in USD. The implementati
 
 <b>Available implementations</b>:
 - <a href="https://t.me/MinedInBot">Telegram bot</a>
-
+---
 <b>In process</b>:
 - Web
 - Android
+
+Also some pools and exchangers will be added later.
