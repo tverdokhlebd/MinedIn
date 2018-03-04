@@ -8,7 +8,7 @@ MinedIn is the project for calculating the mined result in USD. The implementati
 - <a href="https://dwarfpool.com/">DWARFPOOL</a>
 
 <b>Supporting exchangers:</b>
-- <a href="https://exmo.com/en/">EXMO</a>
+- <a href="https://exmo.com/?ref=1106328">EXMO</a>
 
 <b>Available implementations</b>:
 - <a href="https://t.me/MinedInBot">Telegram bot</a>
