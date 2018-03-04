@@ -11,5 +11,7 @@ Supporting exchangers:
 - Exmo
 
 Web version: Future...
+
 Android version: Future...
+
 Telegram Bot: https://t.me/MinedInBot
