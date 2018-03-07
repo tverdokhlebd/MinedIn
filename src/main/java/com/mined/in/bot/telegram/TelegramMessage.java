@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 
@@ -22,9 +24,9 @@ public class TelegramMessage {
     /** Unique identifier of message. */
     private final Integer messageId;
     /** Message content. */
-    private String messageContent;
+    private StringBuilder messageContent;
     /** Error message. */
-    private String errorMessage;
+    private StringBuilder errorMessage;
     /** Keyboard markup. */
     private InlineKeyboardMarkup keyboardMarkup;
     /** Current step. */
@@ -49,16 +51,42 @@ public class TelegramMessage {
      *
      * @param message previous result message
      */
-    public void parsePreviousMessage(String message) {
+    public void parsePreviousMessage(Message message) {
         InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[1];
         String callbackQueryData = stepData.getCallbackQueryData();
         keyboardButtonArray[0] = new InlineKeyboardButton(LOCALIZATION.getString("update")).callbackData(callbackQueryData);
         keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        int minedResultDelimiterIndex = message.indexOf("--");
-        if (minedResultDelimiterIndex != -1) {
-            messageContent = message.substring(minedResultDelimiterIndex + 2, message.length());
-        } else {
-            messageContent = "";
+        StringBuilder tmpStrBuilder = new StringBuilder(message.text());
+        // Position of mined result
+        if (tmpStrBuilder.indexOf("--") != -1) {
+            MessageEntity[] entityArray = message.entities();
+            int globalOffset = 0;
+            for (int i = 0; i < entityArray.length; i++) {
+                MessageEntity entity = entityArray[i];
+                switch (entity.type()) {
+                case text_link: {
+                    String urlStart = "<a href=\"" + entity.url() + "\">";
+                    tmpStrBuilder.insert(entity.offset() + globalOffset, urlStart);
+                    globalOffset += urlStart.length();
+                    String urlEnd = "</a>";
+                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, urlEnd);
+                    globalOffset += urlEnd.length();
+                    break;
+                }
+                case bold: {
+                    String bStart = "<b>";
+                    tmpStrBuilder.insert(entity.offset() + globalOffset, bStart);
+                    globalOffset += bStart.length();
+                    String bEnd = "</b>";
+                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, bEnd);
+                    globalOffset += bEnd.length();
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+            messageContent = new StringBuilder(tmpStrBuilder.substring(tmpStrBuilder.indexOf("--") + 3));
         }
     }
 
@@ -68,20 +96,31 @@ public class TelegramMessage {
      * @return the final formatted message
      */
     public String getFinalMessage() {
-        String finalMessage = messageContent;
         // It is result message
         if (stepData != null && stepData.getStep() == EXCHANGER) {
-            String resultMessage = LOCALIZATION.getString("result");
+            StringBuilder resultMessage = new StringBuilder();
+            String result = LOCALIZATION.getString("result");
             if (errorMessage != null) {
-                resultMessage = "<b>" + resultMessage + "</b>" + errorMessage;
+                resultMessage.append("<b>");
+                resultMessage.append(result);
+                resultMessage.append("</b>");
+                resultMessage.append(errorMessage);
             } else {
-                resultMessage += LOCALIZATION.getString("success");
+                resultMessage.append(result);
+                resultMessage.append(LOCALIZATION.getString("success"));
             }
             String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a").format(new Date());
             String lastUpdateMessage = LOCALIZATION.getString("last_update") + date;
-            finalMessage = resultMessage + "\n-\n" + lastUpdateMessage + "\n--\n" + finalMessage;
+            resultMessage.append("\n-\n");
+            resultMessage.append(lastUpdateMessage);
+            if (messageContent != null) {
+                resultMessage.append("\n--\n");
+                resultMessage.append(messageContent);
+            }
+            return resultMessage.toString();
+        } else {
+            return messageContent.toString();
         }
-        return finalMessage;
     }
 
     /**
@@ -99,7 +138,7 @@ public class TelegramMessage {
      * @param messageContent the new message content
      */
     public void setMessageContent(String messageContent) {
-        this.messageContent = messageContent;
+        this.messageContent = new StringBuilder(messageContent);
     }
 
     /**
@@ -108,7 +147,7 @@ public class TelegramMessage {
      * @param errorMessage the new error message
      */
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        this.errorMessage = new StringBuilder(errorMessage);
     }
 
     /**

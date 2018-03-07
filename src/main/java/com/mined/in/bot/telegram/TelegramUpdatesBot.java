@@ -131,7 +131,7 @@ public class TelegramUpdatesBot implements BotUpdates {
             break;
         }
         case EXCHANGER: {
-            telegramMessage.parsePreviousMessage(callbackQuery.message().text());
+            telegramMessage.parsePreviousMessage(callbackQuery.message());
             String walletAddress = callbackQuery.message().replyToMessage().text();
             calculateAndCreateMinedResultMessage(stepData, walletAddress);
             break;
