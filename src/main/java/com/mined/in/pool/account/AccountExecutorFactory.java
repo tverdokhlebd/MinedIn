@@ -3,6 +3,7 @@ package com.mined.in.pool.account;
 import com.mined.in.pool.Pool;
 import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
+import com.mined.in.pool.account.nanopool.NanopoolAccountExecutor;
 
 import okhttp3.OkHttpClient;
 
@@ -28,6 +29,9 @@ public class AccountExecutorFactory {
         }
         case ETHERMINE: {
             return new EthermineAccountExecutor(httpClient);
+        }
+        case NANOPOOL: {
+            return new NanopoolAccountExecutor(httpClient);
         }
         default:
             throw new IllegalArgumentException(pool.name());

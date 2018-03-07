@@ -9,7 +9,8 @@ package com.mined.in.pool;
 public enum Pool {
 
     DWARFPOOL("Dwarfpool", "https://dwarfpool.com/"),
-    ETHERMINE("Ethermine", "https://ethermine.org/");
+    ETHERMINE("Ethermine", "https://ethermine.org/"),
+    NANOPOOL("Nanopool", "https://nanopool.org/");
 
     /** Pool name. */
     private String name;
