@@ -1,4 +1,4 @@
-package com.mined.in.pool.account.dwarfpool;
+package com.mined.in.pool.account;
 
 import static com.mined.in.error.ErrorCode.API_ERROR;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
@@ -11,9 +11,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.mined.in.pool.account.Account;
-import com.mined.in.pool.account.AccountExecutor;
-import com.mined.in.pool.account.AccountExecutorException;
+import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 
 import net.minidev.json.JSONObject;
 import okhttp3.Interceptor;

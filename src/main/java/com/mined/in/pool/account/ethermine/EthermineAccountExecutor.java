@@ -1,4 +1,4 @@
-package com.mined.in.pool.account.dwarfpool;
+package com.mined.in.pool.account.ethermine;
 
 import static com.mined.in.error.ErrorCode.API_ERROR;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
@@ -18,39 +18,39 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Implementation of Dwarfpool executor.
+ * Implementation of Ethermine executor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class DwarfpoolAccountExecutor implements AccountExecutor {
+public class EthermineAccountExecutor implements AccountExecutor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** Dwarfpool API url. */
-    private static final String API_URL = "http://dwarfpool.com/eth/api?wallet=";
+    /** Ethermine API url. */
+    private static final String API_URL = "https://api.ethermine.org/miner/:miner/currentStats";
 
     /**
-     * Creates the Dwarfpool executor instance.
+     * Creates the Ethermine executor instance.
      *
      * @param httpClient HTTP client
      */
-    public DwarfpoolAccountExecutor(OkHttpClient httpClient) {
+    public EthermineAccountExecutor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
     }
 
     @Override
     public Account getETHAccount(String walletAddress) throws AccountExecutorException {
-        Request request = new Request.Builder().url(API_URL + walletAddress).build();
-        DwarfpoolAccount account = null;
+        Request request = new Request.Builder().url(API_URL.replace(":miner", walletAddress)).build();
+        EthermineAccount account = null;
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new AccountExecutorException(HTTP_ERROR, response.message());
             }
             JSONObject jsonResponse = new JSONObject(response.body().string());
             checkError(jsonResponse);
-            account = DwarfpoolAccount.create(walletAddress, jsonResponse);
+            account = EthermineAccount.create(walletAddress, jsonResponse);
         } catch (JSONException e) {
             throw new AccountExecutorException(JSON_ERROR, e);
         } catch (IOException e) {
@@ -66,10 +66,10 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      * @throws AccountExecutorException if there is any error in JSON response
      */
     private void checkError(JSONObject jsonResponse) throws AccountExecutorException {
-        boolean error = jsonResponse.getBoolean("error");
-        if (error) {
-            String errorCode = jsonResponse.getString("error_code");
-            throw new AccountExecutorException(API_ERROR, errorCode);
+        String status = jsonResponse.getString("status");
+        if (status.equalsIgnoreCase("error")) {
+            String errorMessage = jsonResponse.getString("error");
+            throw new AccountExecutorException(API_ERROR, errorMessage);
         }
     }
 

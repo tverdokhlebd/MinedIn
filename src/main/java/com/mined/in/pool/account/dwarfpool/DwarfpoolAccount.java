@@ -27,13 +27,13 @@ public class DwarfpoolAccount extends Account {
     /**
      * Creates the Dwarfpool account instance from JSON format.
      *
+     * @param walletAddress wallet address
      * @param jsonAccount account in JSON format
      * @return Dwarfpool account instance
      */
-    public static DwarfpoolAccount create(JSONObject jsonAccount) {
-        String wallet = jsonAccount.getString("wallet");
+    public static DwarfpoolAccount create(String walletAddress, JSONObject jsonAccount) {
         BigDecimal walletBalance = new BigDecimal(jsonAccount.getString("wallet_balance"));
-        return new DwarfpoolAccount(wallet, walletBalance);
+        return new DwarfpoolAccount(walletAddress, walletBalance);
     }
 
 }
