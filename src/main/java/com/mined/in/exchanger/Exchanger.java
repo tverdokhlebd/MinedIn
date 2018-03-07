@@ -8,7 +8,7 @@ package com.mined.in.exchanger;
  */
 public enum Exchanger {
 
-    EXMO("Exmo", "https://exmo.com/");
+    EXMO("Exmo", "https://exmo.com/?ref=1106328");
 
     /** Exchanger name. */
     private String name;

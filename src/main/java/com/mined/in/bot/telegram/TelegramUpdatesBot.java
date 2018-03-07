@@ -1,7 +1,9 @@
 package com.mined.in.bot.telegram;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
+import static java.math.BigDecimal.ROUND_HALF_UP;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -183,11 +185,15 @@ public class TelegramUpdatesBot implements BotUpdates {
      */
     private void createMinedResultMessage(Coin coin, Pool pool, Exchanger exchanger, MinedResult minedResult) {
         String currentBalance = LOCALIZATION.getString("current_balance");
-        currentBalance = String.format(currentBalance, pool.getWebsite(), pool.getName().toUpperCase(), minedResult.getCoinsBalance(),
-                coin.getWebsite(), coin.getSymbol());
+        BigDecimal coinsBalance = minedResult.getCoinsBalance().setScale(8, ROUND_HALF_UP);
+        currentBalance = String.format(currentBalance, pool.getWebsite(), pool.getName().toUpperCase(), coinsBalance, coin.getWebsite(),
+                coin.getSymbol());
         String minedResultMsg = LOCALIZATION.getString("mined_result");
-        minedResultMsg = String.format(minedResultMsg, exchanger.getWebsite(), exchanger.getName().toUpperCase(),
-                minedResult.getUsdBalance(), minedResult.getBuyPrice(), minedResult.getSellPrice());
+        BigDecimal usdBalance = minedResult.getUsdBalance().setScale(2, ROUND_HALF_UP);
+        BigDecimal buyPrice = minedResult.getBuyPrice().setScale(2, ROUND_HALF_UP);
+        BigDecimal sellPrice = minedResult.getSellPrice().setScale(2, ROUND_HALF_UP);
+        minedResultMsg =
+                String.format(minedResultMsg, exchanger.getWebsite(), exchanger.getName().toUpperCase(), usdBalance, buyPrice, sellPrice);
         String formattedMessage = currentBalance + "\n---\n" + minedResultMsg;
         telegramMessage.setMessageContent(formattedMessage);
     }
