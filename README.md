@@ -6,6 +6,8 @@ MinedIn is the project for calculating the mined result in USD. The implementati
 
 <b>Supporting pools:</b>
 - <a href="https://dwarfpool.com/">DWARFPOOL</a>
+- <a href="https://ethermine.org/">ETHERMINE</a>
+- <a href="https://nanopool.org/">NANOPOOL</a>
 
 <b>Supporting exchangers:</b>
 - <a href="https://exmo.com/?ref=1106328">EXMO</a>
