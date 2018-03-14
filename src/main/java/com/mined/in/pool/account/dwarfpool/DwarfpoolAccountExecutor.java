@@ -42,6 +42,9 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
 
     @Override
     public Account getETHAccount(String walletAddress) throws AccountExecutorException {
+        if (walletAddress == null || walletAddress.isEmpty()) {
+            throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
+        }
         Request request = new Request.Builder().url(API_URL + walletAddress).build();
         DwarfpoolAccount account = null;
         try (Response response = httpClient.newCall(request).execute()) {
