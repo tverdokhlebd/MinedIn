@@ -3,7 +3,6 @@ package com.mined.in.worker;
 import static com.mined.in.coin.Coin.ETH;
 import static com.mined.in.error.ErrorCode.API_ERROR;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
-import static okhttp3.Protocol.HTTP_2;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -16,15 +15,11 @@ import com.mined.in.exchanger.pair.PairExecutorException;
 import com.mined.in.exchanger.pair.exmo.ExmoPairExecutor;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
+import com.mined.in.pool.account.Utils;
 import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 
 import net.minidev.json.JSONObject;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Tests of ETH mined worker.
@@ -35,65 +30,45 @@ import okhttp3.ResponseBody;
 @SpringBootTest
 public class ETHMinedWorkerTest {
 
-    private static final MediaType MEDIA_JSON = MediaType.parse("application/json");
-    private static final String WALLET_ADDRESS = "0x4e2c24519354a63c37869d04cefb7d113d17fdc3";
+    private final static String WALLET_ADDRESS = "0x4e2c24519354a63c37869d04cefb7d113d17fdc3";
+    private final static BigDecimal WALLET_BALANCE = new BigDecimal("0.12345678");
 
     @Test
-    public void calculateWithCorrectResponse() throws AccountExecutorException, PairExecutorException {
-        // AccountExecutor
-        BigDecimal walletBalance = new BigDecimal("0.45431668");
-        Interceptor accountJSONInterceptor = chain -> {
-            Request request = chain.request();
-            JSONObject bodyJSON = new JSONObject();
-            bodyJSON.put("error", false);
-            bodyJSON.put("wallet", WALLET_ADDRESS);
-            bodyJSON.put("wallet_balance", walletBalance.toString());
-            ResponseBody body = ResponseBody.create(MEDIA_JSON, bodyJSON.toJSONString());
-            return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
-        };
-        OkHttpClient accountHttpClient = new OkHttpClient.Builder().addInterceptor(accountJSONInterceptor).build();
+    public void testCorrectJsonResponse() throws AccountExecutorException, PairExecutorException {
+        JSONObject poolResponseJSON = new JSONObject();
+        poolResponseJSON.put("error", false);
+        poolResponseJSON.put("wallet_balance", WALLET_BALANCE.toString());
+        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
-        // PairExecutor
         String pairName = "ETH_USD";
         BigDecimal buyPrice = new BigDecimal("700");
         BigDecimal sellPrice = new BigDecimal("702");
-        Interceptor pairJSONInterceptor = chain -> {
-            Request request = chain.request();
-            JSONObject ethUSDJson = new JSONObject();
-            ethUSDJson.put("buy_price", buyPrice.toString());
-            ethUSDJson.put("sell_price", sellPrice.toString());
-            JSONObject bodyJSON = new JSONObject();
-            bodyJSON.put(pairName, ethUSDJson);
-            ResponseBody body = ResponseBody.create(MEDIA_JSON, bodyJSON.toJSONString());
-            return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
-        };
-        OkHttpClient pairHttpClient = new OkHttpClient.Builder().addInterceptor(pairJSONInterceptor).build();
-        PairExecutor pairExecutor = new ExmoPairExecutor(pairHttpClient);
-        // MinedWorker
+        JSONObject ethUsdJson = new JSONObject();
+        ethUsdJson.put("buy_price", buyPrice.toString());
+        ethUsdJson.put("sell_price", sellPrice.toString());
+        JSONObject exchangerJSON = new JSONObject();
+        exchangerJSON.put(pairName, ethUsdJson);
+        OkHttpClient exchangerHttpClient = Utils.getHttpClient(exchangerJSON, 200);
+        PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
         MinedWorker worker = MinedWorkerFactory.getAccountExecutor(ETH, accountExecutor, pairExecutor);
         MinedResult result = worker.calculate(WALLET_ADDRESS);
-        assertEquals(walletBalance, result.getCoinsBalance());
-        assertEquals(walletBalance.multiply(buyPrice), result.getUsdBalance());
+        assertEquals(WALLET_BALANCE, result.getCoinsBalance());
+        assertEquals(WALLET_BALANCE.multiply(buyPrice), result.getUsdBalance());
         assertEquals(buyPrice, result.getBuyPrice());
         assertEquals(sellPrice, result.getSellPrice());
     }
 
     @Test(expected = AccountExecutorException.class)
-    public void calculateWithAPIErrorInAccountExecutor() throws AccountExecutorException, PairExecutorException {
-        // AccountExecutor
+    public void testPoolError() throws AccountExecutorException, PairExecutorException {
         String errorCode = "API_DOWN";
-        Interceptor accountJSONInterceptor = chain -> {
-            Request request = chain.request();
-            JSONObject bodyJSON = new JSONObject();
-            bodyJSON.put("error", true);
-            bodyJSON.put("error_code", errorCode);
-            ResponseBody body = ResponseBody.create(MEDIA_JSON, bodyJSON.toJSONString());
-            return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
-        };
-        OkHttpClient accountHttpClient = new OkHttpClient.Builder().addInterceptor(accountJSONInterceptor).build();
+        JSONObject poolResponseJSON = new JSONObject();
+        poolResponseJSON.put("error", true);
+        poolResponseJSON.put("error_code", errorCode);
+        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
-        // MinedWorker
-        MinedWorker worker = MinedWorkerFactory.getAccountExecutor(ETH, accountExecutor, null);
+        OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 200);
+        PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getAccountExecutor(ETH, accountExecutor, pairExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
@@ -104,30 +79,14 @@ public class ETHMinedWorkerTest {
     }
 
     @Test(expected = PairExecutorException.class)
-    public void calculateWithHTTPErrorInPairExecutor() throws AccountExecutorException, PairExecutorException {
-        // AccountExecutor
-        BigDecimal walletBalance = new BigDecimal("0.45431668");
-        Interceptor accountJSONInterceptor = chain -> {
-            Request request = chain.request();
-            JSONObject bodyJSON = new JSONObject();
-            bodyJSON.put("error", false);
-            bodyJSON.put("wallet", WALLET_ADDRESS);
-            bodyJSON.put("wallet_balance", walletBalance.toString());
-            ResponseBody body = ResponseBody.create(MEDIA_JSON, bodyJSON.toJSONString());
-            return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
-        };
-        OkHttpClient accountHttpClient = new OkHttpClient.Builder().addInterceptor(accountJSONInterceptor).build();
+    public void testExchangerError() throws AccountExecutorException, PairExecutorException {
+        JSONObject poolResponseJSON = new JSONObject();
+        poolResponseJSON.put("error", false);
+        poolResponseJSON.put("wallet_balance", WALLET_BALANCE.toString());
+        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
-        // PairExecutor
-        Interceptor pairJSONInterceptor = chain -> {
-            Request request = chain.request();
-            JSONObject bodyJSON = new JSONObject();
-            ResponseBody body = ResponseBody.create(MEDIA_JSON, bodyJSON.toJSONString());
-            return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(500).message("").build();
-        };
-        OkHttpClient pairHttpClient = new OkHttpClient.Builder().addInterceptor(pairJSONInterceptor).build();
-        PairExecutor pairExecutor = new ExmoPairExecutor(pairHttpClient);
-        // MinedWorker
+        OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 500);
+        PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
         MinedWorker worker = MinedWorkerFactory.getAccountExecutor(ETH, accountExecutor, pairExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);

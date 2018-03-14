@@ -60,23 +60,6 @@ public class EthermineAccountExecutorTest {
     }
 
     @Test(expected = AccountExecutorException.class)
-    public void testIncorrectJsonResponse() throws AccountExecutorException {
-        JSONObject data = new JSONObject();
-        data.put("unpaid", WALLET_BALANCE.multiply(WEI).toString());
-        JSONObject responseJSON = new JSONObject();
-        responseJSON.put("status", "OK");
-        responseJSON.put("data", data);
-        OkHttpClient httpClient = Utils.getHttpClient(responseJSON, 200);
-        AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
-        try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
-            assertEquals(JSON_ERROR, e.getErrorCode());
-            throw e;
-        }
-    }
-
-    @Test(expected = AccountExecutorException.class)
     public void testIncorrectJsonStructure() throws AccountExecutorException {
         JSONObject data = new JSONObject();
         data.put("unpaid", WALLET_BALANCE.multiply(WEI).longValue());
