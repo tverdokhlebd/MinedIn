@@ -1,7 +1,5 @@
 package com.mined.in.pool.account.nanopool;
 
-import static java.math.BigDecimal.ROUND_HALF_UP;
-
 import java.math.BigDecimal;
 
 import org.json.JSONObject;
@@ -34,8 +32,8 @@ public class NanopoolAccount extends Account {
      * @return Ethermine account instance
      */
     public static NanopoolAccount create(String walletAddress, JSONObject jsonAccount) {
-        BigDecimal walletBalance = new BigDecimal(jsonAccount.getDouble("data"));
-        walletBalance = walletBalance.setScale(14, ROUND_HALF_UP);
+        BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("data"));
+        walletBalance = walletBalance.stripTrailingZeros();
         return new NanopoolAccount(walletAddress, walletBalance);
     }
 

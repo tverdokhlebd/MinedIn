@@ -1,7 +1,5 @@
 package com.mined.in.pool.account.dwarfpool;
 
-import static java.math.BigDecimal.ROUND_HALF_UP;
-
 import java.math.BigDecimal;
 
 import org.json.JSONObject;
@@ -34,8 +32,8 @@ public class DwarfpoolAccount extends Account {
      * @return Dwarfpool account instance
      */
     public static DwarfpoolAccount create(String walletAddress, JSONObject jsonAccount) {
-        BigDecimal walletBalance = new BigDecimal(jsonAccount.getDouble("wallet_balance"));
-        walletBalance = walletBalance.setScale(8, ROUND_HALF_UP);
+        BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));
+        walletBalance = walletBalance.stripTrailingZeros();
         return new DwarfpoolAccount(walletAddress, walletBalance);
     }
 

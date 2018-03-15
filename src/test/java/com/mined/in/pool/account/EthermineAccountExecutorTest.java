@@ -7,12 +7,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
 
-import org.json.JSONObject;
 import okhttp3.OkHttpClient;
 
 /**
@@ -25,53 +25,28 @@ import okhttp3.OkHttpClient;
 public class EthermineAccountExecutorTest {
 
     private final static String WALLET_ADDRESS = "0x4e2c24519354a63c37869d04cefb7d113d17fdc3";
-    private final static BigDecimal WALLET_BALANCE = new BigDecimal("0.12345678");
-    private final static BigDecimal WEI = new BigDecimal("1000000000000000000");
 
     @Test
     public void testCorrectJsonResponse() throws AccountExecutorException {
-        JSONObject data = new JSONObject();
-        data.put("unpaid", WALLET_BALANCE.multiply(WEI).longValue());
-        JSONObject responseJSON = new JSONObject();
-        responseJSON.put("status", "OK");
-        responseJSON.put("data", data);
-        OkHttpClient httpClient = Utils.getHttpClient(responseJSON, 200);
+        BigDecimal walletBalance = new BigDecimal("0.06125681225984686");
+        JSONObject response = new JSONObject("{\"status\":\"OK\",\"data\":{\"unpaid\":61256812259846860}}");
+        OkHttpClient httpClient = Utils.getHttpClient(response, 200);
         AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
         Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
-        assertEquals(WALLET_BALANCE, account.getWalletBalance());
+        assertEquals(walletBalance, account.getWalletBalance());
     }
 
     @Test(expected = AccountExecutorException.class)
     public void testCorrectJsonResponseWithApiError() throws AccountExecutorException {
-        String errorCode = "Invalid address";
-        JSONObject responseJSON = new JSONObject();
-        responseJSON.put("status", "ERROR");
-        responseJSON.put("error", errorCode);
-        OkHttpClient httpClient = Utils.getHttpClient(responseJSON, 200);
+        JSONObject response = new JSONObject("{\"status\":\"ERROR\",\"error\":\"Invalid address\"}");
+        OkHttpClient httpClient = Utils.getHttpClient(response, 200);
         AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
-            assertEquals(errorCode, e.getMessage());
-            throw e;
-        }
-    }
-
-    @Test(expected = AccountExecutorException.class)
-    public void testIncorrectJsonStructure() throws AccountExecutorException {
-        JSONObject data = new JSONObject();
-        data.put("unpaid", WALLET_BALANCE.multiply(WEI).longValue());
-        JSONObject responseJSON = new JSONObject();
-        responseJSON.put("status_", "OK");
-        responseJSON.put("data ", data);
-        OkHttpClient httpClient = Utils.getHttpClient(responseJSON, 200);
-        AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
-        try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
-            assertEquals(JSON_ERROR, e.getErrorCode());
+            assertEquals("Invalid address", e.getMessage());
             throw e;
         }
     }

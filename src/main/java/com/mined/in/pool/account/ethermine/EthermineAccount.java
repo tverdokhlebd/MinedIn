@@ -40,8 +40,9 @@ public class EthermineAccount extends Account {
         if (data != null) {
             Long balanceLong = data.getLong("unpaid");
             if (balanceLong != null) {
-                walletBalance = new BigDecimal(balanceLong);
+                walletBalance = BigDecimal.valueOf(balanceLong);
                 walletBalance = walletBalance.divide(WEI);
+                walletBalance = walletBalance.stripTrailingZeros();
             }
         }
         return new EthermineAccount(walletAddress, walletBalance);
