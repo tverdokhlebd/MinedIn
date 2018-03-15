@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
 
-import net.minidev.json.JSONObject;
+import org.json.JSONObject;
 import okhttp3.OkHttpClient;
 
 /**

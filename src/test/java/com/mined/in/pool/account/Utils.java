@@ -2,7 +2,8 @@ package com.mined.in.pool.account;
 
 import static okhttp3.Protocol.HTTP_2;
 
-import net.minidev.json.JSONObject;
+import org.json.JSONObject;
+
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -30,7 +31,7 @@ public class Utils {
     public static OkHttpClient getHttpClient(JSONObject response, int responseCode) {
         Interceptor replaceJSONInterceptor = chain -> {
             Request request = chain.request();
-            ResponseBody body = ResponseBody.create(MEDIA_JSON, response.toJSONString());
+            ResponseBody body = ResponseBody.create(MEDIA_JSON, response.toString());
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(responseCode).message("").build();
         };
         return new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();

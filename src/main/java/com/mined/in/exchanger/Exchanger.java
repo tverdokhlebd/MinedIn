@@ -8,7 +8,13 @@ package com.mined.in.exchanger;
  */
 public enum Exchanger {
 
-    EXMO("Exmo", "https://exmo.com/?ref=1106328");
+    EXMO("Exmo", "https://exmo.com/?ref=1106328"),
+    BITFINEX("Bitfinex", "https://www.bitfinex.com"),
+    GDAX("Gdax", "https://www.gdax.com"),
+    BITSTAMP("Bitstamp", "https://www.bitstamp.net"),
+    KRAKEN("Kraken", "https://www.kraken.com"),
+    CEX("Cex", "https://cex.io"),
+    YOBIT("Yobit", "https://www.yobit.net");
 
     /** Exchanger name. */
     private String name;

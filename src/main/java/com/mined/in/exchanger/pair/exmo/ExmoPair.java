@@ -34,8 +34,10 @@ public class ExmoPair extends Pair {
      */
     public static ExmoPair create(String pair, JSONObject jsonPairs) {
         JSONObject jsonPair = jsonPairs.getJSONObject("ETH_USD");
-        BigDecimal buyPrice = new BigDecimal(jsonPair.getDouble("buy_price"));
-        BigDecimal sellPrice = new BigDecimal(jsonPair.getDouble("sell_price"));
+        BigDecimal buyPrice = BigDecimal.valueOf(jsonPair.getDouble("buy_price"));
+        BigDecimal sellPrice = BigDecimal.valueOf(jsonPair.getDouble("sell_price"));
+        buyPrice = buyPrice.stripTrailingZeros();
+        sellPrice = sellPrice.stripTrailingZeros();
         return new ExmoPair(pair, buyPrice, sellPrice);
     }
 

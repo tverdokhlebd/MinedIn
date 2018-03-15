@@ -18,7 +18,7 @@ import com.mined.in.pool.account.AccountExecutorException;
 import com.mined.in.pool.account.Utils;
 import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 
-import net.minidev.json.JSONObject;
+import org.json.JSONObject;
 import okhttp3.OkHttpClient;
 
 /**
