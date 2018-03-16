@@ -3,7 +3,7 @@ sudo: false
 jdk:
   - oraclejdk8
 before_install:
- - chmod +x gradlew
+ - chmod +x ./mvnw
 install:
 - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: "./mvnw test"
