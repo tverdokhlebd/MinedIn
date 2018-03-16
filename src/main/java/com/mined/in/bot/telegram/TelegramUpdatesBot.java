@@ -203,11 +203,11 @@ public class TelegramUpdatesBot implements BotUpdates {
      */
     private void createSupportingCoinsMessage() {
         List<Coin> coinList = Arrays.asList(Coin.values());
-        InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[coinList.size()];
+        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[coinList.size()][1];
         for (int i = 0; i < coinList.size(); i++) {
             Coin coin = coinList.get(i);
             String coinSymbol = coin.getSymbol();
-            keyboardButtonArray[i] = new InlineKeyboardButton(coinSymbol).callbackData(coinSymbol);
+            keyboardButtonArray[i][0] = new InlineKeyboardButton(coinSymbol).callbackData(coinSymbol);
         }
         telegramMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
         telegramMessage.setMessageContent(LOCALIZATION.getString("select_coin"));
@@ -220,12 +220,13 @@ public class TelegramUpdatesBot implements BotUpdates {
      */
     private void createSupportingPoolsMessage(TelegramStepData stepData) {
         List<Pool> poolList = Arrays.asList(Pool.values());
-        InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[poolList.size()];
+        poolList.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[poolList.size()][1];
         for (int i = 0; i < poolList.size(); i++) {
             Pool pool = poolList.get(i);
             String poolName = pool.getName();
             String callbackData = stepData.getCoin().getSymbol() + "_" + poolName;
-            keyboardButtonArray[i] = new InlineKeyboardButton(poolName).callbackData(callbackData);
+            keyboardButtonArray[i][0] = new InlineKeyboardButton(poolName).callbackData(callbackData);
         }
         telegramMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
         telegramMessage.setMessageContent(LOCALIZATION.getString("select_pool"));
@@ -238,12 +239,13 @@ public class TelegramUpdatesBot implements BotUpdates {
      */
     private void createSupportingExchangersMessage(TelegramStepData stepData) {
         List<Exchanger> exchangerList = Arrays.asList(Exchanger.values());
-        InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[exchangerList.size()];
+        exchangerList.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[exchangerList.size()][1];
         for (int i = 0; i < exchangerList.size(); i++) {
             Exchanger exchanger = exchangerList.get(i);
             String exchangerName = exchanger.getName();
             String callbackData = stepData.getCoin().getSymbol() + "_" + stepData.getPool().getName() + "_" + exchangerName;
-            keyboardButtonArray[i] = new InlineKeyboardButton(exchangerName).callbackData(callbackData);
+            keyboardButtonArray[i][0] = new InlineKeyboardButton(exchangerName).callbackData(callbackData);
         }
         telegramMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
         telegramMessage.setMessageContent(LOCALIZATION.getString("select_exchanger"));
