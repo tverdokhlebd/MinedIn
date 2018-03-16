@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,7 +19,6 @@ import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
 import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 
-import org.json.JSONObject;
 import okhttp3.OkHttpClient;
 
 /**
@@ -31,39 +31,32 @@ import okhttp3.OkHttpClient;
 public class ETHMinedWorkerTest {
 
     private final static String WALLET_ADDRESS = "0x4e2c24519354a63c37869d04cefb7d113d17fdc3";
-    private final static BigDecimal WALLET_BALANCE = new BigDecimal("0.12345678");
 
     @Test
     public void testCorrectJsonResponse() throws AccountExecutorException, PairExecutorException {
-        JSONObject poolResponseJSON = new JSONObject();
-        poolResponseJSON.put("error", false);
-        poolResponseJSON.put("wallet_balance", WALLET_BALANCE.toString());
+        BigDecimal walletBalance = BigDecimal.valueOf(0.78665394);
+        JSONObject poolResponseJSON = new JSONObject("{\"error\": false, \"wallet_balance\": \"0.78665394\"}");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
-        String pairName = "ETH_USD";
-        BigDecimal buyPrice = new BigDecimal("700");
-        BigDecimal sellPrice = new BigDecimal("702");
-        JSONObject ethUsdJson = new JSONObject();
-        ethUsdJson.put("buy_price", buyPrice.toString());
-        ethUsdJson.put("sell_price", sellPrice.toString());
-        JSONObject exchangerJSON = new JSONObject();
-        exchangerJSON.put(pairName, ethUsdJson);
+        BigDecimal buyPrice = BigDecimal.valueOf(611.0803);
+        BigDecimal sellPrice = BigDecimal.valueOf(615.99987);
+        JSONObject exchangerJSON =
+                new JSONObject("{\"ETH_USD\":{\"buy_price\":\"611.0803\",\"sell_price\":\"615.99987\",\"last_trade\":\"614.69\","
+                        + "\"high\":\"657.555\",\"low\":\"603.128418\",\"avg\":\"626.85027354\",\"vol\":\"6578.09576192\","
+                        + "\"vol_curr\":\"4043489.68389892\",\"updated\":1521147101}}");
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(exchangerJSON, 200);
         PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
         MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, pairExecutor);
         MinedResult result = worker.calculate(WALLET_ADDRESS);
-        assertEquals(WALLET_BALANCE, result.getCoinBalance());
-        assertEquals(WALLET_BALANCE.multiply(buyPrice), result.getUsdBalance());
+        assertEquals(walletBalance, result.getCoinBalance());
+        assertEquals(walletBalance.multiply(buyPrice), result.getUsdBalance());
         assertEquals(buyPrice, result.getBuyPrice());
         assertEquals(sellPrice, result.getSellPrice());
     }
 
     @Test(expected = AccountExecutorException.class)
     public void testPoolError() throws AccountExecutorException, PairExecutorException {
-        String errorCode = "API_DOWN";
-        JSONObject poolResponseJSON = new JSONObject();
-        poolResponseJSON.put("error", true);
-        poolResponseJSON.put("error_code", errorCode);
+        JSONObject poolResponseJSON = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 200);
@@ -73,16 +66,14 @@ public class ETHMinedWorkerTest {
             worker.calculate(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
-            assertEquals(errorCode, e.getMessage());
+            assertEquals("API_DOWN", e.getMessage());
             throw e;
         }
     }
 
     @Test(expected = PairExecutorException.class)
     public void testExchangerError() throws AccountExecutorException, PairExecutorException {
-        JSONObject poolResponseJSON = new JSONObject();
-        poolResponseJSON.put("error", false);
-        poolResponseJSON.put("wallet_balance", WALLET_BALANCE.toString());
+        JSONObject poolResponseJSON = new JSONObject("{\"error\": false, \"wallet_balance\": \"0.78665394\"}");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 500);
