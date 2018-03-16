@@ -2,6 +2,7 @@ package com.mined.in.exchanger.pair.eth;
 
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
+import static com.mined.in.exchanger.pair.PairName.ETH_USD;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -29,7 +30,6 @@ public class KrakenPairExecutorTest {
 
     @Test
     public void testCorrectJsonResponse() throws PairExecutorException {
-        String pairName = "ETH_USD";
         BigDecimal buyPrice = new BigDecimal("603.59");
         BigDecimal sellPrice = new BigDecimal("603.96");
         JSONObject response = new JSONObject(
@@ -39,7 +39,7 @@ public class KrakenPairExecutorTest {
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(response, 200);
         PairExecutor pairExecutor = new KrakenPairExecutor(exchangerHttpClient);
         Pair pair = pairExecutor.getETHUSDPair();
-        assertEquals(pairName, pair.getPairName());
+        assertEquals(ETH_USD, pair.getPairName());
         assertEquals(buyPrice, pair.getBuyPrice());
         assertEquals(sellPrice, pair.getSellPrice());
     }

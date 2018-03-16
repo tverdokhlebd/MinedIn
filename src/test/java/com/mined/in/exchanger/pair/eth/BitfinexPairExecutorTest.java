@@ -2,6 +2,7 @@ package com.mined.in.exchanger.pair.eth;
 
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
+import static com.mined.in.exchanger.pair.PairName.ETH_USD;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -29,7 +30,6 @@ public class BitfinexPairExecutorTest {
 
     @Test
     public void testCorrectJsonResponse() throws PairExecutorException {
-        String pairName = "ETH_USD";
         BigDecimal buyPrice = new BigDecimal("604.35");
         BigDecimal sellPrice = new BigDecimal("605.41");
         JSONObject response = new JSONObject(
@@ -38,7 +38,7 @@ public class BitfinexPairExecutorTest {
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(response, 200);
         PairExecutor pairExecutor = new BitfinexPairExecutor(exchangerHttpClient);
         Pair pair = pairExecutor.getETHUSDPair();
-        assertEquals(pairName, pair.getPairName());
+        assertEquals(ETH_USD, pair.getPairName());
         assertEquals(buyPrice, pair.getBuyPrice());
         assertEquals(sellPrice, pair.getSellPrice());
     }
