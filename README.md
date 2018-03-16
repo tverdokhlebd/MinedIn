@@ -19,7 +19,7 @@ MinedIn is the project for calculating the mined result in USD. The implementati
 - <a href="https://www.yobit.net">YOBIT</a>
 
 <b>Available implementations</b>:
-- <a href="https://t.me/MinedInBot">Telegram bot</a>
+- <a href="https://t.me/MinedInBot">TELEGRAM BOT</a>
 ---
 <b>In process</b>:
 - Web
