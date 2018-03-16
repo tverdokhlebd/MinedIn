@@ -109,7 +109,7 @@ public class TelegramMessage {
                 resultMessage.append(result);
                 resultMessage.append(LOCALIZATION.getString("success"));
             }
-            String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a").format(new Date());
+            String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a Z").format(new Date());
             String lastUpdateMessage = LOCALIZATION.getString("last_update") + date;
             resultMessage.append("\n-\n");
             resultMessage.append(lastUpdateMessage);
