@@ -10,13 +10,17 @@ MinedIn is the project for calculating the mined result in USD. The implementati
 - <a href="https://nanopool.org/">NANOPOOL</a>
 
 <b>Supporting exchangers:</b>
+- <a href="https://www.bitfinex.com">BITFINEX</a>
+- <a href="https://www.bitstamp.net">BITSTAMP</a>
+- <a href="https://cex.io">CEX</a>
 - <a href="https://exmo.com/?ref=1106328">EXMO</a>
+- <a href="https://www.gdax.com">GDAX</a>
+- <a href="https://www.kraken.com">KRAKEN</a>
+- <a href="https://www.yobit.net">YOBIT</a>
 
 <b>Available implementations</b>:
-- <a href="https://t.me/MinedInBot">Telegram bot</a>
+- <a href="https://t.me/MinedInBot">TELEGRAM BOT</a>
 ---
 <b>In process</b>:
 - Web
 - Android
-
-Popular pools and exchangers will be added later.
