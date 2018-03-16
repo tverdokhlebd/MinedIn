@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/tverdokhlebd/MinedIn.svg?branch=master)](https://travis-ci.org/tverdokhlebd/MinedIn)
 # MinedIn
 MinedIn is the project for calculating the mined result in USD. The implementation is based on open API of pools and exchangers.
 
