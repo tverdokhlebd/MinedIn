@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.mined.in.Utils;
 import com.mined.in.exchanger.pair.PairExecutor;
 import com.mined.in.exchanger.pair.PairExecutorException;
 import com.mined.in.exchanger.pair.exmo.ExmoPairExecutor;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
-import com.mined.in.pool.account.Utils;
 import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 
 import org.json.JSONObject;

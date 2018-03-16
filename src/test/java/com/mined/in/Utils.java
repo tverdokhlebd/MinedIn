@@ -1,4 +1,4 @@
-package com.mined.in.pool.account;
+package com.mined.in;
 
 import static okhttp3.Protocol.HTTP_2;
 

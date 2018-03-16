@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.mined.in.Utils;
 import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
 
 import okhttp3.OkHttpClient;
