@@ -12,7 +12,7 @@ import com.mined.in.worker.MinedResult;
 import com.mined.in.worker.MinedWorker;
 
 /**
- * Class for calculating of mined.
+ * Worker for calculating of ETH mined.
  *
  * @author Dmitry Tverdokhleb
  *

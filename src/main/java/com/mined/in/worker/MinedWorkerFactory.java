@@ -14,14 +14,14 @@ import com.mined.in.worker.eth.ETHMinedWorker;
 public class MinedWorkerFactory {
 
     /**
-     * Returns mined worker
+     * Returns mined worker.
      *
      * @param coin coin name
      * @param accountExecutor pool account executor
      * @param pairExecutor exchanger pair executor
      * @return mined worker
      */
-    public static MinedWorker getAccountExecutor(Coin coin, AccountExecutor accountExecutor, PairExecutor pairExecutor) {
+    public static MinedWorker getMinedWorker(Coin coin, AccountExecutor accountExecutor, PairExecutor pairExecutor) {
         switch (coin) {
         case ETH: {
             return new ETHMinedWorker(accountExecutor, pairExecutor);

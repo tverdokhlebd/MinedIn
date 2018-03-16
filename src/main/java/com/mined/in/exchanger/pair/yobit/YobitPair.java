@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.json.JSONObject;
 
 import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairName;
 
 /**
  * Class for representing Yobit pair.
@@ -21,7 +22,7 @@ public class YobitPair extends Pair {
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    private YobitPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
+    private YobitPair(PairName pair, BigDecimal buyPrice, BigDecimal sellPrice) {
         super(pair, buyPrice, sellPrice);
     }
 
@@ -32,7 +33,7 @@ public class YobitPair extends Pair {
      * @param jsonPair pair in JSON format
      * @return Yobit pair instance
      */
-    public static YobitPair create(String pair, JSONObject jsonPair) {
+    public static YobitPair create(PairName pair, JSONObject jsonPair) {
         JSONObject ethUsd = jsonPair.getJSONObject("eth_usd");
         BigDecimal buyPrice = BigDecimal.valueOf(ethUsd.getDouble("buy"));
         BigDecimal sellPrice = BigDecimal.valueOf(ethUsd.getDouble("sell"));

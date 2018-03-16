@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.json.JSONObject;
 
 import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairName;
 
 /**
  * Class for representing Gdax pair.
@@ -21,7 +22,7 @@ public class GdaxPair extends Pair {
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    private GdaxPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
+    private GdaxPair(PairName pair, BigDecimal buyPrice, BigDecimal sellPrice) {
         super(pair, buyPrice, sellPrice);
     }
 
@@ -32,7 +33,7 @@ public class GdaxPair extends Pair {
      * @param jsonPair pair in JSON format
      * @return Gdax pair instance
      */
-    public static GdaxPair create(String pair, JSONObject jsonPair) {
+    public static GdaxPair create(PairName pair, JSONObject jsonPair) {
         BigDecimal buyPrice = BigDecimal.valueOf(jsonPair.getDouble("bid"));
         BigDecimal sellPrice = BigDecimal.valueOf(jsonPair.getDouble("ask"));
         buyPrice = buyPrice.stripTrailingZeros();

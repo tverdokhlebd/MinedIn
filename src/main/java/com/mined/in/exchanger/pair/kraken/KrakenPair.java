@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.json.JSONObject;
 
 import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairName;
 
 /**
  * Class for representing Kraken pair.
@@ -21,7 +22,7 @@ public class KrakenPair extends Pair {
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    private KrakenPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
+    private KrakenPair(PairName pair, BigDecimal buyPrice, BigDecimal sellPrice) {
         super(pair, buyPrice, sellPrice);
     }
 
@@ -32,7 +33,7 @@ public class KrakenPair extends Pair {
      * @param jsonPair pair in JSON format
      * @return Kraken pair instance
      */
-    public static KrakenPair create(String pair, JSONObject jsonPair) {
+    public static KrakenPair create(PairName pair, JSONObject jsonPair) {
         JSONObject ethUsd = jsonPair.getJSONObject("result").getJSONObject("XETHZUSD");
         BigDecimal buyPrice = BigDecimal.valueOf(ethUsd.getJSONArray("b").getDouble(0));
         BigDecimal sellPrice = BigDecimal.valueOf(ethUsd.getJSONArray("a").getDouble(0));

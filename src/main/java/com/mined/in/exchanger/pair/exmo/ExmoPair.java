@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.json.JSONObject;
 
 import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairName;
 
 /**
  * Class for representing Exmo pair.
@@ -21,7 +22,7 @@ public class ExmoPair extends Pair {
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    private ExmoPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
+    private ExmoPair(PairName pair, BigDecimal buyPrice, BigDecimal sellPrice) {
         super(pair, buyPrice, sellPrice);
     }
 
@@ -32,7 +33,7 @@ public class ExmoPair extends Pair {
      * @param jsonPairs pair in JSON format
      * @return Exmo pair instance
      */
-    public static ExmoPair create(String pair, JSONObject jsonPairs) {
+    public static ExmoPair create(PairName pair, JSONObject jsonPairs) {
         JSONObject jsonPair = jsonPairs.getJSONObject("ETH_USD");
         BigDecimal buyPrice = BigDecimal.valueOf(jsonPair.getDouble("buy_price"));
         BigDecimal sellPrice = BigDecimal.valueOf(jsonPair.getDouble("sell_price"));

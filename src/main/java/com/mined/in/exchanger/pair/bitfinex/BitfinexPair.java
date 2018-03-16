@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.json.JSONObject;
 
 import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairName;
 
 /**
  * Class for representing Bitfinex pair.
@@ -21,7 +22,7 @@ public class BitfinexPair extends Pair {
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    private BitfinexPair(String pair, BigDecimal buyPrice, BigDecimal sellPrice) {
+    private BitfinexPair(PairName pair, BigDecimal buyPrice, BigDecimal sellPrice) {
         super(pair, buyPrice, sellPrice);
     }
 
@@ -32,7 +33,7 @@ public class BitfinexPair extends Pair {
      * @param jsonPair pair in JSON format
      * @return Bitfinex pair instance
      */
-    public static BitfinexPair create(String pair, JSONObject jsonPair) {
+    public static BitfinexPair create(PairName pair, JSONObject jsonPair) {
         BigDecimal buyPrice = BigDecimal.valueOf(jsonPair.getDouble("bid"));
         BigDecimal sellPrice = BigDecimal.valueOf(jsonPair.getDouble("ask"));
         buyPrice = buyPrice.stripTrailingZeros();

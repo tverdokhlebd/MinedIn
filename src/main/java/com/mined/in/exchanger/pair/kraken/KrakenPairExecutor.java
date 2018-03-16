@@ -2,6 +2,7 @@ package com.mined.in.exchanger.pair.kraken;
 
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
+import static com.mined.in.exchanger.pair.PairName.ETH_USD;
 
 import java.io.IOException;
 
@@ -48,7 +49,7 @@ public class KrakenPairExecutor implements PairExecutor {
                 throw new PairExecutorException(HTTP_ERROR, response.message());
             }
             JSONObject jsonResponse = new JSONObject(response.body().string());
-            pair = KrakenPair.create("ETH_USD", jsonResponse);
+            pair = KrakenPair.create(ETH_USD, jsonResponse);
         } catch (JSONException e) {
             throw new PairExecutorException(JSON_ERROR, e);
         } catch (IOException e) {

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class Pair {
 
     /** Pair name. */
-    private final String pairName;
+    private final PairName pairName;
     /** Buy price. */
     private final BigDecimal buyPrice;
     /** Sell price. */
@@ -24,7 +24,7 @@ public class Pair {
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    public Pair(String pairName, BigDecimal buyPrice, BigDecimal sellPrice) {
+    public Pair(PairName pairName, BigDecimal buyPrice, BigDecimal sellPrice) {
         super();
         this.pairName = pairName;
         this.buyPrice = buyPrice;
@@ -36,7 +36,7 @@ public class Pair {
      *
      * @return the pair
      */
-    public String getPairName() {
+    public PairName getPairName() {
         return pairName;
     }
 

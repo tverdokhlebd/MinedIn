@@ -56,38 +56,7 @@ public class TelegramMessage {
         String callbackQueryData = stepData.getCallbackQueryData();
         keyboardButtonArray[0] = new InlineKeyboardButton(LOCALIZATION.getString("update")).callbackData(callbackQueryData);
         keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
-        StringBuilder tmpStrBuilder = new StringBuilder(message.text());
-        // Position of mined result
-        if (tmpStrBuilder.indexOf("--") != -1) {
-            MessageEntity[] entityArray = message.entities();
-            int globalOffset = 0;
-            for (int i = 0; i < entityArray.length; i++) {
-                MessageEntity entity = entityArray[i];
-                switch (entity.type()) {
-                case text_link: {
-                    String urlStart = "<a href=\"" + entity.url() + "\">";
-                    tmpStrBuilder.insert(entity.offset() + globalOffset, urlStart);
-                    globalOffset += urlStart.length();
-                    String urlEnd = "</a>";
-                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, urlEnd);
-                    globalOffset += urlEnd.length();
-                    break;
-                }
-                case bold: {
-                    String bStart = "<b>";
-                    tmpStrBuilder.insert(entity.offset() + globalOffset, bStart);
-                    globalOffset += bStart.length();
-                    String bEnd = "</b>";
-                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, bEnd);
-                    globalOffset += bEnd.length();
-                    break;
-                }
-                default:
-                    break;
-                }
-            }
-            messageContent = new StringBuilder(tmpStrBuilder.substring(tmpStrBuilder.indexOf("--") + 3));
-        }
+        parseHtmlMarkup(message);
     }
 
     /**
@@ -96,28 +65,29 @@ public class TelegramMessage {
      * @return the final formatted message
      */
     public String getFinalMessage() {
-        // It is result message
-        if (stepData != null && stepData.getStep() == EXCHANGER) {
-            StringBuilder resultMessage = new StringBuilder();
+        boolean isFinalStep = stepData != null && stepData.getStep() == EXCHANGER;
+        if (isFinalStep) {
+            StringBuilder finalMessage = new StringBuilder();
             String result = LOCALIZATION.getString("result");
             if (errorMessage != null) {
-                resultMessage.append("<b>");
-                resultMessage.append(result);
-                resultMessage.append("</b>");
-                resultMessage.append(errorMessage);
+                finalMessage.append("<b>");
+                finalMessage.append(result);
+                finalMessage.append("</b>");
+                finalMessage.append(errorMessage);
             } else {
-                resultMessage.append(result);
-                resultMessage.append(LOCALIZATION.getString("success"));
+                finalMessage.append(result);
+                finalMessage.append(LOCALIZATION.getString("success"));
             }
             String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a Z").format(new Date());
-            String lastUpdateMessage = LOCALIZATION.getString("last_update") + date;
-            resultMessage.append("\n-\n");
-            resultMessage.append(lastUpdateMessage);
+            String lastUpdate = LOCALIZATION.getString("last_update") + date;
+            finalMessage.append("\n-\n");
+            finalMessage.append(lastUpdate);
+            // messageContent can be null if an error occurred during first calculating
             if (messageContent != null) {
-                resultMessage.append("\n--\n");
-                resultMessage.append(messageContent);
+                finalMessage.append("\n--\n");
+                finalMessage.append(messageContent);
             }
-            return resultMessage.toString();
+            return finalMessage.toString();
         } else {
             return messageContent.toString();
         }
@@ -202,6 +172,46 @@ public class TelegramMessage {
      */
     public Integer getMessageId() {
         return messageId;
+    }
+
+    /**
+     * Parses HTML markup for message.
+     *
+     * @param message previous result message
+     */
+    private void parseHtmlMarkup(Message message) {
+        StringBuilder tmpStrBuilder = new StringBuilder(message.text());
+        // Position of mined result
+        if (tmpStrBuilder.indexOf("--") != -1) {
+            MessageEntity[] entityArray = message.entities();
+            int globalOffset = 0;
+            for (int i = 0; i < entityArray.length; i++) {
+                MessageEntity entity = entityArray[i];
+                switch (entity.type()) {
+                case text_link: {
+                    String urlStart = "<a href=\"" + entity.url() + "\">";
+                    tmpStrBuilder.insert(entity.offset() + globalOffset, urlStart);
+                    globalOffset += urlStart.length();
+                    String urlEnd = "</a>";
+                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, urlEnd);
+                    globalOffset += urlEnd.length();
+                    break;
+                }
+                case bold: {
+                    String bStart = "<b>";
+                    tmpStrBuilder.insert(entity.offset() + globalOffset, bStart);
+                    globalOffset += bStart.length();
+                    String bEnd = "</b>";
+                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, bEnd);
+                    globalOffset += bEnd.length();
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+            messageContent = new StringBuilder(tmpStrBuilder.substring(tmpStrBuilder.indexOf("--") + 3));
+        }
     }
 
 }

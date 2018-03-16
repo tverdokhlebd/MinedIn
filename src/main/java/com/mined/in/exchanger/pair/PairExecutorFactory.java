@@ -49,12 +49,15 @@ public class PairExecutorFactory {
             return new BitstampPairExecutor(okHttpBuilder.build());
         }
         case KRAKEN: {
+            // TODO Add request limiter according to documentation
             return new KrakenPairExecutor(okHttpBuilder.build());
         }
         case CEX: {
+            // TODO Add request limiter according to documentation
             return new CexPairExecutor(okHttpBuilder.build());
         }
         case YOBIT: {
+            // TODO Add request limiter according to documentation
             return new YobitPairExecutor(okHttpBuilder.build());
         }
         default:

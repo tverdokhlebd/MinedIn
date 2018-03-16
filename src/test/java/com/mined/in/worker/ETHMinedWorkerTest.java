@@ -50,9 +50,9 @@ public class ETHMinedWorkerTest {
         exchangerJSON.put(pairName, ethUsdJson);
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(exchangerJSON, 200);
         PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getAccountExecutor(ETH, accountExecutor, pairExecutor);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, pairExecutor);
         MinedResult result = worker.calculate(WALLET_ADDRESS);
-        assertEquals(WALLET_BALANCE, result.getCoinsBalance());
+        assertEquals(WALLET_BALANCE, result.getCoinBalance());
         assertEquals(WALLET_BALANCE.multiply(buyPrice), result.getUsdBalance());
         assertEquals(buyPrice, result.getBuyPrice());
         assertEquals(sellPrice, result.getSellPrice());
@@ -68,7 +68,7 @@ public class ETHMinedWorkerTest {
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 200);
         PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getAccountExecutor(ETH, accountExecutor, pairExecutor);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, pairExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
@@ -87,7 +87,7 @@ public class ETHMinedWorkerTest {
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 500);
         PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getAccountExecutor(ETH, accountExecutor, pairExecutor);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, pairExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
         } catch (PairExecutorException e) {

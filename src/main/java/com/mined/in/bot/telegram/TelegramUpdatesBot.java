@@ -171,7 +171,7 @@ public class TelegramUpdatesBot implements BotUpdates {
             throws AccountExecutorException, PairExecutorException {
         AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(pool);
         PairExecutor pairExecutor = PairExecutorFactory.getPairExecutor(exchanger);
-        MinedWorker minedWorker = MinedWorkerFactory.getAccountExecutor(coin, accountExecutor, pairExecutor);
+        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coin, accountExecutor, pairExecutor);
         return minedWorker.calculate(walletAddress);
     }
 
@@ -185,7 +185,7 @@ public class TelegramUpdatesBot implements BotUpdates {
      */
     private void createMinedResultMessage(Coin coin, Pool pool, Exchanger exchanger, MinedResult minedResult) {
         String currentBalance = LOCALIZATION.getString("current_balance");
-        BigDecimal coinsBalance = minedResult.getCoinsBalance().setScale(8, DOWN);
+        BigDecimal coinsBalance = minedResult.getCoinBalance().setScale(8, DOWN);
         currentBalance = String.format(currentBalance, pool.getWebsite(), pool.getName().toUpperCase(), coinsBalance, coin.getWebsite(),
                 coin.getSymbol());
         String minedResultMsg = LOCALIZATION.getString("mined_result");

@@ -4,7 +4,7 @@ import com.mined.in.exchanger.pair.PairExecutorException;
 import com.mined.in.pool.account.AccountExecutorException;
 
 /**
- * Interface for calculating of mined.
+ * Interface of worker for calculating of mined.
  *
  * @author Dmitry Tverdokhleb
  *

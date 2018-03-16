@@ -46,6 +46,7 @@ public class OkHttpLimiterInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
+        // TODO It is necessary to improve caching (Possibly cachedResponse can be null)
         if (requestCounter.get() >= maxRequestCount) {
             return cachedResponse;
         } else {

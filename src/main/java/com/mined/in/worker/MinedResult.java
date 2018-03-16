@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class MinedResult {
 
     /** Balance of coins. */
-    private final BigDecimal coinsBalance;
+    private final BigDecimal coinBalance;
     /** Balance in USD. */
     private final BigDecimal usdBalance;
     /** Buy price. */
@@ -22,14 +22,14 @@ public class MinedResult {
     /**
      * Creates the mined result instance.
      *
-     * @param coinsBalance balance of coins
+     * @param coinBalance balance of coins
      * @param usdBalance balance in USD
      * @param buyPrice buy price
      * @param sellPrice sell price
      */
-    public MinedResult(BigDecimal coinsBalance, BigDecimal usdBalance, BigDecimal buyPrice, BigDecimal sellPrice) {
+    public MinedResult(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal buyPrice, BigDecimal sellPrice) {
         super();
-        this.coinsBalance = coinsBalance;
+        this.coinBalance = coinBalance;
         this.usdBalance = usdBalance;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
@@ -40,8 +40,8 @@ public class MinedResult {
      *
      * @return the coins balance
      */
-    public BigDecimal getCoinsBalance() {
-        return coinsBalance;
+    public BigDecimal getCoinBalance() {
+        return coinBalance;
     }
 
     /**
