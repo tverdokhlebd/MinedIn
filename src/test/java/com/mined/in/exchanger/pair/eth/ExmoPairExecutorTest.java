@@ -1,4 +1,4 @@
-package com.mined.in.exchanger.pair;
+package com.mined.in.exchanger.pair.eth;
 
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
@@ -11,28 +11,33 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
-import com.mined.in.exchanger.pair.bitstamp.BitstampPairExecutor;
+import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairExecutor;
+import com.mined.in.exchanger.pair.PairExecutorException;
+import com.mined.in.exchanger.pair.exmo.ExmoPairExecutor;
 
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of Bitstamp executor.
+ * Tests of Exmo executor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
 @SpringBootTest
-public class BitstampPairExecutorTest {
+public class ExmoPairExecutorTest {
 
     @Test
     public void testCorrectJsonResponse() throws PairExecutorException {
         String pairName = "ETH_USD";
-        BigDecimal buyPrice = new BigDecimal("603.51");
-        BigDecimal sellPrice = new BigDecimal("603.82");
-        JSONObject response = new JSONObject(
-                "{\"high\": \"620.00\", \"last\": \"603.48\", \"timestamp\": \"1521147313\", \"bid\": \"603.51\", \"vwap\": \"601.37\", \"volume\": \"48896.93815440\", \"low\": \"571.56\", \"ask\": \"603.82\", \"open\": \"612.00\"}");
+        BigDecimal buyPrice = new BigDecimal("611.0803");
+        BigDecimal sellPrice = new BigDecimal("615.99987");
+        JSONObject response =
+                new JSONObject("{\"ETH_USD\":{\"buy_price\":\"611.0803\",\"sell_price\":\"615.99987\",\"last_trade\":\"614.69\","
+                        + "\"high\":\"657.555\",\"low\":\"603.128418\",\"avg\":\"626.85027354\",\"vol\":\"6578.09576192\","
+                        + "\"vol_curr\":\"4043489.68389892\",\"updated\":1521147101}}");
         OkHttpClient exchangerHttpClient = Utils.getHttpClient(response, 200);
-        PairExecutor pairExecutor = new BitstampPairExecutor(exchangerHttpClient);
+        PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
         Pair pair = pairExecutor.getETHUSDPair();
         assertEquals(pairName, pair.getPairName());
         assertEquals(buyPrice, pair.getBuyPrice());
@@ -42,7 +47,7 @@ public class BitstampPairExecutorTest {
     @Test(expected = PairExecutorException.class)
     public void testEmptyResponse() throws PairExecutorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 200);
-        PairExecutor pairExecutor = new BitstampPairExecutor(httpClient);
+        PairExecutor pairExecutor = new ExmoPairExecutor(httpClient);
         try {
             pairExecutor.getETHUSDPair();
         } catch (PairExecutorException e) {
@@ -54,7 +59,7 @@ public class BitstampPairExecutorTest {
     @Test(expected = PairExecutorException.class)
     public void test500HttpError() throws PairExecutorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 500);
-        PairExecutor pairExecutor = new BitstampPairExecutor(httpClient);
+        PairExecutor pairExecutor = new ExmoPairExecutor(httpClient);
         try {
             pairExecutor.getETHUSDPair();
         } catch (PairExecutorException e) {

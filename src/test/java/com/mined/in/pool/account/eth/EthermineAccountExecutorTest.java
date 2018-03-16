@@ -1,4 +1,4 @@
-package com.mined.in.pool.account;
+package com.mined.in.pool.account.eth;
 
 import static com.mined.in.error.ErrorCode.API_ERROR;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
+import com.mined.in.pool.account.Account;
+import com.mined.in.pool.account.AccountExecutor;
+import com.mined.in.pool.account.AccountExecutorException;
 import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
 
 import okhttp3.OkHttpClient;

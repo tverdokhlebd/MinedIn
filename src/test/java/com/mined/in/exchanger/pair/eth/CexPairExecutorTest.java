@@ -1,4 +1,4 @@
-package com.mined.in.exchanger.pair;
+package com.mined.in.exchanger.pair.eth;
 
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
@@ -11,6 +11,9 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
+import com.mined.in.exchanger.pair.Pair;
+import com.mined.in.exchanger.pair.PairExecutor;
+import com.mined.in.exchanger.pair.PairExecutorException;
 import com.mined.in.exchanger.pair.cex.CexPairExecutor;
 
 import okhttp3.OkHttpClient;
