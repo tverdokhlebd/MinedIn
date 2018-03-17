@@ -184,18 +184,22 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param minedResult mined result
      */
     private void createMinedResultMessage(Coin coin, Pool pool, Exchanger exchanger, MinedResult minedResult) {
-        String currentBalance = LOCALIZATION.getString("current_balance");
-        BigDecimal coinsBalance = minedResult.getCoinBalance().setScale(8, DOWN);
-        currentBalance = String.format(currentBalance, pool.getWebsite(), pool.getName().toUpperCase(), coinsBalance, coin.getWebsite(),
-                coin.getSymbol());
-        String minedResultMsg = LOCALIZATION.getString("mined_result");
+        BigDecimal coinBalance = minedResult.getCoinBalance().setScale(8, DOWN);
         BigDecimal usdBalance = minedResult.getUsdBalance().setScale(2, DOWN);
         BigDecimal buyPrice = minedResult.getBuyPrice().setScale(2, DOWN);
         BigDecimal sellPrice = minedResult.getSellPrice().setScale(2, DOWN);
-        minedResultMsg =
-                String.format(minedResultMsg, exchanger.getWebsite(), exchanger.getName().toUpperCase(), usdBalance, buyPrice, sellPrice);
-        String formattedMessage = currentBalance + "\n---\n" + minedResultMsg;
-        telegramMessage.setMessageContent(formattedMessage);
+        String minedResultMessage = LOCALIZATION.getString("mined_result");
+        minedResultMessage = String.format(minedResultMessage,
+                                           pool.getWebsite(),
+                                           pool.getName().toUpperCase(),
+                                           coinBalance,
+                                           coin.getSymbol(),
+                                           exchanger.getWebsite(),
+                                           exchanger.getName().toUpperCase(),
+                                           usdBalance,
+                                           buyPrice,
+                                           sellPrice);
+        telegramMessage.setMessageContent(minedResultMessage);
     }
 
     /**

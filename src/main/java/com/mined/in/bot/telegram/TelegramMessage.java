@@ -68,24 +68,18 @@ public class TelegramMessage {
         boolean isFinalStep = stepData != null && stepData.getStep() == EXCHANGER;
         if (isFinalStep) {
             StringBuilder finalMessage = new StringBuilder();
-            String result = LOCALIZATION.getString("result");
-            if (errorMessage != null) {
-                finalMessage.append("<b>");
-                finalMessage.append(result);
-                finalMessage.append("</b>");
-                finalMessage.append(errorMessage);
-            } else {
-                finalMessage.append(result);
-                finalMessage.append(LOCALIZATION.getString("success"));
-            }
-            String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a Z").format(new Date());
-            String lastUpdate = LOCALIZATION.getString("last_update") + date;
-            finalMessage.append("\n-\n");
-            finalMessage.append(lastUpdate);
             // messageContent can be null if an error occurred during first calculating
             if (messageContent != null) {
-                finalMessage.append("\n--\n");
                 finalMessage.append(messageContent);
+                finalMessage.append("\n-\n");
+            }
+            String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a Z").format(new Date());
+            finalMessage.append(date);
+            if (errorMessage != null) {
+                finalMessage.append("\n--\n");
+                finalMessage.append("<b>");
+                finalMessage.append(errorMessage);
+                finalMessage.append("</b>");
             }
             return finalMessage.toString();
         } else {
@@ -182,7 +176,7 @@ public class TelegramMessage {
     private void parseHtmlMarkup(Message message) {
         StringBuilder tmpStrBuilder = new StringBuilder(message.text());
         // Position of mined result
-        if (tmpStrBuilder.indexOf("--") != -1) {
+        if (tmpStrBuilder.indexOf("\n-\n") != -1) {
             MessageEntity[] entityArray = message.entities();
             int globalOffset = 0;
             for (int i = 0; i < entityArray.length; i++) {
@@ -210,7 +204,7 @@ public class TelegramMessage {
                     break;
                 }
             }
-            messageContent = new StringBuilder(tmpStrBuilder.substring(tmpStrBuilder.indexOf("--") + 3));
+            messageContent = new StringBuilder(tmpStrBuilder.substring(0, tmpStrBuilder.indexOf("\n-\n")));
         }
     }
 
