@@ -26,4 +26,4 @@ MinedIn is the project for calculating the mined result in USD. The implementati
 - Web
 - Android
 ---
-if you have any questions please contact me by email tverdokhlebd@gmail.com.
+If you have any questions please contact me by email tverdokhlebd@gmail.com
