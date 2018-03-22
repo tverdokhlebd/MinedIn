@@ -16,8 +16,8 @@ public class CoinMarketCapLimiter extends OkHttpLimiterInterceptor {
     /**
      * Creates the instance of CoinMarketCap limiter.
      */
-    private CoinMarketCapLimiter() {
-        super(1, 60 * 1000);
+    public CoinMarketCapLimiter() {
+        super(1, 7 * 1000);
     }
 
     /**

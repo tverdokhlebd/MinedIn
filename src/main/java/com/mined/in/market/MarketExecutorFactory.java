@@ -1,5 +1,6 @@
 package com.mined.in.market;
 
+import com.mined.in.market.coinmarketcap.CoinMarketCapLimiter;
 import com.mined.in.market.coinmarketcap.CoinMarketCapMarketExecutor;
 
 import okhttp3.OkHttpClient;
@@ -22,6 +23,7 @@ public class MarketExecutorFactory {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         switch (marketType) {
         case COIN_MARKET_CAP: {
+            okHttpBuilder.addInterceptor(new CoinMarketCapLimiter());
             return new CoinMarketCapMarketExecutor(okHttpBuilder.build());
         }
         default:
