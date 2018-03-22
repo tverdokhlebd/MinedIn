@@ -2,9 +2,9 @@ package com.mined.in.worker.eth;
 
 import java.math.BigDecimal;
 
-import com.mined.in.exchanger.pair.Pair;
-import com.mined.in.exchanger.pair.PairExecutor;
-import com.mined.in.exchanger.pair.PairExecutorException;
+import com.mined.in.market.Market;
+import com.mined.in.market.MarketExecutor;
+import com.mined.in.market.MarketExecutorException;
 import com.mined.in.pool.account.Account;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
@@ -21,29 +21,29 @@ public class ETHMinedWorker implements MinedWorker {
 
     /** Pool account executor. */
     private final AccountExecutor accountExecutor;
-    /** Exchanger pair executor. */
-    private final PairExecutor pairExecutor;
+    /** Market executor. */
+    private final MarketExecutor pairExecutor;
 
     /**
      * Creates the mined calculation instance.
      *
      * @param accountExecutor pool account executor
-     * @param pairExecutor exchanger pair executor
+     * @param marketExecutor market executor
      */
-    public ETHMinedWorker(AccountExecutor accountExecutor, PairExecutor pairExecutor) {
+    public ETHMinedWorker(AccountExecutor accountExecutor, MarketExecutor marketExecutor) {
         super();
         this.accountExecutor = accountExecutor;
-        this.pairExecutor = pairExecutor;
+        this.pairExecutor = marketExecutor;
     }
 
     @Override
-    public MinedResult calculate(String walletAddress) throws AccountExecutorException, PairExecutorException {
+    public MinedResult calculate(String walletAddress) throws AccountExecutorException, MarketExecutorException {
         Account account = accountExecutor.getETHAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
-        Pair pair = pairExecutor.getETHUSDPair();
-        BigDecimal usdBuyRate = pair.getBuyPrice();
-        BigDecimal balanceInUSD = walletBalance.multiply(usdBuyRate);
-        return new MinedResult(walletBalance, balanceInUSD, pair.getBuyPrice(), pair.getSellPrice());
+        Market market = pairExecutor.getMarket();
+        BigDecimal ethPrice = market.getEthPrice();
+        BigDecimal balanceInUSD = walletBalance.multiply(ethPrice);
+        return new MinedResult(walletBalance, balanceInUSD, market.getEthPrice());
     }
 
 }

@@ -1,12 +1,12 @@
 package com.mined.in.pool;
 
 /**
- * Enumeration of supporting pools.
+ * Enumerations of supporting pools.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public enum Pool {
+public enum PoolType {
 
     DWARFPOOL("Dwarfpool", "https://dwarfpool.com/"),
     ETHERMINE("Ethermine", "https://ethermine.org/"),
@@ -23,7 +23,7 @@ public enum Pool {
      * @param name pool name
      * @param website pool official site
      */
-    private Pool(String name, String website) {
+    private PoolType(String name, String website) {
         this.name = name;
         this.website = website;
     }
@@ -52,10 +52,10 @@ public enum Pool {
      * @param name pool name
      * @return pool
      */
-    public static Pool getByName(String name) {
-        Pool[] poolArray = Pool.values();
+    public static PoolType getByName(String name) {
+        PoolType[] poolArray = PoolType.values();
         for (int i = 0; i < poolArray.length; i++) {
-            Pool pool = poolArray[i];
+            PoolType pool = poolArray[i];
             if (pool.getName().equals(name)) {
                 return pool;
             }

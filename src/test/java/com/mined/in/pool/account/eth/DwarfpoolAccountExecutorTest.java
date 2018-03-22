@@ -34,7 +34,7 @@ public class DwarfpoolAccountExecutorTest {
     public void testCorrectJsonResponse() throws AccountExecutorException {
         BigDecimal walletBalance = new BigDecimal("0.78665394");
         JSONObject response = new JSONObject("{\"error\": false, \"wallet_balance\": \"0.78665394\"}");
-        OkHttpClient httpClient = Utils.getHttpClient(response, 200);
+        OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
         Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
@@ -44,7 +44,7 @@ public class DwarfpoolAccountExecutorTest {
     @Test(expected = AccountExecutorException.class)
     public void testCorrectJsonResponseWithApiError() throws AccountExecutorException {
         JSONObject response = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
-        OkHttpClient httpClient = Utils.getHttpClient(response, 200);
+        OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -57,7 +57,7 @@ public class DwarfpoolAccountExecutorTest {
 
     @Test(expected = AccountExecutorException.class)
     public void test500HttpError() throws AccountExecutorException {
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 500);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -69,7 +69,7 @@ public class DwarfpoolAccountExecutorTest {
 
     @Test(expected = AccountExecutorException.class)
     public void testEmptyResponse() throws AccountExecutorException {
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 200);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -81,7 +81,7 @@ public class DwarfpoolAccountExecutorTest {
 
     @Test(expected = AccountExecutorException.class)
     public void testWithEmptyWalletAddress() throws AccountExecutorException {
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 200);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount("");

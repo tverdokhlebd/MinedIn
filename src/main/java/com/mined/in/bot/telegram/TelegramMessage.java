@@ -1,6 +1,6 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.bot.telegram.TelegramStepData.Step.EXCHANGER;
+import static com.mined.in.bot.telegram.TelegramStepData.Step.POOL;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -65,7 +65,7 @@ public class TelegramMessage {
      * @return the final formatted message
      */
     public String getFinalMessage() {
-        boolean isFinalStep = stepData != null && stepData.getStep() == EXCHANGER;
+        boolean isFinalStep = stepData != null && stepData.getStep() == POOL;
         if (isFinalStep) {
             StringBuilder finalMessage = new StringBuilder();
             // messageContent can be null if an error occurred during first calculating

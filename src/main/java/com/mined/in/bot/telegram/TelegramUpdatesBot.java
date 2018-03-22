@@ -1,5 +1,6 @@
 package com.mined.in.bot.telegram;
 
+import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static java.math.RoundingMode.DOWN;
 
@@ -12,12 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mined.in.bot.BotUpdates;
-import com.mined.in.coin.Coin;
-import com.mined.in.exchanger.Exchanger;
-import com.mined.in.exchanger.pair.PairExecutor;
-import com.mined.in.exchanger.pair.PairExecutorException;
-import com.mined.in.exchanger.pair.PairExecutorFactory;
-import com.mined.in.pool.Pool;
+import com.mined.in.coin.CoinType;
+import com.mined.in.market.MarketExecutor;
+import com.mined.in.market.MarketExecutorException;
+import com.mined.in.market.MarketExecutorFactory;
+import com.mined.in.market.MarketType;
+import com.mined.in.pool.PoolType;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
 import com.mined.in.pool.account.AccountExecutorFactory;
@@ -76,8 +77,8 @@ public class TelegramUpdatesBot implements BotUpdates {
         } catch (AccountExecutorException e) {
             telegramMessage.setErrorMessage(String.format(LOCALIZATION.getString("pool_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
-        } catch (PairExecutorException e) {
-            telegramMessage.setErrorMessage(String.format(LOCALIZATION.getString("exchanger_error"), e.getMessage()));
+        } catch (MarketExecutorException e) {
+            telegramMessage.setErrorMessage(String.format(LOCALIZATION.getString("market_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
         } catch (Exception e) {
             telegramMessage.setErrorMessage(LOCALIZATION.getString("unexpected_error"));
@@ -110,9 +111,9 @@ public class TelegramUpdatesBot implements BotUpdates {
      *
      * @param callbackQuery callback query
      * @throws AccountExecutorException if there is any error in account creating
-     * @throws PairExecutorException if there is any error in pair creating
+     * @throws MarketExecutorException if there is any error in market creating
      */
-    private void processCallbackQuery(CallbackQuery callbackQuery) throws AccountExecutorException, PairExecutorException {
+    private void processCallbackQuery(CallbackQuery callbackQuery) throws AccountExecutorException, MarketExecutorException {
         String data = callbackQuery.data();
         if (data == null || data.isEmpty()) {
             LOG.debug("CallbackQuery data is empty");
@@ -127,10 +128,6 @@ public class TelegramUpdatesBot implements BotUpdates {
             break;
         }
         case POOL: {
-            createSupportingExchangersMessage(stepData);
-            break;
-        }
-        case EXCHANGER: {
             telegramMessage.parsePreviousMessage(callbackQuery.message());
             String walletAddress = callbackQuery.message().replyToMessage().text();
             calculateAndCreateMinedResultMessage(stepData, walletAddress);
@@ -145,60 +142,56 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param stepData data of current step
      * @param walletAddress wallet address
      * @throws AccountExecutorException if there is any error in account creating
-     * @throws PairExecutorException if there is any error in pair creating
+     * @throws MarketExecutorException if there is any error in market creating
      */
     private void calculateAndCreateMinedResultMessage(TelegramStepData stepData, String walletAddress)
-            throws AccountExecutorException, PairExecutorException {
-        Coin coin = stepData.getCoin();
-        Pool pool = stepData.getPool();
-        Exchanger exchanger = stepData.getExchanger();
-        MinedResult minedResult = calculateMined(walletAddress, coin, pool, exchanger);
-        createMinedResultMessage(coin, pool, exchanger, minedResult);
+            throws AccountExecutorException, MarketExecutorException {
+        CoinType coin = stepData.getCoin();
+        PoolType pool = stepData.getPool();
+        MarketType market = COIN_MARKET_CAP;
+        MinedResult minedResult = calculateMined(walletAddress, coin, pool, market);
+        createMinedResultMessage(coin, pool, market, minedResult);
     }
 
     /**
      * Calculates mined and returns mined result.
      *
      * @param walletAddress wallet address
-     * @param coin coin type
-     * @param pool pool type
-     * @param exchanger exchange type
+     * @param coinType coin type
+     * @param poolType pool type
+     * @param marketType market type
      * @return mined result
      * @throws AccountExecutorException if there is any error in account creating
-     * @throws PairExecutorException if there is any error in pair creating
+     * @throws MarketExecutorException if there is any error in market creating
      */
-    private MinedResult calculateMined(String walletAddress, Coin coin, Pool pool, Exchanger exchanger)
-            throws AccountExecutorException, PairExecutorException {
-        AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(pool);
-        PairExecutor pairExecutor = PairExecutorFactory.getPairExecutor(exchanger);
-        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coin, accountExecutor, pairExecutor);
+    private MinedResult calculateMined(String walletAddress, CoinType coinType, PoolType poolType, MarketType marketType)
+            throws AccountExecutorException, MarketExecutorException {
+        AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(poolType);
+        MarketExecutor marketExecutor = MarketExecutorFactory.getMarketExecutor(marketType);
+        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coinType, accountExecutor, marketExecutor);
         return minedWorker.calculate(walletAddress);
     }
 
     /**
      * Creates mined result message.
      *
-     * @param coin coin type
-     * @param pool pool type
-     * @param exchanger exchange type
+     * @param coinType coin type
+     * @param poolType pool type
+     * @param marketType market type
      * @param minedResult mined result
      */
-    private void createMinedResultMessage(Coin coin, Pool pool, Exchanger exchanger, MinedResult minedResult) {
+    private void createMinedResultMessage(CoinType coinType, PoolType poolType, MarketType marketType, MinedResult minedResult) {
         BigDecimal coinBalance = minedResult.getCoinBalance().setScale(8, DOWN);
         BigDecimal usdBalance = minedResult.getUsdBalance().setScale(2, DOWN);
-        BigDecimal buyPrice = minedResult.getBuyPrice().setScale(2, DOWN);
-        BigDecimal sellPrice = minedResult.getSellPrice().setScale(2, DOWN);
+        BigDecimal coinPrice = minedResult.getCoinPrice().setScale(2, DOWN);
         String minedResultMessage = LOCALIZATION.getString("mined_result");
         minedResultMessage = String.format(minedResultMessage,
-                                           pool.getWebsite(),
-                                           pool.getName().toUpperCase(),
+                                           poolType.getWebsite(),
+                                           poolType.getName().toUpperCase(),
                                            coinBalance,
-                                           coin.getSymbol(),
-                                           exchanger.getWebsite(),
-                                           exchanger.getName().toUpperCase(),
+                                           coinType.getSymbol(),
                                            usdBalance,
-                                           buyPrice,
-                                           sellPrice);
+                                           coinPrice);
         telegramMessage.setMessageContent(minedResultMessage);
     }
 
@@ -206,10 +199,10 @@ public class TelegramUpdatesBot implements BotUpdates {
      * Creates supporting coins message.
      */
     private void createSupportingCoinsMessage() {
-        List<Coin> coinList = Arrays.asList(Coin.values());
+        List<CoinType> coinList = Arrays.asList(CoinType.values());
         InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[coinList.size()][1];
         for (int i = 0; i < coinList.size(); i++) {
-            Coin coin = coinList.get(i);
+            CoinType coin = coinList.get(i);
             String coinSymbol = coin.getSymbol();
             keyboardButtonArray[i][0] = new InlineKeyboardButton(coinSymbol).callbackData(coinSymbol);
         }
@@ -223,36 +216,17 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param stepData data of current step
      */
     private void createSupportingPoolsMessage(TelegramStepData stepData) {
-        List<Pool> poolList = Arrays.asList(Pool.values());
+        List<PoolType> poolList = Arrays.asList(PoolType.values());
         poolList.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
         InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[poolList.size()][1];
         for (int i = 0; i < poolList.size(); i++) {
-            Pool pool = poolList.get(i);
+            PoolType pool = poolList.get(i);
             String poolName = pool.getName();
             String callbackData = stepData.getCoin().getSymbol() + "_" + poolName;
             keyboardButtonArray[i][0] = new InlineKeyboardButton(poolName).callbackData(callbackData);
         }
         telegramMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
         telegramMessage.setMessageContent(LOCALIZATION.getString("select_pool"));
-    }
-
-    /**
-     * Creates supporting exchangers message.
-     *
-     * @param stepData data of current step
-     */
-    private void createSupportingExchangersMessage(TelegramStepData stepData) {
-        List<Exchanger> exchangerList = Arrays.asList(Exchanger.values());
-        exchangerList.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[exchangerList.size()][1];
-        for (int i = 0; i < exchangerList.size(); i++) {
-            Exchanger exchanger = exchangerList.get(i);
-            String exchangerName = exchanger.getName();
-            String callbackData = stepData.getCoin().getSymbol() + "_" + stepData.getPool().getName() + "_" + exchangerName;
-            keyboardButtonArray[i][0] = new InlineKeyboardButton(exchangerName).callbackData(callbackData);
-        }
-        telegramMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
-        telegramMessage.setMessageContent(LOCALIZATION.getString("select_exchanger"));
     }
 
     /**

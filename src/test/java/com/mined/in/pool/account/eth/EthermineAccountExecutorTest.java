@@ -34,7 +34,7 @@ public class EthermineAccountExecutorTest {
     public void testCorrectJsonResponse() throws AccountExecutorException {
         BigDecimal walletBalance = new BigDecimal("0.06125681225984686");
         JSONObject response = new JSONObject("{\"status\":\"OK\",\"data\":{\"unpaid\":61256812259846860}}");
-        OkHttpClient httpClient = Utils.getHttpClient(response, 200);
+        OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
         Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
@@ -44,7 +44,7 @@ public class EthermineAccountExecutorTest {
     @Test(expected = AccountExecutorException.class)
     public void testCorrectJsonResponseWithApiError() throws AccountExecutorException {
         JSONObject response = new JSONObject("{\"status\":\"ERROR\",\"error\":\"Invalid address\"}");
-        OkHttpClient httpClient = Utils.getHttpClient(response, 200);
+        OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -57,7 +57,7 @@ public class EthermineAccountExecutorTest {
 
     @Test(expected = AccountExecutorException.class)
     public void test500HttpError() throws AccountExecutorException {
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 500);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -69,7 +69,7 @@ public class EthermineAccountExecutorTest {
 
     @Test(expected = AccountExecutorException.class)
     public void testEmptyResponse() throws AccountExecutorException {
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 200);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -82,7 +82,7 @@ public class EthermineAccountExecutorTest {
     @Test(expected = AccountExecutorException.class)
     public void testWithEmptyWalletAddress() throws AccountExecutorException {
         String errorCode = "BAD_WALLET";
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 200);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountExecutor accountExecutor = new EthermineAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount("");

@@ -34,7 +34,7 @@ public class NanopoolAccountExecutorTest {
     public void testCorrectJsonResponse() throws AccountExecutorException {
         BigDecimal walletBalance = new BigDecimal("3.7017610089607");
         JSONObject responseJSON = new JSONObject("{\"status\":true,\"data\":3.7017610089607}");
-        OkHttpClient httpClient = Utils.getHttpClient(responseJSON, 200);
+        OkHttpClient httpClient = Utils.getHttpClient(responseJSON.toString(), 200);
         AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
         Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
@@ -44,7 +44,7 @@ public class NanopoolAccountExecutorTest {
     @Test(expected = AccountExecutorException.class)
     public void testCorrectJsonResponseWithApiError() throws AccountExecutorException {
         JSONObject responseJSON = new JSONObject("{\"status\":false,\"error\":\"Account not found\"}");
-        OkHttpClient httpClient = Utils.getHttpClient(responseJSON, 200);
+        OkHttpClient httpClient = Utils.getHttpClient(responseJSON.toString(), 200);
         AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -57,7 +57,7 @@ public class NanopoolAccountExecutorTest {
 
     @Test(expected = AccountExecutorException.class)
     public void test500HttpError() throws AccountExecutorException {
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 500);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -69,7 +69,7 @@ public class NanopoolAccountExecutorTest {
 
     @Test(expected = AccountExecutorException.class)
     public void testEmptyResponse() throws AccountExecutorException {
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 200);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount(WALLET_ADDRESS);
@@ -82,7 +82,7 @@ public class NanopoolAccountExecutorTest {
     @Test(expected = AccountExecutorException.class)
     public void testWithEmptyWalletAddress() throws AccountExecutorException {
         String errorCode = "BAD_WALLET";
-        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject(), 200);
+        OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
         try {
             accountExecutor.getETHAccount("");

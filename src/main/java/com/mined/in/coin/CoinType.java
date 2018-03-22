@@ -1,12 +1,12 @@
 package com.mined.in.coin;
 
 /**
- * Enumeration of supporting coins.
+ * Enumerations of supporting coins.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public enum Coin {
+public enum CoinType {
 
     ETH("Ethereum", "ETH", "https://www.ethereum.org/");
 
@@ -24,7 +24,7 @@ public enum Coin {
      * @param symbol coin symbol
      * @param website coin official site
      */
-    private Coin(String name, String symbol, String website) {
+    private CoinType(String name, String symbol, String website) {
         this.name = name;
         this.symbol = symbol;
         this.website = website;
@@ -63,10 +63,10 @@ public enum Coin {
      * @param symbol coin symbol
      * @return coin
      */
-    public static Coin getBySymbol(String symbol) {
-        Coin[] coinArray = Coin.values();
+    public static CoinType getBySymbol(String symbol) {
+        CoinType[] coinArray = CoinType.values();
         for (int i = 0; i < coinArray.length; i++) {
-            Coin coin = coinArray[i];
+            CoinType coin = coinArray[i];
             if (coin.getSymbol().equals(symbol)) {
                 return coin;
             }

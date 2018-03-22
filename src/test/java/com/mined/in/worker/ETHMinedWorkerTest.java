@@ -1,20 +1,21 @@
 package com.mined.in.worker;
 
-import static com.mined.in.coin.Coin.ETH;
+import static com.mined.in.coin.CoinType.ETH;
 import static com.mined.in.error.ErrorCode.API_ERROR;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
-import com.mined.in.exchanger.pair.PairExecutor;
-import com.mined.in.exchanger.pair.PairExecutorException;
-import com.mined.in.exchanger.pair.exmo.ExmoPairExecutor;
+import com.mined.in.market.MarketExecutor;
+import com.mined.in.market.MarketExecutorException;
+import com.mined.in.market.coinmarketcap.CoinMarketCapMarketExecutor;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
 import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
@@ -33,35 +34,37 @@ public class ETHMinedWorkerTest {
     private final static String WALLET_ADDRESS = "0x4e2c24519354a63c37869d04cefb7d113d17fdc3";
 
     @Test
-    public void testCorrectJsonResponse() throws AccountExecutorException, PairExecutorException {
+    public void testCorrectJsonResponse() throws AccountExecutorException, MarketExecutorException {
         BigDecimal walletBalance = BigDecimal.valueOf(0.78665394);
         JSONObject poolResponseJSON = new JSONObject("{\"error\": false, \"wallet_balance\": \"0.78665394\"}");
-        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
+        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
-        BigDecimal buyPrice = BigDecimal.valueOf(611.0803);
-        BigDecimal sellPrice = BigDecimal.valueOf(615.99987);
-        JSONObject exchangerJSON =
-                new JSONObject("{\"ETH_USD\":{\"buy_price\":\"611.0803\",\"sell_price\":\"615.99987\",\"last_trade\":\"614.69\","
-                        + "\"high\":\"657.555\",\"low\":\"603.128418\",\"avg\":\"626.85027354\",\"vol\":\"6578.09576192\","
-                        + "\"vol_curr\":\"4043489.68389892\",\"updated\":1521147101}}");
-        OkHttpClient exchangerHttpClient = Utils.getHttpClient(exchangerJSON, 200);
-        PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, pairExecutor);
+        BigDecimal coinPrice = BigDecimal.valueOf(536.854);
+        JSONObject marketJSON = new JSONObject(
+                "{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": \"536.854\", "
+                        + "\"price_btc\": \"0.0619693\", \"24h_volume_usd\": \"1560240000.0\", \"market_cap_usd\": \"52799438836.0\", "
+                        + "\"available_supply\": \"98349717.0\", \"total_supply\": \"98349717.0\", \"max_supply\": null, "
+                        + "\"percent_change_1h\": \"0.94\", \"percent_change_24h\": \"-4.19\", \"percent_change_7d\": \"-11.61\", "
+                        + "\"last_updated\": \"1521743654\" }");
+        JSONArray marketArray = new JSONArray();
+        marketArray.put(marketJSON);
+        OkHttpClient marketHttpClient = Utils.getHttpClient(marketArray.toString(), 200);
+        MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(marketHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor);
         MinedResult result = worker.calculate(WALLET_ADDRESS);
         assertEquals(walletBalance, result.getCoinBalance());
-        assertEquals(walletBalance.multiply(buyPrice), result.getUsdBalance());
-        assertEquals(buyPrice, result.getBuyPrice());
-        assertEquals(sellPrice, result.getSellPrice());
+        assertEquals(walletBalance.multiply(coinPrice), result.getUsdBalance());
+        assertEquals(coinPrice, result.getCoinPrice());
     }
 
     @Test(expected = AccountExecutorException.class)
-    public void testPoolError() throws AccountExecutorException, PairExecutorException {
+    public void testPoolError() throws AccountExecutorException, MarketExecutorException {
         JSONObject poolResponseJSON = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
-        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
+        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
-        OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 200);
-        PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, pairExecutor);
+        OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
+        MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(marketHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
@@ -71,17 +74,17 @@ public class ETHMinedWorkerTest {
         }
     }
 
-    @Test(expected = PairExecutorException.class)
-    public void testExchangerError() throws AccountExecutorException, PairExecutorException {
+    @Test(expected = MarketExecutorException.class)
+    public void testMarketError() throws AccountExecutorException, MarketExecutorException {
         JSONObject poolResponseJSON = new JSONObject("{\"error\": false, \"wallet_balance\": \"0.78665394\"}");
-        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON, 200);
+        OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
-        OkHttpClient exchangerHttpClient = Utils.getHttpClient(new JSONObject(), 500);
-        PairExecutor pairExecutor = new ExmoPairExecutor(exchangerHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, pairExecutor);
+        OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
+        MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(marketHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
-        } catch (PairExecutorException e) {
+        } catch (MarketExecutorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
         }

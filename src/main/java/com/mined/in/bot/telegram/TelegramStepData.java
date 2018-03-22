@@ -1,8 +1,7 @@
 package com.mined.in.bot.telegram;
 
-import com.mined.in.coin.Coin;
-import com.mined.in.exchanger.Exchanger;
-import com.mined.in.pool.Pool;
+import com.mined.in.coin.CoinType;
+import com.mined.in.pool.PoolType;
 
 /**
  * Class for representing data of current step.
@@ -15,11 +14,9 @@ public class TelegramStepData {
     /** Current step. */
     private final Step step;
     /** Selected coin. */
-    private Coin coin;
+    private CoinType coin;
     /** Selected pool. */
-    private Pool pool;
-    /** Selected exchanger. */
-    private Exchanger exchanger;
+    private PoolType pool;
 
     /**
      * Enumeration of steps.
@@ -32,9 +29,7 @@ public class TelegramStepData {
         /** The coin. */
         COIN(1),
         /** The pool. */
-        POOL(2),
-        /** The exchanger. */
-        EXCHANGER(3);
+        POOL(2);
 
         /** Step position. */
         private int position;
@@ -74,17 +69,14 @@ public class TelegramStepData {
      */
     public TelegramStepData(String data) {
         super();
-        // Callback query data format: "COIN_POOL_EXCHANGER" ("ETH_dwarfpool_exmo")
+        // Callback query data format: "COIN_POOL" ("ETH_dwarfpool")
         String[] splittedData = data.split("_");
         int splittedDataLength = splittedData.length;
         if (splittedDataLength > 0) {
-            coin = Coin.getBySymbol(splittedData[0]);
+            coin = CoinType.getBySymbol(splittedData[0]);
         }
         if (splittedDataLength > 1) {
-            pool = Pool.getByName(splittedData[1]);
-        }
-        if (splittedDataLength > 2) {
-            exchanger = Exchanger.getByName(splittedData[2]);
+            pool = PoolType.getByName(splittedData[1]);
         }
         step = Step.getByPosition(splittedDataLength);
     }
@@ -95,7 +87,7 @@ public class TelegramStepData {
      * @return string representation of callback query data
      */
     public String getCallbackQueryData() {
-        return coin.getSymbol() + "_" + pool.getName() + "_" + exchanger.getName();
+        return coin.getSymbol() + "_" + pool.getName();
     }
 
     /**
@@ -103,7 +95,7 @@ public class TelegramStepData {
      *
      * @return the coin
      */
-    public Coin getCoin() {
+    public CoinType getCoin() {
         return coin;
     }
 
@@ -112,17 +104,8 @@ public class TelegramStepData {
      *
      * @return the pool
      */
-    public Pool getPool() {
+    public PoolType getPool() {
         return pool;
-    }
-
-    /**
-     * Gets the exchanger.
-     *
-     * @return the exchanger
-     */
-    public Exchanger getExchanger() {
-        return exchanger;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.mined.in.pool.account;
 
-import com.mined.in.pool.Pool;
+import com.mined.in.pool.PoolType;
 import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
 import com.mined.in.pool.account.nanopool.NanopoolAccountExecutor;
@@ -21,7 +21,7 @@ public class AccountExecutorFactory {
      * @param pool pool name
      * @return pool account executor
      */
-    public static AccountExecutor getAccountExecutor(Pool pool) {
+    public static AccountExecutor getAccountExecutor(PoolType pool) {
         OkHttpClient httpClient = new OkHttpClient();
         switch (pool) {
         case DWARFPOOL: {

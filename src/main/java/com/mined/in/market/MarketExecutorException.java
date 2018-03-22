@@ -1,14 +1,14 @@
-package com.mined.in.exchanger.pair;
+package com.mined.in.market;
 
 import com.mined.in.error.ErrorCode;
 
 /**
- * Exception for working with pair executor.
+ * Exception for working with market executor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class PairExecutorException extends Exception {
+public class MarketExecutorException extends Exception {
 
     /** Error code. */
     private final ErrorCode errorCode;
@@ -16,23 +16,23 @@ public class PairExecutorException extends Exception {
     private static final long serialVersionUID = -448307664169612373L;
 
     /**
-     * Creates the exception instance for working with pool account executor.
+     * Creates the exception instance for working with market executor.
      *
      * @param errorCode error code
      * @param message the detail message
      */
-    public PairExecutorException(ErrorCode errorCode, String message) {
+    public MarketExecutorException(ErrorCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
 
     /**
-     * Creates the exception instance for working with pool account executor.
+     * Creates the exception instance for working with market executor.
      *
      * @param errorCode error code
      * @param cause the cause
      */
-    public PairExecutorException(ErrorCode errorCode, Throwable cause) {
+    public MarketExecutorException(ErrorCode errorCode, Throwable cause) {
         super(cause);
         this.errorCode = errorCode;
     }
