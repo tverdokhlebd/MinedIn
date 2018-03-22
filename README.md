@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/tverdokhlebd/MinedIn.svg?branch=master)](https://travis-ci.org/tverdokhlebd/MinedIn)
 # MinedIn
-MinedIn is the project for calculating the mined result in USD. The implementation is based on open API of pools and exchangers.
+MinedIn is the project for calculating the mined result in USD. The implementation is based on open API of pools and markets.
 
 <b>Supporting coins:</b>
 - <a href="https://www.ethereum.org/">ETH</a>
@@ -11,7 +11,7 @@ MinedIn is the project for calculating the mined result in USD. The implementati
 - <a href="https://nanopool.org/">NANOPOOL</a>
 
 <b>Supporting markets:</b>
-- <a href="https://coinmarketcap.com/">COINMARKETCAP</a>
+- <a href="https://coinmarketcap.com/">COINMARKETCAP</a> (Default)
 
 <b>Available implementations</b>:
 - <a href="https://t.me/MinedInBot">TELEGRAM BOT</a>
