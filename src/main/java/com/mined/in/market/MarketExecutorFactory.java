@@ -23,7 +23,7 @@ public class MarketExecutorFactory {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         switch (marketType) {
         case COIN_MARKET_CAP: {
-            okHttpBuilder.addInterceptor(new CoinMarketCapLimiter());
+            okHttpBuilder.addInterceptor(CoinMarketCapLimiter.get());
             return new CoinMarketCapMarketExecutor(okHttpBuilder.build());
         }
         default:
