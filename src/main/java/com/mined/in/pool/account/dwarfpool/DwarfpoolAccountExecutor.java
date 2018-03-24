@@ -16,6 +16,7 @@ import com.mined.in.pool.account.AccountExecutorException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Implementation of Dwarfpool executor.
@@ -45,15 +46,19 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
         }
-        Request request = new Request.Builder().url(API_URL + walletAddress).build();
+        Request request = new Request.Builder().url(API_URL + walletAddress)
+                                               .build();
         DwarfpoolAccount account = null;
-        try (Response response = httpClient.newCall(request).execute()) {
+        try (Response response = httpClient.newCall(request)
+                                           .execute()) {
             if (!response.isSuccessful()) {
                 throw new AccountExecutorException(HTTP_ERROR, response.message());
             }
-            JSONObject jsonResponse = new JSONObject(response.body().string());
-            checkError(jsonResponse);
-            account = DwarfpoolAccount.create(walletAddress, jsonResponse);
+            try (ResponseBody body = response.body()) {
+                JSONObject jsonResponse = new JSONObject(body.string());
+                checkError(jsonResponse);
+                account = DwarfpoolAccount.create(walletAddress, jsonResponse);
+            }
         } catch (JSONException e) {
             throw new AccountExecutorException(JSON_ERROR, e);
         } catch (IOException e) {

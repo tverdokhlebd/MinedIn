@@ -18,6 +18,7 @@ import com.mined.in.market.MarketExecutorException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Implementation of CoinMarketCap executor.
@@ -46,14 +47,18 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
 
     @Override
     public Market getMarket() throws MarketExecutorException {
-        Request request = new Request.Builder().url(API_URL).build();
+        Request request = new Request.Builder().url(API_URL)
+                                               .build();
         Market market = null;
-        try (Response response = httpClient.newCall(request).execute()) {
+        try (Response response = httpClient.newCall(request)
+                                           .execute()) {
             if (!response.isSuccessful()) {
                 throw new MarketExecutorException(HTTP_ERROR, response.message());
             }
-            JSONArray jsonResponse = new JSONArray(response.body().string());
-            market = createMarket(jsonResponse);
+            try (ResponseBody body = response.body()) {
+                JSONArray jsonResponse = new JSONArray(body.string());
+                market = createMarket(jsonResponse);
+            }
         } catch (JSONException e) {
             throw new MarketExecutorException(JSON_ERROR, e);
         } catch (IOException e) {
@@ -66,7 +71,7 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
      * Creates market from JSON response.
      *
      * @param jsonResponse JSON response
-     * @return market
+     * @return market from JSON response
      */
     private Market createMarket(JSONArray jsonResponse) {
         Market.MarketBuilder builder = new MarketBuilder();
