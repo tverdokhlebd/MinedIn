@@ -5,6 +5,7 @@ import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +31,8 @@ public class EthermineAccountExecutor implements AccountExecutor {
     private final OkHttpClient httpClient;
     /** Ethermine API url. */
     private static final String API_URL = "https://api.ethermine.org/miner/:miner/currentStats";
+    /** Wei. */
+    private final static BigDecimal WEI = new BigDecimal("1000000000000000000");
 
     /**
      * Creates the Ethermine executor instance.
@@ -47,7 +50,7 @@ public class EthermineAccountExecutor implements AccountExecutor {
             throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
         }
         Request request = new Request.Builder().url(API_URL.replace(":miner", walletAddress)).build();
-        EthermineAccount account = null;
+        Account account = null;
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new AccountExecutorException(HTTP_ERROR, response.message());
@@ -55,7 +58,7 @@ public class EthermineAccountExecutor implements AccountExecutor {
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
                 checkError(jsonResponse);
-                account = EthermineAccount.create(walletAddress, jsonResponse);
+                account = createAccount(walletAddress, jsonResponse);
             }
         } catch (JSONException e) {
             throw new AccountExecutorException(JSON_ERROR, e);
@@ -63,6 +66,24 @@ public class EthermineAccountExecutor implements AccountExecutor {
             throw new AccountExecutorException(HTTP_ERROR, e);
         }
         return account;
+    }
+
+    /**
+     * Creates account from JSON response.
+     *
+     * @param walletAddress wallet address
+     * @param jsonAccount account in JSON format
+     */
+    private Account createAccount(String walletAddress, JSONObject jsonAccount) {
+        BigDecimal walletBalance = new BigDecimal(0);
+        JSONObject data = jsonAccount.optJSONObject("data");
+        if (data != null) {
+            Long balanceLong = data.getLong("unpaid");
+            walletBalance = BigDecimal.valueOf(balanceLong);
+            walletBalance = walletBalance.divide(WEI);
+            walletBalance = walletBalance.stripTrailingZeros();
+        }
+        return new Account(walletAddress, walletBalance);
     }
 
     /**

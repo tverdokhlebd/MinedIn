@@ -5,6 +5,7 @@ import static com.mined.in.error.ErrorCode.HTTP_ERROR;
 import static com.mined.in.error.ErrorCode.JSON_ERROR;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +48,7 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
             throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
         }
         Request request = new Request.Builder().url(API_URL + walletAddress).build();
-        DwarfpoolAccount account = null;
+        Account account = null;
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new AccountExecutorException(HTTP_ERROR, response.message());
@@ -55,7 +56,7 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
                 checkError(jsonResponse);
-                account = DwarfpoolAccount.create(walletAddress, jsonResponse);
+                account = createAccount(walletAddress, jsonResponse);
             }
         } catch (JSONException e) {
             throw new AccountExecutorException(JSON_ERROR, e);
@@ -63,6 +64,18 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
             throw new AccountExecutorException(HTTP_ERROR, e);
         }
         return account;
+    }
+
+    /**
+     * Creates account from JSON response.
+     *
+     * @param walletAddress wallet address
+     * @param jsonAccount account in JSON format
+     */
+    private Account createAccount(String walletAddress, JSONObject jsonAccount) {
+        BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));
+        walletBalance = walletBalance.stripTrailingZeros();
+        return new Account(walletAddress, walletBalance);
     }
 
     /**
