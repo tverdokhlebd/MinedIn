@@ -36,12 +36,11 @@ public class CoinMarketCapMarketExecutorTest {
                 + "\"available_supply\": \"16933825.0\", \"total_supply\": \"16933825.0\", \"max_supply\": \"21000000.0\", "
                 + "\"percent_change_1h\": \"0.51\", \"percent_change_24h\": \"-2.56\", \"percent_change_7d\": \"5.26\", \"last_updated\": "
                 + "\"1521743668\" }"));
-        marketArray
-                .put(new JSONObject("{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": "
-                        + "\"536.854\", \"price_btc\": \"0.0619693\", \"24h_volume_usd\": \"1560240000.0\", \"market_cap_usd\": "
-                        + "\"52799438836.0\", \"available_supply\": \"98349717.0\", \"total_supply\": \"98349717.0\", \"max_supply\": null, "
-                        + "\"percent_change_1h\": \"0.94\", \"percent_change_24h\": \"-4.19\", \"percent_change_7d\": \"-11.61\", "
-                        + "\"last_updated\": \"1521743654\" }"));
+        marketArray.put(new JSONObject("{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": "
+                + "\"536.854\", \"price_btc\": \"0.0619693\", \"24h_volume_usd\": \"1560240000.0\", \"market_cap_usd\": "
+                + "\"52799438836.0\", \"available_supply\": \"98349717.0\", \"total_supply\": \"98349717.0\", \"max_supply\": null, "
+                + "\"percent_change_1h\": \"0.94\", \"percent_change_24h\": \"-4.19\", \"percent_change_7d\": \"-11.61\", "
+                + "\"last_updated\": \"1521743654\" }"));
         OkHttpClient httpClient = Utils.getHttpClient(marketArray.toString(), 200);
         MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(httpClient);
         Market market = marketExecutor.getMarket();

@@ -36,12 +36,21 @@ public class ETHMinedWorkerTest {
     @Test
     public void testCorrectJsonResponse() throws AccountExecutorException, MarketExecutorException {
         BigDecimal walletBalance = BigDecimal.valueOf(0.78665394);
-        JSONObject poolResponseJSON = new JSONObject("{\"error\": false, \"wallet_balance\": \"0.78665394\"}");
+        JSONObject poolResponseJSON =
+                new JSONObject("{ \"autopayout_from\": \"5.000\", \"earning_24_hours\": \"0.01137842\", \"error\": false, "
+                        + "\"immature_earning\": 0.000455540976, \"last_payment_amount\": 0, \"last_payment_date\": null, \"last_share_date\": "
+                        + "\"Sat, 24 Mar 2018 21:09:25 GMT\", \"payout_daily\": false, \"payout_request\": false, \"total_hashrate\": 174.03, "
+                        + "\"total_hashrate_calculated\": 197.03, \"transferring_to_balance\": 0, \"wallet\": "
+                        + "\"0x4e2c24519354a63c37869d04cefb7d113d17fdc3\", \"wallet_balance\": \"0.78665394\", \"workers\": { \"dmtry\": "
+                        + "{ \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
+                        + "\"last_submit\": \"Sat, 24 Mar 2018 21:09:32 GMT\", \"second_since_submit\": 342, \"worker\": \"dmtry\" }, "
+                        + "\"tv\": { \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
+                        + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         BigDecimal coinPrice = BigDecimal.valueOf(536.854);
-        JSONObject marketJSON = new JSONObject(
-                "{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": \"536.854\", "
+        JSONObject marketJSON =
+                new JSONObject("{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": \"536.854\", "
                         + "\"price_btc\": \"0.0619693\", \"24h_volume_usd\": \"1560240000.0\", \"market_cap_usd\": \"52799438836.0\", "
                         + "\"available_supply\": \"98349717.0\", \"total_supply\": \"98349717.0\", \"max_supply\": null, "
                         + "\"percent_change_1h\": \"0.94\", \"percent_change_24h\": \"-4.19\", \"percent_change_7d\": \"-11.61\", "
@@ -76,7 +85,16 @@ public class ETHMinedWorkerTest {
 
     @Test(expected = MarketExecutorException.class)
     public void testMarketError() throws AccountExecutorException, MarketExecutorException {
-        JSONObject poolResponseJSON = new JSONObject("{\"error\": false, \"wallet_balance\": \"0.78665394\"}");
+        JSONObject poolResponseJSON =
+                new JSONObject("{ \"autopayout_from\": \"5.000\", \"earning_24_hours\": \"0.01137842\", \"error\": false, "
+                        + "\"immature_earning\": 0.000455540976, \"last_payment_amount\": 0, \"last_payment_date\": null, \"last_share_date\": "
+                        + "\"Sat, 24 Mar 2018 21:09:25 GMT\", \"payout_daily\": false, \"payout_request\": false, \"total_hashrate\": 174.03, "
+                        + "\"total_hashrate_calculated\": 197.03, \"transferring_to_balance\": 0, \"wallet\": "
+                        + "\"0x4e2c24519354a63c37869d04cefb7d113d17fdc3\", \"wallet_balance\": \"0.78665394\", \"workers\": { \"dmtry\": "
+                        + "{ \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
+                        + "\"last_submit\": \"Sat, 24 Mar 2018 21:09:32 GMT\", \"second_since_submit\": 342, \"worker\": \"dmtry\" }, "
+                        + "\"tv\": { \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
+                        + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
