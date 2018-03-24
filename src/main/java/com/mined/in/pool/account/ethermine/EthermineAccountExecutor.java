@@ -46,11 +46,9 @@ public class EthermineAccountExecutor implements AccountExecutor {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
         }
-        Request request = new Request.Builder().url(API_URL.replace(":miner", walletAddress))
-                                               .build();
+        Request request = new Request.Builder().url(API_URL.replace(":miner", walletAddress)).build();
         EthermineAccount account = null;
-        try (Response response = httpClient.newCall(request)
-                                           .execute()) {
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new AccountExecutorException(HTTP_ERROR, response.message());
             }

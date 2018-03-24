@@ -47,11 +47,9 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
 
     @Override
     public Market getMarket() throws MarketExecutorException {
-        Request request = new Request.Builder().url(API_URL)
-                                               .build();
+        Request request = new Request.Builder().url(API_URL).build();
         Market market = null;
-        try (Response response = httpClient.newCall(request)
-                                           .execute()) {
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new MarketExecutorException(HTTP_ERROR, response.message());
             }
