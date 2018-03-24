@@ -6,6 +6,8 @@ import static com.mined.in.error.ErrorCode.JSON_ERROR;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +15,7 @@ import org.json.JSONObject;
 import com.mined.in.pool.account.Account;
 import com.mined.in.pool.account.AccountExecutor;
 import com.mined.in.pool.account.AccountExecutorException;
+import com.mined.in.pool.account.Worker;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -71,11 +74,21 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      *
      * @param walletAddress wallet address
      * @param jsonAccount account in JSON format
+     * @return account from JSON response
      */
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));
         walletBalance = walletBalance.stripTrailingZeros();
-        return new Account(walletAddress, walletBalance);
+        double totalHashrate = jsonAccount.getDouble("total_hashrate");
+        JSONObject workerJson = jsonAccount.getJSONObject("workers");
+        String[] workerNameArray = JSONObject.getNames(workerJson);
+        List<Worker> workerList = new ArrayList<>(workerNameArray.length);
+        for (int i = 0; i < workerNameArray.length; i++) {
+            String workerName = workerNameArray[i];
+            double workerHashrate = workerJson.getJSONObject(workerName).getDouble("hashrate");
+            workerList.add(new Worker(workerName, workerHashrate));
+        }
+        return new Account(walletAddress, walletBalance, totalHashrate, workerList);
     }
 
     /**
