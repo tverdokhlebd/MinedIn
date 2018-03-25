@@ -1,6 +1,6 @@
 package com.mined.in.worker;
 
-import com.mined.in.calculator.CalculationExecutorException;
+import com.mined.in.calculation.CalculationExecutorException;
 import com.mined.in.market.MarketExecutorException;
 import com.mined.in.pool.account.AccountExecutorException;
 

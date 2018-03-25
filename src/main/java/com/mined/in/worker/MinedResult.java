@@ -2,7 +2,7 @@ package com.mined.in.worker;
 
 import java.math.BigDecimal;
 
-import com.mined.in.calculator.Calculation;
+import com.mined.in.calculation.Calculation;
 
 /**
  * Class for representing result of mined.

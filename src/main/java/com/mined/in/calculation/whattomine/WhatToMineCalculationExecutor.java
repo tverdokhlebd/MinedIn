@@ -1,4 +1,4 @@
-package com.mined.in.calculator.whattomine;
+package com.mined.in.calculation.whattomine;
 
 import static com.mined.in.coin.CoinType.ETH;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mined.in.calculator.Calculation;
-import com.mined.in.calculator.Calculation.CalculationBuilder;
-import com.mined.in.calculator.CalculationExecutor;
-import com.mined.in.calculator.CalculationExecutorException;
+import com.mined.in.calculation.Calculation;
+import com.mined.in.calculation.CalculationExecutor;
+import com.mined.in.calculation.CalculationExecutorException;
+import com.mined.in.calculation.Calculation.CalculationBuilder;
 import com.mined.in.coin.CoinType;
 
 import okhttp3.OkHttpClient;

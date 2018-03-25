@@ -12,10 +12,10 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
-import com.mined.in.calculator.Calculation;
-import com.mined.in.calculator.CalculationExecutor;
-import com.mined.in.calculator.CalculationExecutorException;
-import com.mined.in.calculator.whattomine.WhatToMineCalculationExecutor;
+import com.mined.in.calculation.Calculation;
+import com.mined.in.calculation.CalculationExecutor;
+import com.mined.in.calculation.CalculationExecutorException;
+import com.mined.in.calculation.whattomine.WhatToMineCalculationExecutor;
 
 import okhttp3.OkHttpClient;
 

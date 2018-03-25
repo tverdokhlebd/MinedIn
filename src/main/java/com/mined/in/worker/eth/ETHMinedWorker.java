@@ -2,9 +2,9 @@ package com.mined.in.worker.eth;
 
 import java.math.BigDecimal;
 
-import com.mined.in.calculator.Calculation;
-import com.mined.in.calculator.CalculationExecutor;
-import com.mined.in.calculator.CalculationExecutorException;
+import com.mined.in.calculation.Calculation;
+import com.mined.in.calculation.CalculationExecutor;
+import com.mined.in.calculation.CalculationExecutorException;
 import com.mined.in.market.Market;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;

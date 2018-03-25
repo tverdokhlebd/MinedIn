@@ -1,6 +1,6 @@
-package com.mined.in.calculator;
+package com.mined.in.calculation;
 
-import com.mined.in.calculator.whattomine.WhatToMineCalculationExecutor;
+import com.mined.in.calculation.whattomine.WhatToMineCalculationExecutor;
 
 import okhttp3.OkHttpClient;
 

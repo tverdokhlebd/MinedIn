@@ -1,4 +1,4 @@
-package com.mined.in.calculator;
+package com.mined.in.calculation;
 
 import com.mined.in.error.ErrorCode;
 

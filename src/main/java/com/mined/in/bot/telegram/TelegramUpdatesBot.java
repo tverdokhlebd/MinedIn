@@ -1,6 +1,6 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.calculator.CalculationType.WHAT_TO_MINE;
+import static com.mined.in.calculation.CalculationType.WHAT_TO_MINE;
 import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static java.math.RoundingMode.DOWN;
@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mined.in.bot.BotUpdates;
-import com.mined.in.calculator.CalculationExecutor;
-import com.mined.in.calculator.CalculationExecutorException;
-import com.mined.in.calculator.CalculationExecutorFactory;
-import com.mined.in.calculator.CalculationType;
+import com.mined.in.calculation.CalculationExecutor;
+import com.mined.in.calculation.CalculationExecutorException;
+import com.mined.in.calculation.CalculationExecutorFactory;
+import com.mined.in.calculation.CalculationType;
 import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;

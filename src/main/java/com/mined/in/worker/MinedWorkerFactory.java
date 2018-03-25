@@ -1,6 +1,6 @@
 package com.mined.in.worker;
 
-import com.mined.in.calculator.CalculationExecutor;
+import com.mined.in.calculation.CalculationExecutor;
 import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.pool.account.AccountExecutor;
