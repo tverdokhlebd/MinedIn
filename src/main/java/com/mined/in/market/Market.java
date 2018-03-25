@@ -62,9 +62,9 @@ public class Market {
         }
 
         /**
-         * Returns built market.
+         * Returns created market.
          *
-         * @return built market
+         * @return created market
          */
         public Market createMarket() {
             return new Market(ethPrice);

@@ -20,7 +20,7 @@ import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of Dwarfpool executor.
+ * Tests of Dwarfpool ethereum executor.
  *
  * @author Dmitry Tverdokhleb
  *

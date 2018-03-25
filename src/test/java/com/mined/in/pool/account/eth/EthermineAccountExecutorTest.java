@@ -20,7 +20,7 @@ import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of Ethermine executor.
+ * Tests of Ethermine ethereum executor.
  *
  * @author Dmitry Tverdokhleb
  *
