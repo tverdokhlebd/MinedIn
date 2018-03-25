@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mined.in.bot.BotUpdates;
+import com.mined.in.calculation.Calculation;
 import com.mined.in.calculation.CalculationExecutor;
 import com.mined.in.calculation.CalculationExecutorException;
 import com.mined.in.calculation.CalculationExecutorFactory;
@@ -56,6 +57,8 @@ public class TelegramUpdatesBot implements BotUpdates {
     private final static Logger LOG = LoggerFactory.getLogger(TelegramUpdatesBot.class);
     /** Localization resources. */
     private final static ResourceBundle LOCALIZATION = ResourceBundle.getBundle(TelegramUpdatesBot.class.getSimpleName().toLowerCase());
+    /** Terahash. */
+    private final static BigDecimal TERAHASH = BigDecimal.valueOf(1_000_000_000_000L);
 
     /**
      * Creates the instance for processing incoming updates from Telegram bot.
@@ -162,7 +165,7 @@ public class TelegramUpdatesBot implements BotUpdates {
         MarketType marketType = COIN_MARKET_CAP;
         CalculationType calculationType = WHAT_TO_MINE;
         MinedResult minedResult = calculateMined(walletAddress, coinType, poolType, marketType, calculationType);
-        createMinedResultMessage(coinType, poolType, minedResult);
+        createMinedResultMessage(coinType, poolType, marketType, calculationType, minedResult);
     }
 
     /**
@@ -193,21 +196,48 @@ public class TelegramUpdatesBot implements BotUpdates {
      *
      * @param coinType coin type
      * @param poolType pool type
+     * @param marketType market type
+     * @param calculationType mining calculation type
      * @param minedResult mined result
      */
-    private void createMinedResultMessage(CoinType coinType, PoolType poolType, MinedResult minedResult) {
+    private void createMinedResultMessage(CoinType coinType, PoolType poolType, MarketType marketType, CalculationType calculationType,
+            MinedResult minedResult) {
         BigDecimal coinBalance = minedResult.getCoinBalance().setScale(8, DOWN);
         BigDecimal usdBalance = minedResult.getUsdBalance().setScale(2, DOWN);
         BigDecimal coinPrice = minedResult.getCoinPrice().setScale(2, DOWN);
-        String minedResultMessage = LOCALIZATION.getString("mined_result");
-        minedResultMessage = String.format(minedResultMessage,
-                                           poolType.getWebsite(),
-                                           poolType.getName().toUpperCase(),
-                                           coinBalance,
-                                           coinType.getSymbol(),
-                                           usdBalance,
-                                           coinPrice);
-        telegramMessage.setMessageContent(minedResultMessage);
+        String balanceMessage = LOCALIZATION.getString("balance");
+        balanceMessage = String.format(balanceMessage,
+                                       "$" + usdBalance,
+                                       "$" + coinPrice);
+        Calculation calculation = minedResult.getCalculation();
+        String accountMessage = LOCALIZATION.getString("account");
+        accountMessage = String.format(accountMessage,
+                                       poolType.getName(),
+                                       coinBalance + " " + coinType.getSymbol(),
+                                       poolType.getName(),
+                                       calculation.getTotalHashrate().setScale(2, DOWN) + " MH/s");
+        BigDecimal perHour = calculation.getRewardPerHour().setScale(6, DOWN);
+        BigDecimal perDay = calculation.getRewardPerDay().setScale(6, DOWN);
+        BigDecimal perWeek = calculation.getRewardPerWeek().setScale(6, DOWN);
+        BigDecimal perMonth = calculation.getRewardPerMonth().setScale(6, DOWN);
+        BigDecimal perYear = calculation.getRewardPerYear().setScale(6, DOWN);
+        String rewardsMessage = LOCALIZATION.getString("rewards");
+        rewardsMessage = String.format(rewardsMessage,
+                                       perHour,
+                                       "$" + perHour.multiply(coinPrice).setScale(2, DOWN),
+                                       perDay,
+                                       "$" + perDay.multiply(coinPrice).setScale(2, DOWN),
+                                       perWeek,
+                                       "$" + perWeek.multiply(coinPrice).setScale(2, DOWN),
+                                       perMonth,
+                                       "$" + perMonth.multiply(coinPrice).setScale(2, DOWN),
+                                       perYear,
+                                       "$" + perYear.multiply(coinPrice).setScale(2, DOWN),
+                                       calculation.getBlockTime().toPlainString() + "s",
+                                       calculation.getBlockCount(),
+                                       calculation.getDifficulty(),
+                                       calculation.getNetworkHashrate().divide(TERAHASH, 2, DOWN).toPlainString() + " TH/s");
+        telegramMessage.setMessageContent(balanceMessage + accountMessage + rewardsMessage);
     }
 
     /**

@@ -12,9 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mined.in.calculation.Calculation;
+import com.mined.in.calculation.Calculation.CalculationBuilder;
 import com.mined.in.calculation.CalculationExecutor;
 import com.mined.in.calculation.CalculationExecutorException;
-import com.mined.in.calculation.Calculation.CalculationBuilder;
 import com.mined.in.coin.CoinType;
 
 import okhttp3.OkHttpClient;
@@ -91,7 +91,7 @@ public class WhatToMineCalculationExecutor implements CalculationExecutor {
         // Base rewards based on 84.0 MH/s
         BigDecimal estimatedRewardPerDay = BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards"));
         BigDecimal calculatedRewardPerDay =
-                hashrate.multiply(estimatedRewardPerDay).divide(BigDecimal.valueOf(84), DOWN);
+                hashrate.multiply(estimatedRewardPerDay).divide(BigDecimal.valueOf(84), 6, DOWN);
         builder.rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
                .rewardPerDay(calculatedRewardPerDay)
                .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))

@@ -70,13 +70,17 @@ public class TelegramMessage {
             StringBuilder finalMessage = new StringBuilder();
             // messageContent can be null if an error occurred during first calculating
             if (messageContent != null) {
+                finalMessage.append("<pre>");
                 finalMessage.append(messageContent);
-                finalMessage.append("\n-\n");
+                finalMessage.append("-------------------------");
+                finalMessage.append("</pre>");
             }
             String date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a Z").format(new Date());
+            finalMessage.append("<pre>");
             finalMessage.append(date);
+            finalMessage.append("\n-------------------------");
+            finalMessage.append("</pre>");
             if (errorMessage != null) {
-                finalMessage.append("\n--\n");
                 finalMessage.append("<b>");
                 finalMessage.append(errorMessage);
                 finalMessage.append("</b>");
@@ -176,35 +180,26 @@ public class TelegramMessage {
     private void parseHtmlMarkup(Message message) {
         StringBuilder tmpStrBuilder = new StringBuilder(message.text());
         // Position of mined result
-        if (tmpStrBuilder.indexOf("\n-\n") != -1) {
+        if (tmpStrBuilder.indexOf("\n-------------------------\n") != -1) {
             MessageEntity[] entityArray = message.entities();
             int globalOffset = 0;
             for (int i = 0; i < entityArray.length; i++) {
                 MessageEntity entity = entityArray[i];
                 switch (entity.type()) {
-                case text_link: {
-                    String urlStart = "<a href=\"" + entity.url() + "\">";
-                    tmpStrBuilder.insert(entity.offset() + globalOffset, urlStart);
-                    globalOffset += urlStart.length();
-                    String urlEnd = "</a>";
-                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, urlEnd);
-                    globalOffset += urlEnd.length();
-                    break;
-                }
-                case bold: {
-                    String bStart = "<b>";
-                    tmpStrBuilder.insert(entity.offset() + globalOffset, bStart);
-                    globalOffset += bStart.length();
-                    String bEnd = "</b>";
-                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, bEnd);
-                    globalOffset += bEnd.length();
+                case pre: {
+                    String preStart = "<pre>";
+                    tmpStrBuilder.insert(entity.offset() + globalOffset, preStart);
+                    globalOffset += preStart.length();
+                    String preEnd = "</pre>";
+                    tmpStrBuilder.insert(entity.offset() + entity.length() + globalOffset, preEnd);
+                    globalOffset += preEnd.length();
                     break;
                 }
                 default:
                     break;
                 }
             }
-            messageContent = new StringBuilder(tmpStrBuilder.substring(0, tmpStrBuilder.indexOf("\n-\n")));
+            messageContent = new StringBuilder(tmpStrBuilder.substring(5, tmpStrBuilder.indexOf("-------------------------</pre>")));
         }
     }
 
