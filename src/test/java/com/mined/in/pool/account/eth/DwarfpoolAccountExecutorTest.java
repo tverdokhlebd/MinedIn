@@ -47,11 +47,6 @@ public class DwarfpoolAccountExecutorTest {
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.78665394), account.getWalletBalance());
         assertEquals(174.03, account.getTotalHashrate(), 0);
-        assertEquals(2, account.getWorkerList().size());
-        assertEquals("tv", account.getWorkerList().get(0).getName());
-        assertEquals(87.015, account.getWorkerList().get(0).getHashrate(), 0);
-        assertEquals("dmtry", account.getWorkerList().get(1).getName());
-        assertEquals(87.015, account.getWorkerList().get(1).getHashrate(), 0);
     }
 
     @Test(expected = AccountExecutorException.class)

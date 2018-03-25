@@ -1,7 +1,6 @@
 package com.mined.in.pool.account;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Class for representing pool account.
@@ -17,8 +16,6 @@ public class Account {
     private final BigDecimal walletBalance;
     /** Reported total hashrate. */
     private double totalHashrate;
-    /** List of workers. */
-    private List<Worker> workerList;
 
     /**
      * Creates the pool account instance.
@@ -26,14 +23,12 @@ public class Account {
      * @param walletAddress wallet address
      * @param walletBalance wallet balance
      * @param totalHashrate reported total hashrate
-     * @param workerList list of workers
      */
-    public Account(String walletAddress, BigDecimal walletBalance, double totalHashrate, List<Worker> workerList) {
+    public Account(String walletAddress, BigDecimal walletBalance, double totalHashrate) {
         super();
         this.walletAddress = walletAddress;
         this.walletBalance = walletBalance;
         this.totalHashrate = totalHashrate;
-        this.workerList = workerList;
     }
 
     /**
@@ -70,24 +65,6 @@ public class Account {
      */
     public void setTotalHashrate(double totalHashrate) {
         this.totalHashrate = totalHashrate;
-    }
-
-    /**
-     * Gets the worker list.
-     *
-     * @return the worker list
-     */
-    public List<Worker> getWorkerList() {
-        return workerList;
-    }
-
-    /**
-     * Sets the worker list.
-     *
-     * @param workerList the new worker list
-     */
-    public void setWorkerList(List<Worker> workerList) {
-        this.workerList = workerList;
     }
 
 }

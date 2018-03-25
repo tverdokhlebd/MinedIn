@@ -16,6 +16,8 @@ public class MinedResult {
     private final BigDecimal usdBalance;
     /** Coin price. */
     private final BigDecimal coinPrice;
+    /** Reported total hashrate. */
+    private final double totalHashrate;
 
     /**
      * Creates the mined result instance.
@@ -23,12 +25,14 @@ public class MinedResult {
      * @param coinBalance balance of coins
      * @param usdBalance balance in USD
      * @param coinPrice buy price
+     * @param totalHashrate reported total hashrate
      */
-    public MinedResult(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal coinPrice) {
+    public MinedResult(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal coinPrice, double totalHashrate) {
         super();
         this.coinBalance = coinBalance;
         this.usdBalance = usdBalance;
         this.coinPrice = coinPrice;
+        this.totalHashrate = totalHashrate;
     }
 
     /**
@@ -56,6 +60,15 @@ public class MinedResult {
      */
     public BigDecimal getCoinPrice() {
         return coinPrice;
+    }
+
+    /**
+     * Gets the total hashrate.
+     *
+     * @return the total hashrate
+     */
+    public double getTotalHashrate() {
+        return totalHashrate;
     }
 
 }

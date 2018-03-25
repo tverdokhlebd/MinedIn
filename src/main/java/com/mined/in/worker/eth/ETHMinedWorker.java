@@ -43,7 +43,7 @@ public class ETHMinedWorker implements MinedWorker {
         Market market = pairExecutor.getMarket();
         BigDecimal ethPrice = market.getEthPrice();
         BigDecimal balanceInUSD = walletBalance.multiply(ethPrice);
-        return new MinedResult(walletBalance, balanceInUSD, market.getEthPrice());
+        return new MinedResult(walletBalance, balanceInUSD, market.getEthPrice(), account.getTotalHashrate());
     }
 
 }
