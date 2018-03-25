@@ -80,7 +80,6 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
             switch (symbol) {
             case "ETH": {
                 BigDecimal price = BigDecimal.valueOf(jsonTicker.getDouble("price_usd"));
-                price = price.stripTrailingZeros();
                 builder.ethPrice(price);
                 tickerNumber++;
                 break;

@@ -42,7 +42,7 @@ public class EthermineAccountExecutorTest {
         Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.04401808541303854), account.getWalletBalance());
-        assertEquals(543.427584, account.getTotalHashrate(), 0);
+        assertEquals(BigDecimal.valueOf(543.427584), account.getTotalHashrate());
     }
 
     @Test(expected = AccountExecutorException.class)

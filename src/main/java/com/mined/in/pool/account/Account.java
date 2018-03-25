@@ -14,8 +14,8 @@ public class Account {
     private final String walletAddress;
     /** Wallet balance. */
     private final BigDecimal walletBalance;
-    /** Reported total hashrate. */
-    private double totalHashrate;
+    /** Reported total hashrate in MH/s. */
+    private BigDecimal totalHashrate;
 
     /**
      * Creates the pool account instance.
@@ -24,11 +24,11 @@ public class Account {
      * @param walletBalance wallet balance
      * @param totalHashrate reported total hashrate
      */
-    public Account(String walletAddress, BigDecimal walletBalance, double totalHashrate) {
+    public Account(String walletAddress, BigDecimal walletBalance, BigDecimal totalHashrate) {
         super();
         this.walletAddress = walletAddress;
-        this.walletBalance = walletBalance;
-        this.totalHashrate = totalHashrate;
+        this.walletBalance = walletBalance.stripTrailingZeros();
+        this.totalHashrate = totalHashrate != null ? totalHashrate.stripTrailingZeros() : totalHashrate;
     }
 
     /**
@@ -54,7 +54,7 @@ public class Account {
      *
      * @return the total hashrate
      */
-    public double getTotalHashrate() {
+    public BigDecimal getTotalHashrate() {
         return totalHashrate;
     }
 
@@ -63,8 +63,8 @@ public class Account {
      *
      * @param totalHashrate the new total hashrate
      */
-    public void setTotalHashrate(double totalHashrate) {
-        this.totalHashrate = totalHashrate;
+    public void setTotalHashrate(BigDecimal totalHashrate) {
+        this.totalHashrate = totalHashrate.stripTrailingZeros();
     }
 
 }

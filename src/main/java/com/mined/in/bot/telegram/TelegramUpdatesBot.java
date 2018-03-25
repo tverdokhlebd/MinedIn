@@ -1,5 +1,6 @@
 package com.mined.in.bot.telegram;
 
+import static com.mined.in.calculator.CalculationType.WHAT_TO_MINE;
 import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static java.math.RoundingMode.DOWN;
@@ -13,6 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mined.in.bot.BotUpdates;
+import com.mined.in.calculator.CalculationExecutor;
+import com.mined.in.calculator.CalculationExecutorException;
+import com.mined.in.calculator.CalculationExecutorFactory;
+import com.mined.in.calculator.CalculationType;
 import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
@@ -80,6 +85,9 @@ public class TelegramUpdatesBot implements BotUpdates {
         } catch (MarketExecutorException e) {
             telegramMessage.setErrorMessage(String.format(LOCALIZATION.getString("market_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
+        } catch (CalculationExecutorException e) {
+            telegramMessage.setErrorMessage(String.format(LOCALIZATION.getString("mining_calculation_error"), e.getMessage()));
+            LOG.error("Incoming updates processing error", e);
         } catch (Exception e) {
             telegramMessage.setErrorMessage(LOCALIZATION.getString("unexpected_error"));
             LOG.error("Incoming updates processing error", e);
@@ -112,8 +120,10 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param callbackQuery callback query
      * @throws AccountExecutorException if there is any error in account creating
      * @throws MarketExecutorException if there is any error in market creating
+     * @throws CalculationExecutorException if there is any error in mining calculation creating
      */
-    private void processCallbackQuery(CallbackQuery callbackQuery) throws AccountExecutorException, MarketExecutorException {
+    private void processCallbackQuery(CallbackQuery callbackQuery)
+            throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
         String data = callbackQuery.data();
         if (data == null || data.isEmpty()) {
             LOG.debug("CallbackQuery data is empty");
@@ -143,14 +153,16 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param walletAddress wallet address
      * @throws AccountExecutorException if there is any error in account creating
      * @throws MarketExecutorException if there is any error in market creating
+     * @throws CalculationExecutorException if there is any error in mining calculation creating
      */
     private void calculateAndCreateMinedResultMessage(TelegramStepData stepData, String walletAddress)
-            throws AccountExecutorException, MarketExecutorException {
-        CoinType coin = stepData.getCoin();
-        PoolType pool = stepData.getPool();
-        MarketType market = COIN_MARKET_CAP;
-        MinedResult minedResult = calculateMined(walletAddress, coin, pool, market);
-        createMinedResultMessage(coin, pool, market, minedResult);
+            throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
+        CoinType coinType = stepData.getCoin();
+        PoolType poolType = stepData.getPool();
+        MarketType marketType = COIN_MARKET_CAP;
+        CalculationType calculationType = WHAT_TO_MINE;
+        MinedResult minedResult = calculateMined(walletAddress, coinType, poolType, marketType, calculationType);
+        createMinedResultMessage(coinType, poolType, minedResult);
     }
 
     /**
@@ -160,15 +172,19 @@ public class TelegramUpdatesBot implements BotUpdates {
      * @param coinType coin type
      * @param poolType pool type
      * @param marketType market type
+     * @param calculationType mining calculation type
      * @return mined result
      * @throws AccountExecutorException if there is any error in account creating
      * @throws MarketExecutorException if there is any error in market creating
+     * @throws CalculationExecutorException if there is any error in mining calculation creating
      */
-    private MinedResult calculateMined(String walletAddress, CoinType coinType, PoolType poolType, MarketType marketType)
-            throws AccountExecutorException, MarketExecutorException {
+    private MinedResult calculateMined(String walletAddress, CoinType coinType, PoolType poolType, MarketType marketType,
+            CalculationType calculationType)
+            throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
         AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(poolType);
         MarketExecutor marketExecutor = MarketExecutorFactory.getMarketExecutor(marketType);
-        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coinType, accountExecutor, marketExecutor);
+        CalculationExecutor calculationExecutor = CalculationExecutorFactory.getCalculationExecutor(calculationType);
+        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coinType, accountExecutor, marketExecutor, calculationExecutor);
         return minedWorker.calculate(walletAddress);
     }
 
@@ -177,10 +193,9 @@ public class TelegramUpdatesBot implements BotUpdates {
      *
      * @param coinType coin type
      * @param poolType pool type
-     * @param marketType market type
      * @param minedResult mined result
      */
-    private void createMinedResultMessage(CoinType coinType, PoolType poolType, MarketType marketType, MinedResult minedResult) {
+    private void createMinedResultMessage(CoinType coinType, PoolType poolType, MinedResult minedResult) {
         BigDecimal coinBalance = minedResult.getCoinBalance().setScale(8, DOWN);
         BigDecimal usdBalance = minedResult.getUsdBalance().setScale(2, DOWN);
         BigDecimal coinPrice = minedResult.getCoinPrice().setScale(2, DOWN);

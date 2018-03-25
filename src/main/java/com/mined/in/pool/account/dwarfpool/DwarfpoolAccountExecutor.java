@@ -73,8 +73,7 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      */
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));
-        walletBalance = walletBalance.stripTrailingZeros();
-        double totalHashrate = jsonAccount.getDouble("total_hashrate");
+        BigDecimal totalHashrate = BigDecimal.valueOf(jsonAccount.getDouble("total_hashrate"));
         return new Account(walletAddress, walletBalance, totalHashrate);
     }
 

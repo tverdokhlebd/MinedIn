@@ -94,7 +94,7 @@ public class NanopoolAccountExecutor implements AccountExecutor {
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
                 checkError(jsonResponse);
-                account.setTotalHashrate(jsonResponse.getDouble("data"));
+                account.setTotalHashrate(BigDecimal.valueOf(jsonResponse.getDouble("data")));
             }
         } catch (JSONException e) {
             throw new AccountExecutorException(JSON_ERROR, e);
@@ -112,8 +112,7 @@ public class NanopoolAccountExecutor implements AccountExecutor {
      */
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("data"));
-        walletBalance = walletBalance.stripTrailingZeros();
-        return new Account(walletAddress, walletBalance, 0);
+        return new Account(walletAddress, walletBalance, null);
     }
 
     /**

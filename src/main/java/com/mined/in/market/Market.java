@@ -57,7 +57,7 @@ public class Market {
          * @return the market builder
          */
         public MarketBuilder ethPrice(BigDecimal ethPrice) {
-            this.ethPrice = ethPrice;
+            this.ethPrice = ethPrice.stripTrailingZeros();
             return this;
         }
 

@@ -46,7 +46,7 @@ public class DwarfpoolAccountExecutorTest {
         Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.78665394), account.getWalletBalance());
-        assertEquals(174.03, account.getTotalHashrate(), 0);
+        assertEquals(BigDecimal.valueOf(174.03), account.getTotalHashrate());
     }
 
     @Test(expected = AccountExecutorException.class)

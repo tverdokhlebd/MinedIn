@@ -79,8 +79,7 @@ public class EthermineAccountExecutor implements AccountExecutor {
         JSONObject data = jsonAccount.getJSONObject("data");
         BigDecimal walletBalance = BigDecimal.valueOf(data.getLong("unpaid"));
         walletBalance = walletBalance.divide(WEI);
-        walletBalance = walletBalance.stripTrailingZeros();
-        double totalHashrate = data.getDouble("reportedHashrate") / MEGAHASH;
+        BigDecimal totalHashrate = BigDecimal.valueOf(data.getDouble("reportedHashrate") / MEGAHASH);
         return new Account(walletAddress, walletBalance, totalHashrate);
     }
 

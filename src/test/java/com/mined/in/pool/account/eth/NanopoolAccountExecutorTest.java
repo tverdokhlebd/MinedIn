@@ -57,7 +57,7 @@ public class NanopoolAccountExecutorTest {
         Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.05288338), account.getWalletBalance());
-        assertEquals(1711.978, account.getTotalHashrate(), 0);
+        assertEquals(BigDecimal.valueOf(1711.978), account.getTotalHashrate());
     }
 
     @Test(expected = AccountExecutorException.class)
