@@ -32,8 +32,8 @@ public class WhatToMineCalculationExecutor implements CalculationExecutor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** WhatToMine API ethereum url. */
-    private static final String API_ETHEREUM_URL = "https://whattomine.com/coins/151.json";
+    /** WhatToMine API ETH url. */
+    private static final String API_ETH_URL = "https://whattomine.com/coins/151.json";
     /** Hours in day. */
     private static final BigDecimal HOURS_IN_DAY = BigDecimal.valueOf(24);
     /** Days in week. */
@@ -54,8 +54,8 @@ public class WhatToMineCalculationExecutor implements CalculationExecutor {
     }
 
     @Override
-    public Calculation getEthereumCalculation(BigDecimal hashrate) throws CalculationExecutorException {
-        Request request = new Request.Builder().url(API_ETHEREUM_URL).build();
+    public Calculation getETHCalculation(BigDecimal hashrate) throws CalculationExecutorException {
+        Request request = new Request.Builder().url(API_ETH_URL).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new CalculationExecutorException(HTTP_ERROR, response.message());

@@ -11,12 +11,12 @@ import java.math.BigDecimal;
 public interface CalculationExecutor {
 
     /**
-     * Returns ethereum mining calculation.
+     * Returns ETH mining calculation.
      *
      * @param hashrate reported total hashrate
-     * @return ethereum mining calculation
+     * @return ETH mining calculation
      * @throws CalculationExecutorException if there is any error in request executing
      */
-    Calculation getEthereumCalculation(BigDecimal hashrate) throws CalculationExecutorException;
+    Calculation getETHCalculation(BigDecimal hashrate) throws CalculationExecutorException;
 
 }

@@ -43,7 +43,7 @@ public class WhatToMineCalculationExecutorTest {
                         + "\"status\":\"Active\",\"lagging\":false,\"timestamp\":1521986783}");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         CalculationExecutor calculationExecutor = new WhatToMineCalculationExecutor(httpClient);
-        Calculation calculation = calculationExecutor.getEthereumCalculation(hashrate);
+        Calculation calculation = calculationExecutor.getETHCalculation(hashrate);
         assertEquals(ETH, calculation.getCoinType());
         assertEquals(hashrate, calculation.getTotalHashrate());
         assertEquals(BigDecimal.valueOf(14.4406), calculation.getBlockTime());
@@ -63,7 +63,7 @@ public class WhatToMineCalculationExecutorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         CalculationExecutor calculationExecutor = new WhatToMineCalculationExecutor(httpClient);
         try {
-            calculationExecutor.getEthereumCalculation(BigDecimal.valueOf(174));
+            calculationExecutor.getETHCalculation(BigDecimal.valueOf(174));
         } catch (CalculationExecutorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
@@ -75,7 +75,7 @@ public class WhatToMineCalculationExecutorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         CalculationExecutor calculationExecutor = new WhatToMineCalculationExecutor(httpClient);
         try {
-            calculationExecutor.getEthereumCalculation(BigDecimal.valueOf(174));
+            calculationExecutor.getETHCalculation(BigDecimal.valueOf(174));
         } catch (CalculationExecutorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
