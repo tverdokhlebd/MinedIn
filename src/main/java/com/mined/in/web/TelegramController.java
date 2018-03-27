@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mined.in.bot.telegram.TelegramUpdatesBot;
+import com.mined.in.bot.telegram.TelegramBotUpdates;
 
 /**
  * REST controller for Telegram API.
@@ -32,7 +32,7 @@ public class TelegramController {
         if (!telegramToken.equals(token)) {
             return;
         }
-        new TelegramUpdatesBot(token).process(body);
+        new TelegramBotUpdates(token).process(body);
     }
 
 }

@@ -1,6 +1,11 @@
 package com.mined.in.bot.telegram;
 
+import static com.mined.in.bot.telegram.TelegramStepData.Step.START;
+import static com.mined.in.bot.telegram.TelegramStepData.Step.WALLET;
+
+import com.mined.in.calculation.CalculationType;
 import com.mined.in.coin.CoinType;
+import com.mined.in.market.MarketType;
 import com.mined.in.pool.PoolType;
 
 /**
@@ -12,11 +17,15 @@ import com.mined.in.pool.PoolType;
 public class TelegramStepData {
 
     /** Current step. */
-    private final Step step;
-    /** Selected coin. */
-    private CoinType coin;
-    /** Selected pool. */
-    private PoolType pool;
+    private Step step;
+    /** Selected coin type. */
+    private CoinType coinType;
+    /** Selected pool type. */
+    private PoolType poolType;
+    /** Selected market type. */
+    private MarketType marketType;
+    /** Selected calculation type. */
+    private CalculationType calculationType;
 
     /**
      * Enumeration of steps.
@@ -26,10 +35,12 @@ public class TelegramStepData {
      */
     public static enum Step {
 
-        /** The coin. */
+        START(0),
+        WALLET(0),
         COIN(1),
-        /** The pool. */
-        POOL(2);
+        POOL(2),
+        MARKET(3),
+        CALCULATION(4);
 
         /** Step position. */
         private int position;
@@ -47,7 +58,7 @@ public class TelegramStepData {
          * Returns step by position.
          *
          * @param position step position
-         * @return step
+         * @return step by position
          */
         public static Step getByPosition(int position) {
             Step[] currentStepArray = Step.values();
@@ -65,47 +76,40 @@ public class TelegramStepData {
     /**
      * Creates the instance of current step data.
      *
-     * @param data callback query data
+     * @param data simple text message or callback query data
+     * @param simpleMessage {@code true} if it is simple text message, otherwise - callback query data
      */
-    public TelegramStepData(String data) {
+    public TelegramStepData(String data, boolean simpleMessage) {
         super();
-        // Callback query data format: "COIN_POOL" ("ETH_dwarfpool")
-        String[] splittedData = data.split("_");
-        int splittedDataLength = splittedData.length;
-        if (splittedDataLength > 0) {
-            coin = CoinType.getBySymbol(splittedData[0]);
+        if (simpleMessage) {
+            step = data.equalsIgnoreCase("/start") ? START : WALLET;
+        } else {
+            // Callback query data format: "COIN_POOL_MARKET_CALCULATION" ("ETH_Dwarfpool_CoinMarketCap_WhatToMine")
+            String[] splittedData = data.split("_");
+            int splittedDataLength = splittedData.length;
+            if (splittedDataLength > 0) {
+                coinType = CoinType.getBySymbol(splittedData[0]);
+            }
+            if (splittedDataLength > 1) {
+                poolType = PoolType.getByName(splittedData[1]);
+            }
+            if (splittedDataLength > 2) {
+                marketType = MarketType.getByName(splittedData[2]);
+            }
+            if (splittedDataLength > 3) {
+                calculationType = CalculationType.getByName(splittedData[3]);
+            }
+            step = Step.getByPosition(splittedDataLength);
         }
-        if (splittedDataLength > 1) {
-            pool = PoolType.getByName(splittedData[1]);
-        }
-        step = Step.getByPosition(splittedDataLength);
     }
 
     /**
-     * Returns string representation of callback query data.
+     * Returns callback query data.
      *
-     * @return string representation of callback query data
+     * @return callback query data
      */
     public String getCallbackQueryData() {
-        return coin.getSymbol() + "_" + pool.getName();
-    }
-
-    /**
-     * Gets the coin.
-     *
-     * @return the coin
-     */
-    public CoinType getCoin() {
-        return coin;
-    }
-
-    /**
-     * Gets the pool.
-     *
-     * @return the pool
-     */
-    public PoolType getPool() {
-        return pool;
+        return coinType.getSymbol() + "_" + poolType.getName() + "_" + marketType.getName() + "_" + calculationType.getName();
     }
 
     /**
@@ -115,6 +119,69 @@ public class TelegramStepData {
      */
     public Step getStep() {
         return step;
+    }
+
+    /**
+     * Gets the coin type.
+     *
+     * @return the coin type
+     */
+    public CoinType getCoinType() {
+        return coinType;
+    }
+
+    /**
+     * Gets the pool type.
+     *
+     * @return the pool type
+     */
+    public PoolType getPoolType() {
+        return poolType;
+    }
+
+    /**
+     * Gets the market type.
+     *
+     * @return the market type
+     */
+    public MarketType getMarketType() {
+        return marketType;
+    }
+
+    /**
+     * Gets the calculation type.
+     *
+     * @return the calculation type
+     */
+    public CalculationType getCalculationType() {
+        return calculationType;
+    }
+
+    /**
+     * Sets the step.
+     *
+     * @param step the new step
+     */
+    public void setStep(Step step) {
+        this.step = step;
+    }
+
+    /**
+     * Sets the market type.
+     *
+     * @param marketType the new market type
+     */
+    public void setMarketType(MarketType marketType) {
+        this.marketType = marketType;
+    }
+
+    /**
+     * Sets the calculation type.
+     *
+     * @param calculationType the new calculation type
+     */
+    public void setCalculationType(CalculationType calculationType) {
+        this.calculationType = calculationType;
     }
 
 }
