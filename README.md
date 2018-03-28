@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/tverdokhlebd/MinedIn.svg?branch=master)](https://travis-ci.org/tverdokhlebd/MinedIn)
 # MinedIn
-This is an open-source project for calculating the mined earnings in USD. It uses public API of services (Pools, markets and etc) for receiving necessary information.
+This is an open source project for calculating the mined earnings in USD. It uses public API of services (Pools, markets and etc) for receiving necessary information.
 
 Besides the mined earnings in USD it also provides next useful information:
 - market price
