@@ -188,7 +188,7 @@ public class TelegramBotUpdates implements BotUpdates {
         MarketType marketType = stepData.getMarketType();
         RewardType rewardType = stepData.getRewardType();
         AccountExecutor accountExecutor = AccountExecutorFactory.create(poolType);
-        MarketExecutor marketExecutor = MarketExecutorFactory.getMarketExecutor(marketType);
+        MarketExecutor marketExecutor = MarketExecutorFactory.create(marketType);
         RewardExecutor rewardExecutor = RewardExecutorFactory.create(rewardType);
         MinedEarningsWorker minedWorker = MinedEarningsWorkerFactory.create(coinType, accountExecutor, marketExecutor, rewardExecutor);
         return minedWorker.calculate(walletAddress);

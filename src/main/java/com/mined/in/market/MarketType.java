@@ -1,7 +1,7 @@
 package com.mined.in.market;
 
 /**
- * Enumerations of supporting markets.
+ * Enumerations of supporting market types.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -10,16 +10,16 @@ public enum MarketType {
 
     COIN_MARKET_CAP("CoinMarketCap", "https://coinmarketcap.com");
 
-    /** Market name. */
+    /** Market type name. */
     private String name;
-    /** Market official site. */
+    /** Market type official site. */
     private String website;
 
     /**
-     * Creates the instance of supporting market.
+     * Creates the instance.
      *
-     * @param name market name
-     * @param website market official site
+     * @param name market type name
+     * @param website market type official site
      */
     private MarketType(String name, String website) {
         this.name = name;
@@ -45,10 +45,10 @@ public enum MarketType {
     }
 
     /**
-     * Returns market by name.
+     * Returns market type by name.
      *
-     * @param name market name
-     * @return market
+     * @param name market type name
+     * @return market type
      */
     public static MarketType getByName(String name) {
         MarketType[] marketTypeArray = MarketType.values();
@@ -58,7 +58,7 @@ public enum MarketType {
                 return marketType;
             }
         }
-        throw new IllegalArgumentException("No market with name " + name);
+        throw new IllegalArgumentException("No market type with name " + name);
     }
 
 }

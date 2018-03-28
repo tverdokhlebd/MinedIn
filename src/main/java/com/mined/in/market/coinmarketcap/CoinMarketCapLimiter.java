@@ -14,7 +14,7 @@ public class CoinMarketCapLimiter extends OkHttpLimiterInterceptor {
     private static OkHttpLimiterInterceptor INSTANCE = new CoinMarketCapLimiter();
 
     /**
-     * Creates the instance of CoinMarketCap limiter.
+     * Creates the instance.
      */
     public CoinMarketCapLimiter() {
         super(1, 7 * 1000);

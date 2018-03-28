@@ -3,7 +3,7 @@ package com.mined.in.market;
 import java.math.BigDecimal;
 
 /**
- * Class for representing a market.
+ * Class for representing market.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -38,7 +38,7 @@ public class Market {
      * @author Dmitry Tverdokhleb
      *
      */
-    public static class MarketBuilder {
+    public static class Builder {
 
         /** Ethereum price. */
         private BigDecimal ethPrice;
@@ -46,7 +46,7 @@ public class Market {
         /**
          * Creates the instance.
          */
-        public MarketBuilder() {
+        public Builder() {
             super();
         }
 
@@ -56,17 +56,17 @@ public class Market {
          * @param ethPrice the ethereum price
          * @return the market builder
          */
-        public MarketBuilder ethPrice(BigDecimal ethPrice) {
+        public Builder ethPrice(BigDecimal ethPrice) {
             this.ethPrice = ethPrice.stripTrailingZeros();
             return this;
         }
 
         /**
-         * Returns created market.
+         * Build market.
          *
-         * @return created market
+         * @return market
          */
-        public Market createMarket() {
+        public Market build() {
             return new Market(ethPrice);
         }
 

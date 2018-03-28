@@ -6,7 +6,7 @@ import com.mined.in.market.coinmarketcap.CoinMarketCapMarketExecutor;
 import okhttp3.OkHttpClient;
 
 /**
- * Factory for creating of market executor.
+ * Factory for creating market executor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -14,12 +14,12 @@ import okhttp3.OkHttpClient;
 public class MarketExecutorFactory {
 
     /**
-     * Returns market executor.
+     * Creates market executor.
      *
      * @param marketType market type
      * @return market executor
      */
-    public static MarketExecutor getMarketExecutor(MarketType marketType) {
+    public static MarketExecutor create(MarketType marketType) {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         switch (marketType) {
         case COIN_MARKET_CAP: {

@@ -16,7 +16,7 @@ public class MarketExecutorException extends Exception {
     private static final long serialVersionUID = -448307664169612373L;
 
     /**
-     * Creates the exception instance for working with market executor.
+     * Creates the instance.
      *
      * @param errorCode error code
      * @param message the detail message
@@ -27,7 +27,7 @@ public class MarketExecutorException extends Exception {
     }
 
     /**
-     * Creates the exception instance for working with market executor.
+     * Creates the instance.
      *
      * @param errorCode error code
      * @param cause the cause

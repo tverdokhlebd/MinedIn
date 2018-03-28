@@ -39,7 +39,7 @@ public class OkHttpLimiterInterceptor implements Interceptor {
     private MediaType cachedContentType;
 
     /**
-     * Creates the instance of limiter.
+     * Creates the instance.
      *
      * @param maxRequestCount maximum number of HTTP requests
      * @param resetCounterDelay delay in milliseconds before counter is to be reseted
@@ -76,10 +76,10 @@ public class OkHttpLimiterInterceptor implements Interceptor {
     }
 
     /**
-     * Returns created response from the cache.
+     * Creates response from the cache.
      *
      * @param request HTTP request
-     * @return created response from the cache
+     * @return response
      */
     private Response createResponse(Request request) {
         ResponseBody cachedBody = ResponseBody.create(cachedContentType, cachedResponseBody);

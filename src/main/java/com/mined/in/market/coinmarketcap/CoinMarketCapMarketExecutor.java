@@ -11,7 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mined.in.market.Market;
-import com.mined.in.market.Market.MarketBuilder;
+import com.mined.in.market.Market.Builder;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
 
@@ -36,7 +36,7 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=0";
 
     /**
-     * Creates the CoinMarketCap executor instance.
+     * Creates the instance.
      *
      * @param httpClient HTTP client
      */
@@ -69,10 +69,10 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
      * Creates market from JSON response.
      *
      * @param jsonResponse JSON response
-     * @return market from JSON response
+     * @return market
      */
     private Market createMarket(JSONArray jsonResponse) {
-        Market.MarketBuilder builder = new MarketBuilder();
+        Market.Builder builder = new Builder();
         int tickerNumber = 0;
         for (int i = 0; i < jsonResponse.length(); i++) {
             JSONObject jsonTicker = jsonResponse.getJSONObject(i);
@@ -89,7 +89,7 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
                 break;
             }
         }
-        return builder.createMarket();
+        return builder.build();
     }
 
 }
