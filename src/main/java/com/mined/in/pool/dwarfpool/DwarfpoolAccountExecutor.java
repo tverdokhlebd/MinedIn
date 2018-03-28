@@ -33,7 +33,7 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
     private static final String API_URL = "http://dwarfpool.com/eth/api?wallet=";
 
     /**
-     * Creates the Dwarfpool executor instance.
+     * Creates the instance.
      *
      * @param httpClient HTTP client
      */
@@ -69,7 +69,7 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      *
      * @param walletAddress wallet address
      * @param jsonAccount account in JSON format
-     * @return account from JSON response
+     * @return account
      */
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));

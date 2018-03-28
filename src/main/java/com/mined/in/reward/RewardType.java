@@ -1,7 +1,7 @@
 package com.mined.in.reward;
 
 /**
- * Enumerations of supporting reward type.
+ * Enumerations of supporting reward types.
  *
  * @author Dmitry Tverdokhleb
  *

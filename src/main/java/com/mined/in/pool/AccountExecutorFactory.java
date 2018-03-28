@@ -7,7 +7,7 @@ import com.mined.in.pool.nanopool.NanopoolAccountExecutor;
 import okhttp3.OkHttpClient;
 
 /**
- * Factory for creating of pool account executor.
+ * Factory for creating pool account executor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -15,12 +15,12 @@ import okhttp3.OkHttpClient;
 public class AccountExecutorFactory {
 
     /**
-     * Returns pool account executor.
+     * Creates pool account executor.
      *
      * @param pool pool name
      * @return pool account executor
      */
-    public static AccountExecutor getAccountExecutor(PoolType pool) {
+    public static AccountExecutor create(PoolType pool) {
         OkHttpClient httpClient = new OkHttpClient();
         switch (pool) {
         case DWARFPOOL: {

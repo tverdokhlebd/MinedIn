@@ -1,7 +1,7 @@
 package com.mined.in.pool;
 
 /**
- * Enumerations of supporting pools.
+ * Enumerations of supporting pool types.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -12,16 +12,16 @@ public enum PoolType {
     ETHERMINE("Ethermine", "https://ethermine.org"),
     NANOPOOL("Nanopool", "https://nanopool.org");
 
-    /** Pool name. */
+    /** Pool type name. */
     private String name;
-    /** Pool official site. */
+    /** Pool type official site. */
     private String website;
 
     /**
-     * Creates the instance of supporting pool.
+     * Creates the instance.
      *
-     * @param name pool name
-     * @param website pool official site
+     * @param name pool type name
+     * @param website pool type official site
      */
     private PoolType(String name, String website) {
         this.name = name;
@@ -47,20 +47,20 @@ public enum PoolType {
     }
 
     /**
-     * Returns pool by name.
+     * Returns pool type by name.
      *
-     * @param name pool name
-     * @return pool
+     * @param name pool type name
+     * @return pool type
      */
     public static PoolType getByName(String name) {
-        PoolType[] poolArray = PoolType.values();
-        for (int i = 0; i < poolArray.length; i++) {
-            PoolType pool = poolArray[i];
-            if (pool.getName().equals(name)) {
-                return pool;
+        PoolType[] poolTypeArray = PoolType.values();
+        for (int i = 0; i < poolTypeArray.length; i++) {
+            PoolType poolType = poolTypeArray[i];
+            if (poolType.getName().equals(name)) {
+                return poolType;
             }
         }
-        throw new IllegalArgumentException("No pools with name " + name);
+        throw new IllegalArgumentException("No pool type with name " + name);
     }
 
 }

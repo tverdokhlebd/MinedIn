@@ -16,7 +16,7 @@ public class AccountExecutorException extends Exception {
     private static final long serialVersionUID = -448307664169612373L;
 
     /**
-     * Creates the exception instance for working with pool account executor.
+     * Creates the instance.
      *
      * @param errorCode error code
      * @param message the detail message
@@ -27,7 +27,7 @@ public class AccountExecutorException extends Exception {
     }
 
     /**
-     * Creates the exception instance for working with pool account executor.
+     * Creates the instance.
      *
      * @param errorCode error code
      * @param cause the cause

@@ -18,7 +18,7 @@ public class Account {
     private BigDecimal totalHashrate;
 
     /**
-     * Creates the pool account instance.
+     * Creates the instance.
      *
      * @param walletAddress wallet address
      * @param walletBalance wallet balance

@@ -37,7 +37,7 @@ public class EthermineAccountExecutor implements AccountExecutor {
     private final static int MEGAHASH = 1_000_000;
 
     /**
-     * Creates the Ethermine executor instance.
+     * Creates the instance.
      *
      * @param httpClient HTTP client
      */
@@ -73,7 +73,7 @@ public class EthermineAccountExecutor implements AccountExecutor {
      *
      * @param walletAddress wallet address
      * @param jsonAccount account in JSON format
-     * @return account from JSON response
+     * @return account
      */
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         JSONObject data = jsonAccount.getJSONObject("data");
