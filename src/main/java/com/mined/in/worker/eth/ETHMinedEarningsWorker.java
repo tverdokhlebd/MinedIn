@@ -11,32 +11,32 @@ import com.mined.in.pool.AccountExecutorException;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.RewardExecutor;
 import com.mined.in.reward.RewardExecutorException;
-import com.mined.in.worker.MinedResult;
-import com.mined.in.worker.MinedWorker;
+import com.mined.in.worker.MinedEarnings;
+import com.mined.in.worker.MinedEarningsWorker;
 
 /**
- * Worker for calculating of ETH mined.
+ * Worker for calculating ETH mined earnings.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class ETHMinedWorker implements MinedWorker {
+public class ETHMinedEarningsWorker implements MinedEarningsWorker {
 
     /** Pool account executor. */
     private final AccountExecutor accountExecutor;
     /** Market executor. */
     private final MarketExecutor pairExecutor;
-    /** Estimated rewards executor. */
+    /** Estimated reward executor. */
     private final RewardExecutor rewardExecutor;
 
     /**
-     * Creates the mined calculation instance.
+     * Creates the instance.
      *
      * @param accountExecutor pool account executor
      * @param marketExecutor market executor
-     * @param rewardExecutor estimated rewards executor
+     * @param rewardExecutor estimated reward executor
      */
-    public ETHMinedWorker(AccountExecutor accountExecutor, MarketExecutor marketExecutor, RewardExecutor rewardExecutor) {
+    public ETHMinedEarningsWorker(AccountExecutor accountExecutor, MarketExecutor marketExecutor, RewardExecutor rewardExecutor) {
         super();
         this.accountExecutor = accountExecutor;
         this.pairExecutor = marketExecutor;
@@ -44,7 +44,7 @@ public class ETHMinedWorker implements MinedWorker {
     }
 
     @Override
-    public MinedResult calculate(String walletAddress)
+    public MinedEarnings calculate(String walletAddress)
             throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         Account account = accountExecutor.getETHAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
@@ -52,7 +52,7 @@ public class ETHMinedWorker implements MinedWorker {
         BigDecimal ethPrice = market.getEthPrice();
         BigDecimal balanceInUSD = walletBalance.multiply(ethPrice);
         Reward reward = rewardExecutor.getETHReward(account.getTotalHashrate());
-        return new MinedResult(walletBalance, balanceInUSD, market.getEthPrice(), reward);
+        return new MinedEarnings(walletBalance, balanceInUSD, market.getEthPrice(), reward);
     }
 
 }

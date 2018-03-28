@@ -4,30 +4,30 @@ import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.pool.AccountExecutor;
 import com.mined.in.reward.RewardExecutor;
-import com.mined.in.worker.eth.ETHMinedWorker;
+import com.mined.in.worker.eth.ETHMinedEarningsWorker;
 
 /**
- * Factory for creating of mined worker.
+ * Factory for creating mined earnings worker.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class MinedWorkerFactory {
+public class MinedEarningsWorkerFactory {
 
     /**
-     * Returns mined worker.
+     * Creates mined earnings worker.
      *
      * @param coinType coin type
      * @param accountExecutor pool account executor
      * @param marketExecutor market executor
-     * @param rewardExecutor estimated rewards executor
-     * @return mined worker
+     * @param rewardExecutor estimated reward executor
+     * @return mined earnings worker
      */
-    public static MinedWorker getMinedWorker(CoinType coinType, AccountExecutor accountExecutor, MarketExecutor marketExecutor,
+    public static MinedEarningsWorker create(CoinType coinType, AccountExecutor accountExecutor, MarketExecutor marketExecutor,
             RewardExecutor rewardExecutor) {
         switch (coinType) {
         case ETH: {
-            return new ETHMinedWorker(accountExecutor, marketExecutor, rewardExecutor);
+            return new ETHMinedEarningsWorker(accountExecutor, marketExecutor, rewardExecutor);
         }
         default:
             throw new IllegalArgumentException(coinType.name());

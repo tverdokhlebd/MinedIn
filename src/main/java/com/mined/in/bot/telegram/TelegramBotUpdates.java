@@ -30,9 +30,9 @@ import com.mined.in.reward.RewardExecutor;
 import com.mined.in.reward.RewardExecutorException;
 import com.mined.in.reward.RewardExecutorFactory;
 import com.mined.in.reward.RewardType;
-import com.mined.in.worker.MinedResult;
-import com.mined.in.worker.MinedWorker;
-import com.mined.in.worker.MinedWorkerFactory;
+import com.mined.in.worker.MinedEarnings;
+import com.mined.in.worker.MinedEarningsWorker;
+import com.mined.in.worker.MinedEarningsWorkerFactory;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
@@ -106,7 +106,7 @@ public class TelegramBotUpdates implements BotUpdates {
             case REWARD: {
                 responseMessage.parsePreviousResultMessage(incomingMessage);
                 String walletAddress = incomingMessage.replyToMessage().text();
-                MinedResult minedResult = calculateMinedEarnings(walletAddress);
+                MinedEarnings minedResult = calculateMinedEarnings(walletAddress);
                 createMinedResultMessage(minedResult);
                 break;
             }
@@ -180,7 +180,7 @@ public class TelegramBotUpdates implements BotUpdates {
      * @throws MarketExecutorException if there is any error in market creating
      * @throws RewardExecutorException if there is any error in estimated rewards creating
      */
-    private MinedResult calculateMinedEarnings(String walletAddress)
+    private MinedEarnings calculateMinedEarnings(String walletAddress)
             throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         TelegramStepData stepData = responseMessage.getStepData();
         CoinType coinType = stepData.getCoinType();
@@ -190,7 +190,7 @@ public class TelegramBotUpdates implements BotUpdates {
         AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(poolType);
         MarketExecutor marketExecutor = MarketExecutorFactory.getMarketExecutor(marketType);
         RewardExecutor rewardExecutor = RewardExecutorFactory.getRewardExecutor(rewardType);
-        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coinType, accountExecutor, marketExecutor, rewardExecutor);
+        MinedEarningsWorker minedWorker = MinedEarningsWorkerFactory.create(coinType, accountExecutor, marketExecutor, rewardExecutor);
         return minedWorker.calculate(walletAddress);
     }
 
@@ -199,7 +199,7 @@ public class TelegramBotUpdates implements BotUpdates {
      *
      * @param minedResult mined result
      */
-    private void createMinedResultMessage(MinedResult minedResult) {
+    private void createMinedResultMessage(MinedEarnings minedResult) {
         TelegramStepData stepData = responseMessage.getStepData();
         BigDecimal coinBalance = minedResult.getCoinBalance().setScale(8, DOWN);
         BigDecimal usdBalance = minedResult.getUsdBalance().setScale(2, DOWN);
@@ -208,7 +208,7 @@ public class TelegramBotUpdates implements BotUpdates {
         balanceMessage = String.format(balanceMessage,
                                        "$" + usdBalance,
                                        "$" + coinPrice);
-        Reward reward = minedResult.getReward();
+        Reward reward = minedResult.getEstimatedReward();
         String accountMessage = RESOURCE.getString("account");
         accountMessage = String.format(accountMessage,
                                        stepData.getPoolType().getName(),

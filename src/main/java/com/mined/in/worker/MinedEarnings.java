@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 import com.mined.in.reward.Reward;
 
 /**
- * Class for representing result of mined.
+ * Class for representing mined earnings.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class MinedResult {
+public class MinedEarnings {
 
     /** Balance of coins. */
     private final BigDecimal coinBalance;
@@ -19,22 +19,22 @@ public class MinedResult {
     /** Coin price. */
     private final BigDecimal coinPrice;
     /** Estimated rewards. */
-    private final Reward reward;
+    private final Reward estimatedReward;
 
     /**
-     * Creates the mined result instance.
+     * Creates the instance.
      *
      * @param coinBalance balance of coins
      * @param usdBalance balance in USD
      * @param coinPrice buy price
-     * @param reward estimated rewards
+     * @param estimatedReward estimated reward
      */
-    public MinedResult(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal coinPrice, Reward reward) {
+    public MinedEarnings(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal coinPrice, Reward estimatedReward) {
         super();
         this.coinBalance = coinBalance;
         this.usdBalance = usdBalance;
         this.coinPrice = coinPrice;
-        this.reward = reward;
+        this.estimatedReward = estimatedReward;
     }
 
     /**
@@ -69,8 +69,8 @@ public class MinedResult {
      *
      * @return the estimated rewards
      */
-    public Reward getReward() {
-        return reward;
+    public Reward getEstimatedReward() {
+        return estimatedReward;
     }
 
 }
