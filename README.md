@@ -24,9 +24,9 @@ Markets:
 Rewards calculation:
 - <a href="https://whattomine.com">WHATTOMINE</a> (Default)
 ---
-There are next available implementations:
+There are ready implementation:
 - <a href="https://t.me/MinedInBot">TELEGRAM BOT</a>
-- <a href="https://github.com/tverdokhlebd/MinedIn">WEB VERSION</a>
-- <a href="https://github.com/tverdokhlebd/MinedIn">ANDROID APPLICATION</a>
+- WEB VERSION
+- ANDROID APPLICATION
 ---
 If you have any questions please contact me by email tverdokhlebd@gmail.com
