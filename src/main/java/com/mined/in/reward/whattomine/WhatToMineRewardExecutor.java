@@ -96,6 +96,7 @@ public class WhatToMineRewardExecutor implements RewardExecutor {
                 hashrate.multiply(estimatedRewardPerDay).divide(BigDecimal.valueOf(84), 6, DOWN);
         Reward.Builder rewardBuilder = new Builder();
         rewardBuilder.coinInfo(coinInfo)
+                     .setTotalHashrate(hashrate)
                      .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
                      .rewardPerDay(calculatedRewardPerDay)
                      .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))

@@ -76,23 +76,23 @@ public class ETHMinedWorkerTest {
         OkHttpClient rewardHttpClient = Utils.getHttpClient(rewardResponse.toString(), 200);
         RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(rewardHttpClient);
         MinedEarningsWorker worker = MinedEarningsWorkerFactory.create(ETH, accountExecutor, marketExecutor, rewardExecutor);
-        MinedEarnings result = worker.calculate(WALLET_ADDRESS);
-        assertEquals(walletBalance, result.getCoinBalance());
-        assertEquals(walletBalance.multiply(coinPrice), result.getUsdBalance());
-        assertEquals(coinPrice, result.getCoinPrice());
-        CoinInfo coinInfo = result.getEstimatedReward().getCoinInfo();
+        MinedEarnings minedEarnings = worker.calculate(WALLET_ADDRESS);
+        assertEquals(walletBalance, minedEarnings.getCoinBalance());
+        assertEquals(walletBalance.multiply(coinPrice), minedEarnings.getUsdBalance());
+        assertEquals(coinPrice, minedEarnings.getCoinPrice());
+        CoinInfo coinInfo = minedEarnings.getEstimatedReward().getCoinInfo();
         assertEquals(ETH, coinInfo.getCoinType());
-        assertEquals(BigDecimal.valueOf(174), result.getEstimatedReward().getTotalHashrate());
+        assertEquals(BigDecimal.valueOf(174), minedEarnings.getEstimatedReward().getTotalHashrate());
         assertEquals(BigDecimal.valueOf(14.4406), coinInfo.getBlockTime());
         assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
         assertEquals(BigDecimal.valueOf(5319532), coinInfo.getBlockCount());
         assertEquals(BigDecimal.valueOf(3.23405110864068e+15), coinInfo.getDifficulty());
         assertEquals(BigDecimal.valueOf(223955452587889L), coinInfo.getNetworkHashrate());
-        assertEquals(BigDecimal.valueOf(0.000554), result.getEstimatedReward().getRewardPerHour());
-        assertEquals(BigDecimal.valueOf(0.013306), result.getEstimatedReward().getRewardPerDay());
-        assertEquals(BigDecimal.valueOf(0.093142), result.getEstimatedReward().getRewardPerWeek());
-        assertEquals(BigDecimal.valueOf(0.39918), result.getEstimatedReward().getRewardPerMonth());
-        assertEquals(BigDecimal.valueOf(4.85669), result.getEstimatedReward().getRewardPerYear());
+        assertEquals(BigDecimal.valueOf(0.000554), minedEarnings.getEstimatedReward().getRewardPerHour());
+        assertEquals(BigDecimal.valueOf(0.013306), minedEarnings.getEstimatedReward().getRewardPerDay());
+        assertEquals(BigDecimal.valueOf(0.093142), minedEarnings.getEstimatedReward().getRewardPerWeek());
+        assertEquals(BigDecimal.valueOf(0.39918), minedEarnings.getEstimatedReward().getRewardPerMonth());
+        assertEquals(BigDecimal.valueOf(4.85669), minedEarnings.getEstimatedReward().getRewardPerYear());
     }
 
     @Test(expected = AccountExecutorException.class)
