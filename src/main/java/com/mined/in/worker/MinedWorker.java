@@ -2,7 +2,7 @@ package com.mined.in.worker;
 
 import com.mined.in.calculation.CalculationExecutorException;
 import com.mined.in.market.MarketExecutorException;
-import com.mined.in.pool.account.AccountExecutorException;
+import com.mined.in.pool.AccountExecutorException;
 
 /**
  * Interface of worker for calculating of mined.

@@ -1,4 +1,4 @@
-package com.mined.in.pool.account.nanopool;
+package com.mined.in.pool.nanopool;
 
 import static com.mined.in.error.ErrorCode.API_ERROR;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mined.in.pool.account.Account;
-import com.mined.in.pool.account.AccountExecutor;
-import com.mined.in.pool.account.AccountExecutorException;
+import com.mined.in.pool.Account;
+import com.mined.in.pool.AccountExecutor;
+import com.mined.in.pool.AccountExecutorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

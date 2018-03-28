@@ -1,4 +1,4 @@
-package com.mined.in.pool.account;
+package com.mined.in.pool;
 
 /**
  * Class for representing pool worker.

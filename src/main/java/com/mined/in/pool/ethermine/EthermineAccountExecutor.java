@@ -1,4 +1,4 @@
-package com.mined.in.pool.account.dwarfpool;
+package com.mined.in.pool.ethermine;
 
 import static com.mined.in.error.ErrorCode.API_ERROR;
 import static com.mined.in.error.ErrorCode.HTTP_ERROR;
@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mined.in.pool.account.Account;
-import com.mined.in.pool.account.AccountExecutor;
-import com.mined.in.pool.account.AccountExecutorException;
+import com.mined.in.pool.Account;
+import com.mined.in.pool.AccountExecutor;
+import com.mined.in.pool.AccountExecutorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,24 +20,28 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Implementation of Dwarfpool executor.
+ * Implementation of Ethermine executor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class DwarfpoolAccountExecutor implements AccountExecutor {
+public class EthermineAccountExecutor implements AccountExecutor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** Dwarfpool API url. */
-    private static final String API_URL = "http://dwarfpool.com/eth/api?wallet=";
+    /** Ethermine API statistic url. */
+    private static final String API_STATS_URL = "https://api.ethermine.org/miner/:miner/currentStats";
+    /** Wei. */
+    private final static BigDecimal WEI = BigDecimal.valueOf(1_000_000_000_000_000_000L);
+    /** Megahash. */
+    private final static int MEGAHASH = 1_000_000;
 
     /**
-     * Creates the Dwarfpool executor instance.
+     * Creates the Ethermine executor instance.
      *
      * @param httpClient HTTP client
      */
-    public DwarfpoolAccountExecutor(OkHttpClient httpClient) {
+    public EthermineAccountExecutor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
     }
@@ -47,7 +51,7 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
         }
-        Request request = new Request.Builder().url(API_URL + walletAddress).build();
+        Request request = new Request.Builder().url(API_STATS_URL.replace(":miner", walletAddress)).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new AccountExecutorException(HTTP_ERROR, response.message());
@@ -72,8 +76,10 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      * @return account from JSON response
      */
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
-        BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));
-        BigDecimal totalHashrate = BigDecimal.valueOf(jsonAccount.getDouble("total_hashrate"));
+        JSONObject data = jsonAccount.getJSONObject("data");
+        BigDecimal walletBalance = BigDecimal.valueOf(data.getLong("unpaid"));
+        walletBalance = walletBalance.divide(WEI);
+        BigDecimal totalHashrate = BigDecimal.valueOf(data.getDouble("reportedHashrate") / MEGAHASH);
         return new Account(walletAddress, walletBalance, totalHashrate);
     }
 
@@ -84,10 +90,10 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      * @throws AccountExecutorException if there is any error in JSON response
      */
     private void checkError(JSONObject jsonResponse) throws AccountExecutorException {
-        boolean error = jsonResponse.getBoolean("error");
-        if (error) {
-            String errorCode = jsonResponse.getString("error_code");
-            throw new AccountExecutorException(API_ERROR, errorCode);
+        String status = jsonResponse.getString("status");
+        if (status.equalsIgnoreCase("error")) {
+            String errorMessage = jsonResponse.getString("error");
+            throw new AccountExecutorException(API_ERROR, errorMessage);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.mined.in.pool.account;
+package com.mined.in.pool;
 
 import java.math.BigDecimal;
 

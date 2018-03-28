@@ -1,9 +1,8 @@
-package com.mined.in.pool.account;
+package com.mined.in.pool;
 
-import com.mined.in.pool.PoolType;
-import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
-import com.mined.in.pool.account.ethermine.EthermineAccountExecutor;
-import com.mined.in.pool.account.nanopool.NanopoolAccountExecutor;
+import com.mined.in.pool.dwarfpool.DwarfpoolAccountExecutor;
+import com.mined.in.pool.ethermine.EthermineAccountExecutor;
+import com.mined.in.pool.nanopool.NanopoolAccountExecutor;
 
 import okhttp3.OkHttpClient;
 

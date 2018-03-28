@@ -8,9 +8,9 @@ import com.mined.in.calculation.CalculationExecutorException;
 import com.mined.in.market.Market;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
-import com.mined.in.pool.account.Account;
-import com.mined.in.pool.account.AccountExecutor;
-import com.mined.in.pool.account.AccountExecutorException;
+import com.mined.in.pool.Account;
+import com.mined.in.pool.AccountExecutor;
+import com.mined.in.pool.AccountExecutorException;
 import com.mined.in.worker.MinedResult;
 import com.mined.in.worker.MinedWorker;
 

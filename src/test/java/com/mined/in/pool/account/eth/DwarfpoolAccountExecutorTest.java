@@ -12,10 +12,10 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
-import com.mined.in.pool.account.Account;
-import com.mined.in.pool.account.AccountExecutor;
-import com.mined.in.pool.account.AccountExecutorException;
-import com.mined.in.pool.account.dwarfpool.DwarfpoolAccountExecutor;
+import com.mined.in.pool.Account;
+import com.mined.in.pool.AccountExecutor;
+import com.mined.in.pool.AccountExecutorException;
+import com.mined.in.pool.dwarfpool.DwarfpoolAccountExecutor;
 
 import okhttp3.OkHttpClient;
 
