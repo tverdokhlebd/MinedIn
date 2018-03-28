@@ -1,7 +1,7 @@
 package com.mined.in.coin;
 
 /**
- * Enumerations of supporting coins.
+ * Enumerations of supporting coin types.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -10,19 +10,19 @@ public enum CoinType {
 
     ETH("Ethereum", "ETH", "https://www.ethereum.org/");
 
-    /** Coin name. */
+    /** Coin type name. */
     private String name;
-    /** Coin symbol. */
+    /** Coin type symbol. */
     private String symbol;
-    /** Coin official site. */
+    /** Coin type official site. */
     private String website;
 
     /**
-     * Creates the instance of supporting coin.
+     * Creates the instance.
      *
-     * @param name coin name
-     * @param symbol coin symbol
-     * @param website coin official site
+     * @param name coin type name
+     * @param symbol coin type symbol
+     * @param website coin type official site
      */
     private CoinType(String name, String symbol, String website) {
         this.name = name;
@@ -58,20 +58,20 @@ public enum CoinType {
     }
 
     /**
-     * Returns coin by symbol.
+     * Returns coin type by symbol.
      *
-     * @param symbol coin symbol
-     * @return coin
+     * @param symbol coin type symbol
+     * @return coin type
      */
     public static CoinType getBySymbol(String symbol) {
-        CoinType[] coinArray = CoinType.values();
-        for (int i = 0; i < coinArray.length; i++) {
-            CoinType coin = coinArray[i];
-            if (coin.getSymbol().equals(symbol)) {
-                return coin;
+        CoinType[] coinTypeArray = CoinType.values();
+        for (int i = 0; i < coinTypeArray.length; i++) {
+            CoinType coinType = coinTypeArray[i];
+            if (coinType.getSymbol().equals(symbol)) {
+                return coinType;
             }
         }
-        throw new IllegalArgumentException("No coins with symbol " + symbol);
+        throw new IllegalArgumentException("No coin type with symbol " + symbol);
     }
 
 }
