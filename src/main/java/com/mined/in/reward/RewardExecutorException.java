@@ -3,7 +3,7 @@ package com.mined.in.reward;
 import com.mined.in.error.ErrorCode;
 
 /**
- * Exception for working with estimated rewards executor.
+ * Exception for working with estimated reward executor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -16,7 +16,7 @@ public class RewardExecutorException extends Exception {
     private static final long serialVersionUID = -4546411797257311520L;
 
     /**
-     * Creates the exception instance for working with estimated rewards executor.
+     * Creates the instance.
      *
      * @param errorCode error code
      * @param message the detail message
@@ -27,7 +27,7 @@ public class RewardExecutorException extends Exception {
     }
 
     /**
-     * Creates the exception instance for working with estimated rewards executor.
+     * Creates the instance.
      *
      * @param errorCode error code
      * @param cause the cause

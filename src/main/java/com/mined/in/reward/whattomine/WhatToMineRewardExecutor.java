@@ -15,7 +15,7 @@ import com.mined.in.coin.CoinInfo;
 import com.mined.in.coin.CoinInfo.CoinInfoBuilder;
 import com.mined.in.coin.CoinType;
 import com.mined.in.reward.Reward;
-import com.mined.in.reward.Reward.RewardBuilder;
+import com.mined.in.reward.Reward.Builder;
 import com.mined.in.reward.RewardExecutor;
 import com.mined.in.reward.RewardExecutorException;
 
@@ -46,7 +46,7 @@ public class WhatToMineRewardExecutor implements RewardExecutor {
     private static final BigDecimal DAYS_IN_YEAR = BigDecimal.valueOf(365);
 
     /**
-     * Creates the WhatToMine executor instance.
+     * Creates the instance.
      *
      * @param httpClient HTTP client
      */
@@ -64,7 +64,7 @@ public class WhatToMineRewardExecutor implements RewardExecutor {
             }
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
-                return createEstimatedRewards(ETH, hashrate, jsonResponse);
+                return createEstimatedReward(ETH, hashrate, jsonResponse);
             }
         } catch (JSONException e) {
             throw new RewardExecutorException(JSON_ERROR, e);
@@ -74,14 +74,14 @@ public class WhatToMineRewardExecutor implements RewardExecutor {
     }
 
     /**
-     * Creates estimated rewards from JSON response.
+     * Creates estimated reward from JSON response.
      *
      * @param coinType type of coin
      * @param hashrate reported total hashrate
      * @param jsonResponse JSON response
-     * @return estimated rewards from JSON response
+     * @return estimated reward
      */
-    private Reward createEstimatedRewards(CoinType coinType, BigDecimal hashrate, JSONObject jsonResponse) {
+    private Reward createEstimatedReward(CoinType coinType, BigDecimal hashrate, JSONObject jsonResponse) {
         CoinInfo.CoinInfoBuilder coinBuilder = new CoinInfoBuilder();
         coinBuilder.coinType(coinType)
                    .blockTime(BigDecimal.valueOf(jsonResponse.getDouble("block_time")))
@@ -94,14 +94,14 @@ public class WhatToMineRewardExecutor implements RewardExecutor {
         BigDecimal estimatedRewardPerDay = BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards"));
         BigDecimal calculatedRewardPerDay =
                 hashrate.multiply(estimatedRewardPerDay).divide(BigDecimal.valueOf(84), 6, DOWN);
-        Reward.RewardBuilder builder = new RewardBuilder();
-        builder.coinInfo(coinInfo)
-               .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
-               .rewardPerDay(calculatedRewardPerDay)
-               .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))
-               .rewardPerMonth(calculatedRewardPerDay.multiply(DAYS_IN_MONTH))
-               .rewardPerYear(calculatedRewardPerDay.multiply(DAYS_IN_YEAR));
-        return builder.build();
+        Reward.Builder rewardBuilder = new Builder();
+        rewardBuilder.coinInfo(coinInfo)
+                     .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
+                     .rewardPerDay(calculatedRewardPerDay)
+                     .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))
+                     .rewardPerMonth(calculatedRewardPerDay.multiply(DAYS_IN_MONTH))
+                     .rewardPerYear(calculatedRewardPerDay.multiply(DAYS_IN_YEAR));
+        return rewardBuilder.build();
     }
 
 }

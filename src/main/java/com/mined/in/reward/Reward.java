@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.mined.in.coin.CoinInfo;
 
 /**
- * Class for representing estimated rewards.
+ * Class for representing estimated reward.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -39,8 +39,7 @@ public class Reward {
      * @param rewardPerYear reward per year
      */
     public Reward(CoinInfo coinInfo, BigDecimal totalHashrate, BigDecimal rewardPerHour, BigDecimal rewardPerDay, BigDecimal rewardPerWeek,
-            BigDecimal rewardPerMonth,
-            BigDecimal rewardPerYear) {
+            BigDecimal rewardPerMonth, BigDecimal rewardPerYear) {
         super();
         this.coinInfo = coinInfo;
         this.totalHashrate = totalHashrate;
@@ -115,12 +114,12 @@ public class Reward {
     }
 
     /**
-     * Class for representing the estimated rewards builder.
+     * Class for representing the estimated reward builder.
      *
      * @author Dmitry Tverdokhleb
      *
      */
-    public static class RewardBuilder {
+    public static class Builder {
 
         /** Coin information. */
         private CoinInfo coinInfo;
@@ -140,7 +139,7 @@ public class Reward {
         /**
          * Creates the instance.
          */
-        public RewardBuilder() {
+        public Builder() {
             super();
         }
 
@@ -148,8 +147,9 @@ public class Reward {
          * Sets the coin info.
          *
          * @param coinInfo the new coin info
+         * @return estimated reward builder
          */
-        public RewardBuilder coinInfo(CoinInfo coinInfo) {
+        public Builder coinInfo(CoinInfo coinInfo) {
             this.coinInfo = coinInfo;
             return this;
         }
@@ -158,8 +158,9 @@ public class Reward {
          * Sets the total hashrate.
          *
          * @param totalHashrate the new total hashrate
+         * @return estimated reward builder
          */
-        public RewardBuilder setTotalHashrate(BigDecimal totalHashrate) {
+        public Builder setTotalHashrate(BigDecimal totalHashrate) {
             this.totalHashrate = totalHashrate.stripTrailingZeros();
             return this;
         }
@@ -168,8 +169,9 @@ public class Reward {
          * Sets the reward per hour.
          *
          * @param rewardPerHour the new reward per hour
+         * @return estimated reward builder
          */
-        public RewardBuilder rewardPerHour(BigDecimal rewardPerHour) {
+        public Builder rewardPerHour(BigDecimal rewardPerHour) {
             this.rewardPerHour = rewardPerHour.stripTrailingZeros();
             return this;
         }
@@ -178,8 +180,9 @@ public class Reward {
          * Sets the reward per day.
          *
          * @param rewardPerDay the new reward per day
+         * @return estimated reward builder
          */
-        public RewardBuilder rewardPerDay(BigDecimal rewardPerDay) {
+        public Builder rewardPerDay(BigDecimal rewardPerDay) {
             this.rewardPerDay = rewardPerDay.stripTrailingZeros();
             return this;
         }
@@ -188,8 +191,9 @@ public class Reward {
          * Sets the reward per week.
          *
          * @param rewardPerWeek the new reward per week
+         * @return estimated reward builder
          */
-        public RewardBuilder rewardPerWeek(BigDecimal rewardPerWeek) {
+        public Builder rewardPerWeek(BigDecimal rewardPerWeek) {
             this.rewardPerWeek = rewardPerWeek.stripTrailingZeros();
             return this;
         }
@@ -198,8 +202,9 @@ public class Reward {
          * Sets the reward per month.
          *
          * @param rewardPerMonth the new reward per month
+         * @return estimated reward builder
          */
-        public RewardBuilder rewardPerMonth(BigDecimal rewardPerMonth) {
+        public Builder rewardPerMonth(BigDecimal rewardPerMonth) {
             this.rewardPerMonth = rewardPerMonth.stripTrailingZeros();
             return this;
         }
@@ -208,16 +213,17 @@ public class Reward {
          * Sets the reward per year.
          *
          * @param rewardPerYear the new reward per year
+         * @return estimated reward builder
          */
-        public RewardBuilder rewardPerYear(BigDecimal rewardPerYear) {
+        public Builder rewardPerYear(BigDecimal rewardPerYear) {
             this.rewardPerYear = rewardPerYear.stripTrailingZeros();
             return this;
         }
 
         /**
-         * Returns created estimated rewards.
+         * Build estimated reward.
          *
-         * @return created estimated rewards
+         * @return estimated rewards
          */
         public Reward build() {
             return new Reward(coinInfo,
