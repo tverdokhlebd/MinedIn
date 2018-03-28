@@ -8,7 +8,7 @@ Besides the mined earnings in USD it also provides next useful information:
 - estimated rewards per hour/day/week/month/year
 - coin information (block time, last block, difficulty, nethash and etc)
 ---
-Public API of services are listed below. New public API of services will be add with time.
+Public API of services are listed below. New public API of services will be added with time.
 
 Coins:
 - <a href="https://www.ethereum.org">ETH</a>
