@@ -4,8 +4,10 @@ import static com.mined.in.bot.telegram.TelegramStepData.Step.REWARD;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,8 @@ public class TelegramResponse {
 
     /** Data of current step. */
     private TelegramStepData stepData;
+    /** User time zone. */
+    private final TimeZone userTimeZone;
     /** Result message. */
     private String message;
     /** Error message. */
@@ -40,10 +44,14 @@ public class TelegramResponse {
      * Creates the instance.
      *
      * @param stepData data of current step
+     * @param receivingDate date of message receiving from bot
      */
-    public TelegramResponse(TelegramStepData stepData) {
+    public TelegramResponse(TelegramStepData stepData, Date receivingDate) {
         super();
         this.stepData = stepData;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(receivingDate);
+        this.userTimeZone = calendar.getTimeZone();
     }
 
     /**
@@ -71,7 +79,7 @@ public class TelegramResponse {
             if (error != null && message == null) {
                 message = RESOURCE.getString("no_result");
             }
-            String currentDate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a Z").format(new Date());
+            String currentDate = getCurrentDate();
             int maxStrLength = getStringMaxLength(message, currentDate);
             StringBuilder resultMessage = new StringBuilder();
             resultMessage.append(insertSeparatorsAndPreTag(message, maxStrLength));
@@ -212,6 +220,17 @@ public class TelegramResponse {
         message = message.replaceAll("<separator>", separator);
         message = "<pre>" + message + "</pre>";
         return message;
+    }
+
+    /**
+     * Gets current date with set user time zone.
+     *
+     * @return current date with set user time zone
+     */
+    private String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+        dateFormat.setTimeZone(userTimeZone);
+        return dateFormat.format(new Date());
     }
 
 }

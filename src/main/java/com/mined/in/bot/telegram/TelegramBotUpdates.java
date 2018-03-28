@@ -8,6 +8,7 @@ import static java.math.RoundingMode.DOWN;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -82,7 +83,7 @@ public class TelegramBotUpdates implements BotUpdates {
             incomingMessage = simpleMessage ? update.message() : update.callbackQuery().message();
             String data = simpleMessage ? incomingMessage.text() : update.callbackQuery().data();
             TelegramStepData stepData = new TelegramStepData(data, simpleMessage);
-            responseMessage = new TelegramResponse(stepData);
+            responseMessage = new TelegramResponse(stepData, new Date(incomingMessage.date()));
             switch (stepData.getStep()) {
             case START: {
                 createStartMessage();
