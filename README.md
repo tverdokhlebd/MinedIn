@@ -10,18 +10,18 @@ Besides the mined earnings in USD it also provides next useful information:
 ---
 Public API of services are listed below. New public API of services will be add with time.
 
-<b>Coins:</b>
+Coins:
 - <a href="https://www.ethereum.org">ETH</a>
 
-<b>Pools:</b>
+Pools:
 - <a href="https://dwarfpool.com">DWARFPOOL</a>
 - <a href="https://ethermine.org">ETHERMINE</a>
 - <a href="https://nanopool.org">NANOPOOL</a>
 
-<b>Markets:</b>
+Markets:
 - <a href="https://coinmarketcap.com/">COINMARKETCAP</a> (Default)
 
-<b>Rewards calculation:</b>
+Rewards calculation:
 - <a href="https://whattomine.com">WHATTOMINE</a> (Default)
 ---
 There are next available implementations:
