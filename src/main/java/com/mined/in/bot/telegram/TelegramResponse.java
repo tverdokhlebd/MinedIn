@@ -76,7 +76,8 @@ public class TelegramResponse {
         boolean isMessageResult = stepData.getStep() == REWARD;
         String formattedMessage = message;
         if (isMessageResult) {
-            if (error != null && message == null) {
+            boolean firstMessageWithError = error != null && message == null;
+            if (firstMessageWithError) {
                 message = RESOURCE.getString("no_result");
             }
             String currentDate = getCurrentDate();
@@ -93,7 +94,6 @@ public class TelegramResponse {
             }
             formattedMessage = resultMessage.toString();
         }
-        LOG.debug("Formatted message: {}", formattedMessage);
         return formattedMessage;
     }
 
@@ -193,7 +193,6 @@ public class TelegramResponse {
             if (preStartIndex != -1 && preEndIndex != -1) {
                 message = messageBuilder.substring(preStartIndex + preStart.length(), preEndIndex);
             }
-            LOG.debug("Parsed message: {}", message);
         }
     }
 
