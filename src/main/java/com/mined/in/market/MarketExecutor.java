@@ -9,7 +9,7 @@ package com.mined.in.market;
 public interface MarketExecutor {
 
     /**
-     * Returns market.
+     * Gets market.
      *
      * @return market
      * @throws MarketExecutorException if there is any error in request executing

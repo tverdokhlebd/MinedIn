@@ -9,7 +9,7 @@ package com.mined.in.pool;
 public interface AccountExecutor {
 
     /**
-     * Returns ETH account by wallet address.
+     * Gets ETH account by wallet address.
      *
      * @param walletAddress the wallet address
      * @return ETH account

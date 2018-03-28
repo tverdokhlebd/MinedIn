@@ -1,7 +1,7 @@
 package com.mined.in.bot;
 
 /**
- * Interface for processing of incoming updates from a bot.
+ * Interface for processing incoming updates from bot.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -9,7 +9,7 @@ package com.mined.in.bot;
 public interface BotUpdates {
 
     /**
-     * Processes incoming updates from a bot.
+     * Processes incoming updates from bot.
      *
      * @param updates incoming updates
      */

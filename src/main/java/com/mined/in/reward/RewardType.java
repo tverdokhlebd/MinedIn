@@ -45,7 +45,7 @@ public enum RewardType {
     }
 
     /**
-     * Returns reward type by name.
+     * Gets reward type by name.
      *
      * @param name reward type name
      * @return reward type

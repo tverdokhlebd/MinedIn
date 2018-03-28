@@ -37,7 +37,7 @@ public class TelegramResponse {
     private final static Logger LOG = LoggerFactory.getLogger(TelegramResponse.class);
 
     /**
-     * Creates the instance of telegram response message.
+     * Creates the instance.
      *
      * @param stepData data of current step
      */
@@ -189,7 +189,7 @@ public class TelegramResponse {
     }
 
     /**
-     * Returns length of string with maximum number of symbols.
+     * Gets length of string with maximum number of symbols.
      *
      * @param message result message
      * @param date current date

@@ -58,7 +58,7 @@ public enum CoinType {
     }
 
     /**
-     * Returns coin type by symbol.
+     * Gets coin type by symbol.
      *
      * @param symbol coin type symbol
      * @return coin type

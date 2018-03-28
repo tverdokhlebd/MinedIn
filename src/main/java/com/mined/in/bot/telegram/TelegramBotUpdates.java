@@ -65,7 +65,7 @@ public class TelegramBotUpdates implements BotUpdates {
     private final static BigDecimal TERAHASH = BigDecimal.valueOf(1_000_000_000_000L);
 
     /**
-     * Creates the instance for processing incoming updates from Telegram bot.
+     * Creates the instance.
      *
      * @param token telegram token
      */
@@ -106,8 +106,8 @@ public class TelegramBotUpdates implements BotUpdates {
             case REWARD: {
                 responseMessage.parsePreviousResultMessage(incomingMessage);
                 String walletAddress = incomingMessage.replyToMessage().text();
-                MinedEarnings minedResult = calculateMinedEarnings(walletAddress);
-                createMinedResultMessage(minedResult);
+                MinedEarnings minedEarnings = calculateMinedEarnings(walletAddress);
+                createMinedEarningsMessage(minedEarnings);
                 break;
             }
             }
@@ -140,7 +140,7 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Creates supporting coins message.
+     * Creates supporting coin types message.
      */
     private void createSupportingCoinsMessage() {
         List<CoinType> coinList = Arrays.asList(CoinType.values());
@@ -155,7 +155,7 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Creates supporting pools message.
+     * Creates supporting pool types message.
      */
     private void createSupportingPoolsMessage() {
         List<PoolType> poolList = Arrays.asList(PoolType.values());
@@ -175,10 +175,10 @@ public class TelegramBotUpdates implements BotUpdates {
      * Calculates mined earnings.
      *
      * @param walletAddress wallet address
-     * @return mined result
+     * @return mined earnings
      * @throws AccountExecutorException if there is any error in account creating
      * @throws MarketExecutorException if there is any error in market creating
-     * @throws RewardExecutorException if there is any error in estimated rewards creating
+     * @throws RewardExecutorException if there is any error in estimated reward creating
      */
     private MinedEarnings calculateMinedEarnings(String walletAddress)
             throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
@@ -195,20 +195,20 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Creates mined result message.
+     * Creates mined earnings message.
      *
-     * @param minedResult mined result
+     * @param minedEarnings mined earnings
      */
-    private void createMinedResultMessage(MinedEarnings minedResult) {
+    private void createMinedEarningsMessage(MinedEarnings minedEarnings) {
         TelegramStepData stepData = responseMessage.getStepData();
-        BigDecimal coinBalance = minedResult.getCoinBalance().setScale(8, DOWN);
-        BigDecimal usdBalance = minedResult.getUsdBalance().setScale(2, DOWN);
-        BigDecimal coinPrice = minedResult.getCoinPrice().setScale(2, DOWN);
+        BigDecimal coinBalance = minedEarnings.getCoinBalance().setScale(8, DOWN);
+        BigDecimal usdBalance = minedEarnings.getUsdBalance().setScale(2, DOWN);
+        BigDecimal coinPrice = minedEarnings.getCoinPrice().setScale(2, DOWN);
         String balanceMessage = RESOURCE.getString("balance");
         balanceMessage = String.format(balanceMessage,
                                        "$" + usdBalance,
                                        "$" + coinPrice);
-        Reward reward = minedResult.getEstimatedReward();
+        Reward reward = minedEarnings.getEstimatedReward();
         String accountMessage = RESOURCE.getString("account");
         accountMessage = String.format(accountMessage,
                                        stepData.getPoolType().getName(),

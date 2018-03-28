@@ -187,7 +187,7 @@ public class CoinInfo {
         }
 
         /**
-         * Returns created coin information.
+         * Gets created coin information.
          *
          * @return created coin information
          */

@@ -46,7 +46,7 @@ public class TelegramStepData {
         private int position;
 
         /**
-         * Creates the instance of step.
+         * Creates the instance.
          *
          * @param position step position
          */
@@ -55,7 +55,7 @@ public class TelegramStepData {
         }
 
         /**
-         * Returns step by position.
+         * Gets step by position.
          *
          * @param position step position
          * @return step by position
@@ -68,13 +68,13 @@ public class TelegramStepData {
                     return currentStep;
                 }
             }
-            throw new IllegalArgumentException("No steps with position " + position);
+            throw new IllegalArgumentException("No step with position " + position);
         }
 
     }
 
     /**
-     * Creates the instance of current step data.
+     * Creates the instance.
      *
      * @param data simple text message or callback query data
      * @param simpleMessage {@code true} if it is simple text message, otherwise - callback query data
@@ -104,7 +104,7 @@ public class TelegramStepData {
     }
 
     /**
-     * Returns callback query data.
+     * Gets callback query data.
      *
      * @return callback query data
      */

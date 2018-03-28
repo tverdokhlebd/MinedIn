@@ -47,7 +47,7 @@ public enum PoolType {
     }
 
     /**
-     * Returns pool type by name.
+     * Gets pool type by name.
      *
      * @param name pool type name
      * @return pool type

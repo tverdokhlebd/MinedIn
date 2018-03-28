@@ -21,7 +21,7 @@ public class CoinMarketCapLimiter extends OkHttpLimiterInterceptor {
     }
 
     /**
-     * Returns the instance of CoinMarketCap limiter.
+     * Gets the instance of CoinMarketCap limiter.
      *
      * @return the instance of CoinMarketCap limiter
      */

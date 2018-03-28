@@ -20,7 +20,7 @@ public class Utils {
     private static final MediaType MEDIA_JSON = MediaType.parse("application/json");
 
     /**
-     * Returns HTTP client with custom JSON response.
+     * Gets HTTP client with custom JSON response.
      *
      * @param response JSON response
      * @param responseCode HTTP code

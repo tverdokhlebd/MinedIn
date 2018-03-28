@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public interface RewardExecutor {
 
     /**
-     * Returns ETH estimated reward.
+     * Gets ETH estimated reward.
      *
      * @param hashrate reported total hashrate
      * @return ETH estimated reward

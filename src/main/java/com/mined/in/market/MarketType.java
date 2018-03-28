@@ -45,7 +45,7 @@ public enum MarketType {
     }
 
     /**
-     * Returns market type by name.
+     * Gets market type by name.
      *
      * @param name market type name
      * @return market type
