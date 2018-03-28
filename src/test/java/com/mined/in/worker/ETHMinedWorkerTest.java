@@ -13,15 +13,16 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
-import com.mined.in.calculation.CalculationExecutor;
-import com.mined.in.calculation.CalculationExecutorException;
-import com.mined.in.calculation.whattomine.WhatToMineCalculationExecutor;
+import com.mined.in.coin.CoinInfo;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
 import com.mined.in.market.coinmarketcap.CoinMarketCapMarketExecutor;
 import com.mined.in.pool.AccountExecutor;
 import com.mined.in.pool.AccountExecutorException;
 import com.mined.in.pool.dwarfpool.DwarfpoolAccountExecutor;
+import com.mined.in.reward.RewardExecutor;
+import com.mined.in.reward.RewardExecutorException;
+import com.mined.in.reward.whattomine.WhatToMineRewardExecutor;
 
 import okhttp3.OkHttpClient;
 
@@ -37,7 +38,7 @@ public class ETHMinedWorkerTest {
     private final static String WALLET_ADDRESS = "0x4e2c24519354a63c37869d04cefb7d113d17fdc3";
 
     @Test
-    public void testCorrectJsonResponse() throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
+    public void testCorrectJsonResponse() throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         BigDecimal walletBalance = BigDecimal.valueOf(0.78665394);
         JSONObject poolResponseJSON =
                 new JSONObject("{ \"autopayout_from\": \"5.000\", \"earning_24_hours\": \"0.01137842\", \"error\": false, "
@@ -62,7 +63,7 @@ public class ETHMinedWorkerTest {
         marketArray.put(marketJSON);
         OkHttpClient marketHttpClient = Utils.getHttpClient(marketArray.toString(), 200);
         MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(marketHttpClient);
-        JSONObject calculationResponse =
+        JSONObject rewardResponse =
                 new JSONObject("{\"id\":151,\"name\":\"Ethereum\",\"tag\":\"ETH\",\"algorithm\":\"Ethash\",\"block_time\":\"14.4406\","
                         + "\"block_reward\":2.91,\"block_reward24\":2.91000000000001,\"block_reward3\":2.91,\"block_reward7\":2.91,"
                         + "\"last_block\":5319532,\"difficulty\":3.23405110864068e+15,\"difficulty24\":3.28768043075892e+15,"
@@ -72,37 +73,38 @@ public class ETHMinedWorkerTest {
                         + "\"market_cap\":\"$51,261,485,391\",\"pool_fee\":\"0.000000\",\"estimated_rewards\":\"0.006424\","
                         + "\"btc_revenue\":\"0.00039220\",\"revenue\":\"$3.35\",\"cost\":\"$0.97\",\"profit\":\"$2.37\","
                         + "\"status\":\"Active\",\"lagging\":false,\"timestamp\":1521986783}");
-        OkHttpClient calculationHttpClient = Utils.getHttpClient(calculationResponse.toString(), 200);
-        CalculationExecutor calculationExecutor = new WhatToMineCalculationExecutor(calculationHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, calculationExecutor);
+        OkHttpClient rewardHttpClient = Utils.getHttpClient(rewardResponse.toString(), 200);
+        RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(rewardHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, rewardExecutor);
         MinedResult result = worker.calculate(WALLET_ADDRESS);
         assertEquals(walletBalance, result.getCoinBalance());
         assertEquals(walletBalance.multiply(coinPrice), result.getUsdBalance());
         assertEquals(coinPrice, result.getCoinPrice());
-        assertEquals(ETH, result.getCalculation().getCoinType());
-        assertEquals(BigDecimal.valueOf(174), result.getCalculation().getTotalHashrate());
-        assertEquals(BigDecimal.valueOf(14.4406), result.getCalculation().getBlockTime());
-        assertEquals(BigDecimal.valueOf(2.91), result.getCalculation().getBlockReward());
-        assertEquals(BigDecimal.valueOf(5319532), result.getCalculation().getBlockCount());
-        assertEquals(BigDecimal.valueOf(3.23405110864068e+15), result.getCalculation().getDifficulty());
-        assertEquals(BigDecimal.valueOf(223955452587889L), result.getCalculation().getNetworkHashrate());
-        assertEquals(BigDecimal.valueOf(0.000554), result.getCalculation().getRewardPerHour());
-        assertEquals(BigDecimal.valueOf(0.013306), result.getCalculation().getRewardPerDay());
-        assertEquals(BigDecimal.valueOf(0.093142), result.getCalculation().getRewardPerWeek());
-        assertEquals(BigDecimal.valueOf(0.39918), result.getCalculation().getRewardPerMonth());
-        assertEquals(BigDecimal.valueOf(4.85669), result.getCalculation().getRewardPerYear());
+        CoinInfo coinInfo = result.getReward().getCoinInfo();
+        assertEquals(ETH, coinInfo.getCoinType());
+        assertEquals(BigDecimal.valueOf(174), result.getReward().getTotalHashrate());
+        assertEquals(BigDecimal.valueOf(14.4406), coinInfo.getBlockTime());
+        assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
+        assertEquals(BigDecimal.valueOf(5319532), coinInfo.getBlockCount());
+        assertEquals(BigDecimal.valueOf(3.23405110864068e+15), coinInfo.getDifficulty());
+        assertEquals(BigDecimal.valueOf(223955452587889L), coinInfo.getNetworkHashrate());
+        assertEquals(BigDecimal.valueOf(0.000554), result.getReward().getRewardPerHour());
+        assertEquals(BigDecimal.valueOf(0.013306), result.getReward().getRewardPerDay());
+        assertEquals(BigDecimal.valueOf(0.093142), result.getReward().getRewardPerWeek());
+        assertEquals(BigDecimal.valueOf(0.39918), result.getReward().getRewardPerMonth());
+        assertEquals(BigDecimal.valueOf(4.85669), result.getReward().getRewardPerYear());
     }
 
     @Test(expected = AccountExecutorException.class)
-    public void testPoolError() throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
+    public void testPoolError() throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         JSONObject poolResponseJSON = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(marketHttpClient);
-        OkHttpClient calculationHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        CalculationExecutor calculationExecutor = new WhatToMineCalculationExecutor(calculationHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, calculationExecutor);
+        OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
+        RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(rewardHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, rewardExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
         } catch (AccountExecutorException e) {
@@ -113,7 +115,7 @@ public class ETHMinedWorkerTest {
     }
 
     @Test(expected = MarketExecutorException.class)
-    public void testMarketError() throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
+    public void testMarketError() throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         JSONObject poolResponseJSON =
                 new JSONObject("{ \"autopayout_from\": \"5.000\", \"earning_24_hours\": \"0.01137842\", \"error\": false, "
                         + "\"immature_earning\": 0.000455540976, \"last_payment_amount\": 0, \"last_payment_date\": null, \"last_share_date\": "
@@ -128,9 +130,9 @@ public class ETHMinedWorkerTest {
         AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(accountHttpClient);
         OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(marketHttpClient);
-        OkHttpClient calculationHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        CalculationExecutor calculationExecutor = new WhatToMineCalculationExecutor(calculationHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, calculationExecutor);
+        OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
+        RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(rewardHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, rewardExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
         } catch (MarketExecutorException e) {
@@ -139,8 +141,8 @@ public class ETHMinedWorkerTest {
         }
     }
 
-    @Test(expected = CalculationExecutorException.class)
-    public void testCalculationError() throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
+    @Test(expected = RewardExecutorException.class)
+    public void testRewardError() throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         JSONObject poolResponseJSON =
                 new JSONObject("{ \"autopayout_from\": \"5.000\", \"earning_24_hours\": \"0.01137842\", \"error\": false, "
                         + "\"immature_earning\": 0.000455540976, \"last_payment_amount\": 0, \"last_payment_date\": null, \"last_share_date\": "
@@ -163,12 +165,12 @@ public class ETHMinedWorkerTest {
         marketArray.put(marketJSON);
         OkHttpClient marketHttpClient = Utils.getHttpClient(marketArray.toString(), 200);
         MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(marketHttpClient);
-        OkHttpClient calculationHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        CalculationExecutor calculationExecutor = new WhatToMineCalculationExecutor(calculationHttpClient);
-        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, calculationExecutor);
+        OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
+        RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(rewardHttpClient);
+        MinedWorker worker = MinedWorkerFactory.getMinedWorker(ETH, accountExecutor, marketExecutor, rewardExecutor);
         try {
             worker.calculate(WALLET_ADDRESS);
-        } catch (CalculationExecutorException e) {
+        } catch (RewardExecutorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
         }

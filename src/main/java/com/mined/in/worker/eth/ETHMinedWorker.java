@@ -2,15 +2,15 @@ package com.mined.in.worker.eth;
 
 import java.math.BigDecimal;
 
-import com.mined.in.calculation.Calculation;
-import com.mined.in.calculation.CalculationExecutor;
-import com.mined.in.calculation.CalculationExecutorException;
 import com.mined.in.market.Market;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
 import com.mined.in.pool.Account;
 import com.mined.in.pool.AccountExecutor;
 import com.mined.in.pool.AccountExecutorException;
+import com.mined.in.reward.Reward;
+import com.mined.in.reward.RewardExecutor;
+import com.mined.in.reward.RewardExecutorException;
 import com.mined.in.worker.MinedResult;
 import com.mined.in.worker.MinedWorker;
 
@@ -26,33 +26,33 @@ public class ETHMinedWorker implements MinedWorker {
     private final AccountExecutor accountExecutor;
     /** Market executor. */
     private final MarketExecutor pairExecutor;
-    /** Mining calculation executor. */
-    private final CalculationExecutor calculationExecutor;
+    /** Estimated rewards executor. */
+    private final RewardExecutor rewardExecutor;
 
     /**
      * Creates the mined calculation instance.
      *
      * @param accountExecutor pool account executor
      * @param marketExecutor market executor
-     * @param calculationExecutor calculation executor
+     * @param rewardExecutor estimated rewards executor
      */
-    public ETHMinedWorker(AccountExecutor accountExecutor, MarketExecutor marketExecutor, CalculationExecutor calculationExecutor) {
+    public ETHMinedWorker(AccountExecutor accountExecutor, MarketExecutor marketExecutor, RewardExecutor rewardExecutor) {
         super();
         this.accountExecutor = accountExecutor;
         this.pairExecutor = marketExecutor;
-        this.calculationExecutor = calculationExecutor;
+        this.rewardExecutor = rewardExecutor;
     }
 
     @Override
     public MinedResult calculate(String walletAddress)
-            throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
+            throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         Account account = accountExecutor.getETHAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
         Market market = pairExecutor.getMarket();
         BigDecimal ethPrice = market.getEthPrice();
         BigDecimal balanceInUSD = walletBalance.multiply(ethPrice);
-        Calculation calculation = calculationExecutor.getETHCalculation(account.getTotalHashrate());
-        return new MinedResult(walletBalance, balanceInUSD, market.getEthPrice(), calculation);
+        Reward reward = rewardExecutor.getETHReward(account.getTotalHashrate());
+        return new MinedResult(walletBalance, balanceInUSD, market.getEthPrice(), reward);
     }
 
 }

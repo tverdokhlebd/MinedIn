@@ -2,7 +2,7 @@ package com.mined.in.worker;
 
 import java.math.BigDecimal;
 
-import com.mined.in.calculation.Calculation;
+import com.mined.in.reward.Reward;
 
 /**
  * Class for representing result of mined.
@@ -18,8 +18,8 @@ public class MinedResult {
     private final BigDecimal usdBalance;
     /** Coin price. */
     private final BigDecimal coinPrice;
-    /** Mining calculation. */
-    private final Calculation calculation;
+    /** Estimated rewards. */
+    private final Reward reward;
 
     /**
      * Creates the mined result instance.
@@ -27,14 +27,14 @@ public class MinedResult {
      * @param coinBalance balance of coins
      * @param usdBalance balance in USD
      * @param coinPrice buy price
-     * @param calculation mining calculation
+     * @param reward estimated rewards
      */
-    public MinedResult(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal coinPrice, Calculation calculation) {
+    public MinedResult(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal coinPrice, Reward reward) {
         super();
         this.coinBalance = coinBalance;
         this.usdBalance = usdBalance;
         this.coinPrice = coinPrice;
-        this.calculation = calculation;
+        this.reward = reward;
     }
 
     /**
@@ -65,12 +65,12 @@ public class MinedResult {
     }
 
     /**
-     * Gets the calculation.
+     * Gets the estimated rewards.
      *
-     * @return the calculation
+     * @return the estimated rewards
      */
-    public Calculation getCalculation() {
-        return calculation;
+    public Reward getReward() {
+        return reward;
     }
 
 }

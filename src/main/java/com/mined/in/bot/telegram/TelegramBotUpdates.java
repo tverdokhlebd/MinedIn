@@ -1,8 +1,8 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.bot.telegram.TelegramStepData.Step.CALCULATION;
-import static com.mined.in.calculation.CalculationType.WHAT_TO_MINE;
+import static com.mined.in.bot.telegram.TelegramStepData.Step.REWARD;
 import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
+import static com.mined.in.reward.RewardType.WHAT_TO_MINE;
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static java.math.RoundingMode.DOWN;
 
@@ -15,11 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mined.in.bot.BotUpdates;
-import com.mined.in.calculation.Calculation;
-import com.mined.in.calculation.CalculationExecutor;
-import com.mined.in.calculation.CalculationExecutorException;
-import com.mined.in.calculation.CalculationExecutorFactory;
-import com.mined.in.calculation.CalculationType;
+import com.mined.in.coin.CoinInfo;
 import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
@@ -29,6 +25,11 @@ import com.mined.in.pool.AccountExecutor;
 import com.mined.in.pool.AccountExecutorException;
 import com.mined.in.pool.AccountExecutorFactory;
 import com.mined.in.pool.PoolType;
+import com.mined.in.reward.Reward;
+import com.mined.in.reward.RewardExecutor;
+import com.mined.in.reward.RewardExecutorException;
+import com.mined.in.reward.RewardExecutorFactory;
+import com.mined.in.reward.RewardType;
 import com.mined.in.worker.MinedResult;
 import com.mined.in.worker.MinedWorker;
 import com.mined.in.worker.MinedWorkerFactory;
@@ -98,14 +99,14 @@ public class TelegramBotUpdates implements BotUpdates {
             case POOL: {
                 // The default values, since they are the only ones
                 stepData.setMarketType(COIN_MARKET_CAP);
-                stepData.setCalculationType(WHAT_TO_MINE);
-                stepData.setStep(CALCULATION);
+                stepData.setRewardType(WHAT_TO_MINE);
+                stepData.setStep(REWARD);
             }
             case MARKET:
-            case CALCULATION: {
+            case REWARD: {
                 responseMessage.parsePreviousResultMessage(incomingMessage);
                 String walletAddress = incomingMessage.replyToMessage().text();
-                MinedResult minedResult = calculateMined(walletAddress);
+                MinedResult minedResult = calculateMinedEarnings(walletAddress);
                 createMinedResultMessage(minedResult);
                 break;
             }
@@ -116,8 +117,8 @@ public class TelegramBotUpdates implements BotUpdates {
         } catch (MarketExecutorException e) {
             responseMessage.setError(String.format(RESOURCE.getString("market_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
-        } catch (CalculationExecutorException e) {
-            responseMessage.setError(String.format(RESOURCE.getString("mining_calculation_error"), e.getMessage()));
+        } catch (RewardExecutorException e) {
+            responseMessage.setError(String.format(RESOURCE.getString("reward_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
         } catch (Exception e) {
             responseMessage.setError(RESOURCE.getString("unexpected_error"));
@@ -171,25 +172,25 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Calculates mined.
+     * Calculates mined earnings.
      *
      * @param walletAddress wallet address
      * @return mined result
      * @throws AccountExecutorException if there is any error in account creating
      * @throws MarketExecutorException if there is any error in market creating
-     * @throws CalculationExecutorException if there is any error in mining calculation creating
+     * @throws RewardExecutorException if there is any error in estimated rewards creating
      */
-    private MinedResult calculateMined(String walletAddress)
-            throws AccountExecutorException, MarketExecutorException, CalculationExecutorException {
+    private MinedResult calculateMinedEarnings(String walletAddress)
+            throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         TelegramStepData stepData = responseMessage.getStepData();
         CoinType coinType = stepData.getCoinType();
         PoolType poolType = stepData.getPoolType();
         MarketType marketType = stepData.getMarketType();
-        CalculationType calculationType = stepData.getCalculationType();
+        RewardType rewardType = stepData.getRewardType();
         AccountExecutor accountExecutor = AccountExecutorFactory.getAccountExecutor(poolType);
         MarketExecutor marketExecutor = MarketExecutorFactory.getMarketExecutor(marketType);
-        CalculationExecutor calculationExecutor = CalculationExecutorFactory.getCalculationExecutor(calculationType);
-        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coinType, accountExecutor, marketExecutor, calculationExecutor);
+        RewardExecutor rewardExecutor = RewardExecutorFactory.getRewardExecutor(rewardType);
+        MinedWorker minedWorker = MinedWorkerFactory.getMinedWorker(coinType, accountExecutor, marketExecutor, rewardExecutor);
         return minedWorker.calculate(walletAddress);
     }
 
@@ -207,19 +208,20 @@ public class TelegramBotUpdates implements BotUpdates {
         balanceMessage = String.format(balanceMessage,
                                        "$" + usdBalance,
                                        "$" + coinPrice);
-        Calculation calculation = minedResult.getCalculation();
+        Reward reward = minedResult.getReward();
         String accountMessage = RESOURCE.getString("account");
         accountMessage = String.format(accountMessage,
                                        stepData.getPoolType().getName(),
                                        coinBalance + " " + stepData.getCoinType().getSymbol(),
                                        stepData.getPoolType().getName(),
-                                       calculation.getTotalHashrate().setScale(2, DOWN) + " MH/s");
-        BigDecimal perHour = calculation.getRewardPerHour().setScale(6, DOWN);
-        BigDecimal perDay = calculation.getRewardPerDay().setScale(6, DOWN);
-        BigDecimal perWeek = calculation.getRewardPerWeek().setScale(6, DOWN);
-        BigDecimal perMonth = calculation.getRewardPerMonth().setScale(6, DOWN);
-        BigDecimal perYear = calculation.getRewardPerYear().setScale(6, DOWN);
+                                       reward.getTotalHashrate().setScale(2, DOWN) + " MH/s");
+        BigDecimal perHour = reward.getRewardPerHour().setScale(6, DOWN);
+        BigDecimal perDay = reward.getRewardPerDay().setScale(6, DOWN);
+        BigDecimal perWeek = reward.getRewardPerWeek().setScale(6, DOWN);
+        BigDecimal perMonth = reward.getRewardPerMonth().setScale(6, DOWN);
+        BigDecimal perYear = reward.getRewardPerYear().setScale(6, DOWN);
         String rewardsMessage = RESOURCE.getString("rewards");
+        CoinInfo coinInfo = reward.getCoinInfo();
         rewardsMessage = String.format(rewardsMessage,
                                        perHour,
                                        "$" + perHour.multiply(coinPrice).setScale(2, DOWN),
@@ -231,10 +233,10 @@ public class TelegramBotUpdates implements BotUpdates {
                                        "$" + perMonth.multiply(coinPrice).setScale(2, DOWN),
                                        perYear,
                                        "$" + perYear.multiply(coinPrice).setScale(2, DOWN),
-                                       calculation.getBlockTime().toPlainString() + "s",
-                                       calculation.getBlockCount(),
-                                       calculation.getDifficulty(),
-                                       calculation.getNetworkHashrate().divide(TERAHASH, 2, DOWN).toPlainString() + " TH/s");
+                                       coinInfo.getBlockTime().toPlainString() + "s",
+                                       coinInfo.getBlockCount(),
+                                       coinInfo.getDifficulty(),
+                                       coinInfo.getNetworkHashrate().divide(TERAHASH, 2, DOWN).toPlainString() + " TH/s");
         responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage);
     }
 

@@ -3,10 +3,10 @@ package com.mined.in.bot.telegram;
 import static com.mined.in.bot.telegram.TelegramStepData.Step.START;
 import static com.mined.in.bot.telegram.TelegramStepData.Step.WALLET;
 
-import com.mined.in.calculation.CalculationType;
 import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketType;
 import com.mined.in.pool.PoolType;
+import com.mined.in.reward.RewardType;
 
 /**
  * Class for representing data of current step.
@@ -24,8 +24,8 @@ public class TelegramStepData {
     private PoolType poolType;
     /** Selected market type. */
     private MarketType marketType;
-    /** Selected calculation type. */
-    private CalculationType calculationType;
+    /** Selected reward type. */
+    private RewardType rewardType;
 
     /**
      * Enumeration of steps.
@@ -40,7 +40,7 @@ public class TelegramStepData {
         COIN(1),
         POOL(2),
         MARKET(3),
-        CALCULATION(4);
+        REWARD(4);
 
         /** Step position. */
         private int position;
@@ -84,7 +84,7 @@ public class TelegramStepData {
         if (simpleMessage) {
             step = data.equalsIgnoreCase("/start") ? START : WALLET;
         } else {
-            // Callback query data format: "COIN_POOL_MARKET_CALCULATION" ("ETH_Dwarfpool_CoinMarketCap_WhatToMine")
+            // Callback query data format: "COIN_POOL_MARKET_REWARD" ("ETH_Dwarfpool_CoinMarketCap_WhatToMine")
             String[] splittedData = data.split("_");
             int splittedDataLength = splittedData.length;
             if (splittedDataLength > 0) {
@@ -97,7 +97,7 @@ public class TelegramStepData {
                 marketType = MarketType.getByName(splittedData[2]);
             }
             if (splittedDataLength > 3) {
-                calculationType = CalculationType.getByName(splittedData[3]);
+                rewardType = RewardType.getByName(splittedData[3]);
             }
             step = Step.getByPosition(splittedDataLength);
         }
@@ -109,7 +109,7 @@ public class TelegramStepData {
      * @return callback query data
      */
     public String getCallbackQueryData() {
-        return coinType.getSymbol() + "_" + poolType.getName() + "_" + marketType.getName() + "_" + calculationType.getName();
+        return coinType.getSymbol() + "_" + poolType.getName() + "_" + marketType.getName() + "_" + rewardType.getName();
     }
 
     /**
@@ -149,12 +149,12 @@ public class TelegramStepData {
     }
 
     /**
-     * Gets the calculation type.
+     * Gets the reward type.
      *
-     * @return the calculation type
+     * @return the reward type
      */
-    public CalculationType getCalculationType() {
-        return calculationType;
+    public RewardType getRewardType() {
+        return rewardType;
     }
 
     /**
@@ -176,12 +176,12 @@ public class TelegramStepData {
     }
 
     /**
-     * Sets the calculation type.
+     * Sets the reward type.
      *
-     * @param calculationType the new calculation type
+     * @param rewardType the new reward type
      */
-    public void setCalculationType(CalculationType calculationType) {
-        this.calculationType = calculationType;
+    public void setRewardType(RewardType rewardType) {
+        this.rewardType = rewardType;
     }
 
 }

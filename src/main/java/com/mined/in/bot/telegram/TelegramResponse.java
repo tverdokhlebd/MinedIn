@@ -1,6 +1,6 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.bot.telegram.TelegramStepData.Step.CALCULATION;
+import static com.mined.in.bot.telegram.TelegramStepData.Step.REWARD;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -65,7 +65,7 @@ public class TelegramResponse {
      * @return the formatted message
      */
     public String getFormattedMessage() {
-        boolean isMessageResult = stepData.getStep() == CALCULATION;
+        boolean isMessageResult = stepData.getStep() == REWARD;
         String formattedMessage = message;
         if (isMessageResult) {
             if (error != null && message == null) {
