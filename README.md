@@ -26,7 +26,7 @@ Public API of services are listed below. New public API of services will be add 
 ---
 There are next available implementations:
 - <a href="https://t.me/MinedInBot">TELEGRAM BOT</a>
-- <a href="">WEB VERSION</a>
-- <a href="">ANDROID APPLICATION</a>
+- <a href="https://github.com/tverdokhlebd/MinedIn">WEB VERSION</a>
+- <a href="https://github.com/tverdokhlebd/MinedIn">ANDROID APPLICATION</a>
 ---
 If you have any questions please contact me by email tverdokhlebd@gmail.com
