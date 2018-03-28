@@ -21,7 +21,7 @@ Pools:
 Markets:
 - <a href="https://coinmarketcap.com/">COINMARKETCAP</a> (Default)
 
-Rewards calculation:
+Estimated rewards:
 - <a href="https://whattomine.com">WHATTOMINE</a> (Default)
 ---
 There are ready implementation:
