@@ -86,6 +86,7 @@ public class TelegramResponse {
             resultMessage.append("\n");
             String formattedDate = String.format(RESOURCE.getString("last_update"), currentDate);
             resultMessage.append(insertSeparatorsAndPreTag(formattedDate, maxStrLength));
+            resultMessage.insert(0, String.format(RESOURCE.getString("affiliate_link"), stepData.getCoinType().name()) + "\n");
             if (error != null) {
                 resultMessage.append("\n");
                 resultMessage.append(error);
