@@ -1,5 +1,6 @@
 package com.mined.in.reward;
 
+import com.mined.in.reward.whattomine.WhatToMineLimiter;
 import com.mined.in.reward.whattomine.WhatToMineRewardExecutor;
 
 import okhttp3.OkHttpClient;
@@ -22,6 +23,7 @@ public class RewardExecutorFactory {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         switch (rewardType) {
         case WHAT_TO_MINE: {
+            okHttpBuilder.addInterceptor(WhatToMineLimiter.get());
             return new WhatToMineRewardExecutor(okHttpBuilder.build());
         }
         default:
