@@ -9,9 +9,6 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -37,8 +34,6 @@ public class TelegramResponse {
     private InlineKeyboardMarkup keyboardMarkup;
     /** Text resources. */
     private final static ResourceBundle RESOURCE = ResourceBundle.getBundle(TelegramBotUpdates.class.getSimpleName().toLowerCase());
-    /** Logger. */
-    private final static Logger LOG = LoggerFactory.getLogger(TelegramResponse.class);
 
     /**
      * Creates the instance.
