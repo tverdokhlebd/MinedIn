@@ -31,6 +31,7 @@ import com.mined.in.reward.RewardExecutor;
 import com.mined.in.reward.RewardExecutorException;
 import com.mined.in.reward.RewardExecutorFactory;
 import com.mined.in.reward.RewardType;
+import com.mined.in.util.HashrateConverter;
 import com.mined.in.worker.MinedEarnings;
 import com.mined.in.worker.MinedEarningsWorker;
 import com.mined.in.worker.MinedEarningsWorkerFactory;
@@ -61,9 +62,7 @@ public class TelegramBotUpdates implements BotUpdates {
     /** Logger. */
     private final static Logger LOG = LoggerFactory.getLogger(TelegramBotUpdates.class);
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle(TelegramBotUpdates.class.getSimpleName().toLowerCase());
-    /** Terahash. */
-    private final static BigDecimal TERAHASH = BigDecimal.valueOf(1_000_000_000_000L);
+    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
 
     /**
      * Creates the instance.
@@ -215,7 +214,7 @@ public class TelegramBotUpdates implements BotUpdates {
                                        stepData.getPoolType().getName(),
                                        coinBalance + " " + stepData.getCoinType().getSymbol(),
                                        stepData.getPoolType().getName(),
-                                       reward.getTotalHashrate().setScale(2, DOWN) + " MH/s");
+                                       reward.getTotalHashrate().setScale(2, DOWN) + " " + RESOURCE.getString("mh_s"));
         BigDecimal perHour = reward.getRewardPerHour().setScale(6, DOWN);
         BigDecimal perDay = reward.getRewardPerDay().setScale(6, DOWN);
         BigDecimal perWeek = reward.getRewardPerWeek().setScale(6, DOWN);
@@ -237,7 +236,7 @@ public class TelegramBotUpdates implements BotUpdates {
                                        coinInfo.getBlockTime().toPlainString() + "s",
                                        coinInfo.getBlockCount(),
                                        coinInfo.getDifficulty(),
-                                       coinInfo.getNetworkHashrate().divide(TERAHASH, 2, DOWN).toPlainString() + " TH/s");
+                                       HashrateConverter.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
         responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage);
     }
 

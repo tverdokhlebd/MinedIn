@@ -33,7 +33,7 @@ public class TelegramResponse {
     /** Keyboard markup. */
     private InlineKeyboardMarkup keyboardMarkup;
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle(TelegramBotUpdates.class.getSimpleName().toLowerCase());
+    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
 
     /**
      * Creates the instance.
