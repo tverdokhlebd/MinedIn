@@ -4,7 +4,6 @@ import static com.mined.in.bot.telegram.TelegramStepData.Step.REWARD;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
@@ -24,8 +23,6 @@ public class TelegramResponse {
 
     /** Data of current step. */
     private TelegramStepData stepData;
-    /** User time zone. */
-    private final TimeZone userTimeZone;
     /** Result message. */
     private String message;
     /** Error message. */
@@ -39,14 +36,10 @@ public class TelegramResponse {
      * Creates the instance.
      *
      * @param stepData data of current step
-     * @param receivingDate date of message receiving from bot
      */
-    public TelegramResponse(TelegramStepData stepData, Date receivingDate) {
+    public TelegramResponse(TelegramStepData stepData) {
         super();
         this.stepData = stepData;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(receivingDate);
-        this.userTimeZone = calendar.getTimeZone();
     }
 
     /**
@@ -224,8 +217,8 @@ public class TelegramResponse {
      */
     private String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
-        dateFormat.setTimeZone(userTimeZone);
-        return dateFormat.format(new Date());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return "UTC: " + dateFormat.format(new Date());
     }
 
 }
