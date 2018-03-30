@@ -1,7 +1,9 @@
 package com.mined.in.market;
 
+import com.mined.in.coin.CoinMarket;
+
 /**
- * Interface for retrieving market.
+ * Interface for retrieving coin market.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -9,11 +11,11 @@ package com.mined.in.market;
 public interface MarketExecutor {
 
     /**
-     * Gets market.
+     * Gets ETH coin market.
      *
-     * @return market
+     * @return ETH coin market
      * @throws MarketExecutorException if there is any error in request executing
      */
-    Market getMarket() throws MarketExecutorException;
+    CoinMarket getETHCoin() throws MarketExecutorException;
 
 }

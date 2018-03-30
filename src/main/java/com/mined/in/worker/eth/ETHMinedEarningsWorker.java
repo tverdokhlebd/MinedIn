@@ -2,7 +2,7 @@ package com.mined.in.worker.eth;
 
 import java.math.BigDecimal;
 
-import com.mined.in.market.Market;
+import com.mined.in.coin.CoinMarket;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
 import com.mined.in.pool.Account;
@@ -48,11 +48,11 @@ public class ETHMinedEarningsWorker implements MinedEarningsWorker {
             throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
         Account account = accountExecutor.getETHAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
-        Market market = pairExecutor.getMarket();
-        BigDecimal ethPrice = market.getEthPrice();
-        BigDecimal balanceInUSD = walletBalance.multiply(ethPrice);
+        CoinMarket coinMarket = pairExecutor.getETHCoin();
+        BigDecimal coinPrice = coinMarket.getPrice();
+        BigDecimal balanceInUSD = walletBalance.multiply(coinPrice);
         Reward reward = rewardExecutor.getETHReward(account.getTotalHashrate());
-        return new MinedEarnings(walletBalance, balanceInUSD, market.getEthPrice(), reward);
+        return new MinedEarnings(walletBalance, balanceInUSD, coinPrice, reward);
     }
 
 }

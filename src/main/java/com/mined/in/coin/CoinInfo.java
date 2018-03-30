@@ -3,7 +3,7 @@ package com.mined.in.coin;
 import java.math.BigDecimal;
 
 /**
- * Class for representing a coin information.
+ * Class for representing general coin info (block time, block reward and etc.).
  *
  * @author Dmitry Tverdokhleb
  *

@@ -1,24 +1,12 @@
 package com.mined.in.market.coinmarketcap;
 
-import static com.mined.in.error.ErrorCode.HTTP_ERROR;
-import static com.mined.in.error.ErrorCode.JSON_ERROR;
+import java.util.concurrent.locks.ReentrantLock;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.mined.in.market.Market;
-import com.mined.in.market.Market.Builder;
+import com.mined.in.coin.CoinMarket;
 import com.mined.in.market.MarketExecutor;
 import com.mined.in.market.MarketExecutorException;
 
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Implementation of CoinMarketCap executor.
@@ -30,10 +18,10 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** Maximum number of tickers. */
-    private static final int MAX_TICKER_NUMBER = 1;
-    /** CoinMarketCap API url. */
-    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=0";
+    /** ETH coin market lock. */
+    private static final ReentrantLock ETH_LOCK = new ReentrantLock();
+    /** Endpoints update. */
+    private static final int ENDPOINTS_UPDATE = 6;
 
     /**
      * Creates the instance.
@@ -46,50 +34,13 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
     }
 
     @Override
-    public Market getMarket() throws MarketExecutorException {
-        Request request = new Request.Builder().url(API_URL).build();
-        Market market = null;
-        try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new MarketExecutorException(HTTP_ERROR, response.message());
-            }
-            try (ResponseBody body = response.body()) {
-                JSONArray jsonResponse = new JSONArray(body.string());
-                market = createMarket(jsonResponse);
-            }
-        } catch (JSONException e) {
-            throw new MarketExecutorException(JSON_ERROR, e);
-        } catch (IOException e) {
-            throw new MarketExecutorException(HTTP_ERROR, e);
+    public CoinMarket getETHCoin() throws MarketExecutorException {
+        ETH_LOCK.lock();
+        try {
+            return new ETHCoinMarketRequestor().request(ENDPOINTS_UPDATE, httpClient);
+        } finally {
+            ETH_LOCK.unlock();
         }
-        return market;
-    }
-
-    /**
-     * Creates market from JSON response.
-     *
-     * @param jsonResponse JSON response
-     * @return market
-     */
-    private Market createMarket(JSONArray jsonResponse) {
-        Market.Builder builder = new Builder();
-        int tickerNumber = 0;
-        for (int i = 0; i < jsonResponse.length(); i++) {
-            JSONObject jsonTicker = jsonResponse.getJSONObject(i);
-            String symbol = jsonTicker.getString("symbol");
-            switch (symbol) {
-            case "ETH": {
-                BigDecimal price = BigDecimal.valueOf(jsonTicker.getDouble("price_usd"));
-                builder.ethPrice(price);
-                tickerNumber++;
-                break;
-            }
-            }
-            if (tickerNumber == MAX_TICKER_NUMBER) {
-                break;
-            }
-        }
-        return builder.build();
     }
 
 }

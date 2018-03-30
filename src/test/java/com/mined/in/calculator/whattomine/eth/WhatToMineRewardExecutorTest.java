@@ -21,7 +21,7 @@ import com.mined.in.reward.whattomine.WhatToMineRewardExecutor;
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of WhatToMine ethereum executor.
+ * Tests of WhatToMine ETH executor.
  *
  * @author Dmitry Tverdokhleb
  *
