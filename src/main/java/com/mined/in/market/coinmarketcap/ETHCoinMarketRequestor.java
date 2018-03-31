@@ -29,6 +29,10 @@ import okhttp3.ResponseBody;
  */
 public class ETHCoinMarketRequestor {
 
+    /** HTTP client. */
+    private final OkHttpClient httpClient;
+    /** Endpoints update. */
+    private final int endpointsUpdate;
     /** CoinMarketCap API url. */
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/ethereum";
     /** Next update of coin market. */
@@ -37,14 +41,24 @@ public class ETHCoinMarketRequestor {
     private static CoinMarket COIN_MARKET;
 
     /**
+     * Creates the instance.
+     *
+     * @param httpClient HTTP client
+     * @param endpointsUpdate endpoints update
+     */
+    public ETHCoinMarketRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+        super();
+        this.httpClient = httpClient;
+        this.endpointsUpdate = endpointsUpdate;
+    }
+
+    /**
      * Requests ETH coin market.
      *
-     * @param endpointsUpdate endpoints update
-     * @param httpClient httpClient HTTP client
      * @return ETH coin market
      * @throws MarketExecutorException if there is any error in request executing
      */
-    public CoinMarket request(int endpointsUpdate, OkHttpClient httpClient) throws MarketExecutorException {
+    public CoinMarket request() throws MarketExecutorException {
         Date currentDate = new Date();
         if (NEXT_UPDATED == null || currentDate.after(NEXT_UPDATED)) {
             Request request = new Request.Builder().url(API_URL).build();

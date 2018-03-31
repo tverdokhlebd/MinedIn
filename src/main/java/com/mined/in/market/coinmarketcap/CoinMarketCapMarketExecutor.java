@@ -37,7 +37,7 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
     public CoinMarket getETHCoin() throws MarketExecutorException {
         ETH_LOCK.lock();
         try {
-            return new ETHCoinMarketRequestor().request(ENDPOINTS_UPDATE, httpClient);
+            return new ETHCoinMarketRequestor(httpClient, ENDPOINTS_UPDATE).request();
         } finally {
             ETH_LOCK.unlock();
         }
