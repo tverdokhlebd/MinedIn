@@ -1,6 +1,7 @@
 package com.mined.in.pool;
 
-import com.mined.in.error.ErrorCode;
+import com.mined.in.http.ErrorCode;
+import com.mined.in.http.RequestException;
 
 /**
  * Exception for working with pool account executor.
@@ -8,12 +9,10 @@ import com.mined.in.error.ErrorCode;
  * @author Dmitry Tverdokhleb
  *
  */
-public class AccountExecutorException extends Exception {
+public class AccountExecutorException extends RequestException {
 
-    /** Error code. */
-    private final ErrorCode errorCode;
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -448307664169612373L;
+    private static final long serialVersionUID = -2187968069795783438L;
 
     /**
      * Creates the instance.
@@ -22,8 +21,7 @@ public class AccountExecutorException extends Exception {
      * @param message the detail message
      */
     public AccountExecutorException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+        super(errorCode, message);
     }
 
     /**
@@ -33,17 +31,7 @@ public class AccountExecutorException extends Exception {
      * @param cause the cause
      */
     public AccountExecutorException(ErrorCode errorCode, Throwable cause) {
-        super(cause);
-        this.errorCode = errorCode;
-    }
-
-    /**
-     * Gets the error code.
-     *
-     * @return the error code
-     */
-    public ErrorCode getErrorCode() {
-        return errorCode;
+        super(errorCode, cause);
     }
 
 }

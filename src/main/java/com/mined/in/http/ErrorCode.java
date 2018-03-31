@@ -1,4 +1,4 @@
-package com.mined.in.error;
+package com.mined.in.http;
 
 /**
  * Enumerations of error codes.

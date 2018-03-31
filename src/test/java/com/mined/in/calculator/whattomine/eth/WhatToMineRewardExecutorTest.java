@@ -1,8 +1,8 @@
 package com.mined.in.calculator.whattomine.eth;
 
 import static com.mined.in.coin.CoinType.ETH;
-import static com.mined.in.error.ErrorCode.HTTP_ERROR;
-import static com.mined.in.error.ErrorCode.JSON_ERROR;
+import static com.mined.in.http.ErrorCode.HTTP_ERROR;
+import static com.mined.in.http.ErrorCode.JSON_ERROR;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;

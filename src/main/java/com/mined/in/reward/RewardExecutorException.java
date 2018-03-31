@@ -1,6 +1,7 @@
 package com.mined.in.reward;
 
-import com.mined.in.error.ErrorCode;
+import com.mined.in.http.ErrorCode;
+import com.mined.in.http.RequestException;
 
 /**
  * Exception for working with estimated reward executor.
@@ -8,12 +9,10 @@ import com.mined.in.error.ErrorCode;
  * @author Dmitry Tverdokhleb
  *
  */
-public class RewardExecutorException extends Exception {
+public class RewardExecutorException extends RequestException {
 
-    /** Error code. */
-    private final ErrorCode errorCode;
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -4546411797257311520L;
+    private static final long serialVersionUID = 4078780829401257645L;
 
     /**
      * Creates the instance.
@@ -22,8 +21,7 @@ public class RewardExecutorException extends Exception {
      * @param message the detail message
      */
     public RewardExecutorException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+        super(errorCode, message);
     }
 
     /**
@@ -33,17 +31,7 @@ public class RewardExecutorException extends Exception {
      * @param cause the cause
      */
     public RewardExecutorException(ErrorCode errorCode, Throwable cause) {
-        super(cause);
-        this.errorCode = errorCode;
-    }
-
-    /**
-     * Gets the error code.
-     *
-     * @return the error code
-     */
-    public ErrorCode getErrorCode() {
-        return errorCode;
+        super(errorCode, cause);
     }
 
 }

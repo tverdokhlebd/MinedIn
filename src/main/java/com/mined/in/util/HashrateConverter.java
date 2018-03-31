@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.ResourceBundle;
 
 /**
- * Class for converting hashrate.
+ * Utils for converting hashrate to readable hash power.
  *
  * @author Dmitry Tverdokhleb
  *

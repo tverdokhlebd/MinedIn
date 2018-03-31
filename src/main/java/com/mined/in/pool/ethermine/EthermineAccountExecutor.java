@@ -1,8 +1,8 @@
 package com.mined.in.pool.ethermine;
 
-import static com.mined.in.error.ErrorCode.API_ERROR;
-import static com.mined.in.error.ErrorCode.HTTP_ERROR;
-import static com.mined.in.error.ErrorCode.JSON_ERROR;
+import static com.mined.in.http.ErrorCode.API_ERROR;
+import static com.mined.in.http.ErrorCode.HTTP_ERROR;
+import static com.mined.in.http.ErrorCode.JSON_ERROR;
 
 import java.io.IOException;
 import java.math.BigDecimal;
