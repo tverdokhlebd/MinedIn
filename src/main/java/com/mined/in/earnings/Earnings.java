@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.mined.in.reward.Reward;
 
 /**
- * Earnings of pool account. It uses as final result of calculation.
+ * Earnings of pool account. It uses as final result of calculations.
  *
  * @author Dmitry Tverdokhleb
  *

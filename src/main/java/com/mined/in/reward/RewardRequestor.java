@@ -3,7 +3,7 @@ package com.mined.in.reward;
 import java.math.BigDecimal;
 
 /**
- * Interface for retrieving estimated reward.
+ * Interface for requesting estimated reward.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -11,12 +11,12 @@ import java.math.BigDecimal;
 public interface RewardRequestor {
 
     /**
-     * Gets ETH estimated reward.
+     * Requests estimated reward for ethereum.
      *
      * @param hashrate reported total hashrate
-     * @return ETH estimated reward
+     * @return estimated reward for ethereum
      * @throws RewardRequestorException if there is any error in request executing
      */
-    Reward getETHReward(BigDecimal hashrate) throws RewardRequestorException;
+    Reward requestEthereumReward(BigDecimal hashrate) throws RewardRequestorException;
 
 }

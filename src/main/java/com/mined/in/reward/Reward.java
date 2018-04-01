@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.mined.in.coin.CoinInfo;
 
 /**
- * Class for representing estimated reward.
+ * Estimated reward according to reported hashrate of pool account. It uses as intermediate result of calculations.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -114,7 +114,7 @@ public class Reward {
     }
 
     /**
-     * Class for representing the estimated reward builder.
+     * Builder of estimated reward.
      *
      * @author Dmitry Tverdokhleb
      *
@@ -147,7 +147,7 @@ public class Reward {
          * Sets the coin info.
          *
          * @param coinInfo the new coin info
-         * @return estimated reward builder
+         * @return builder of estimated reward
          */
         public Builder coinInfo(CoinInfo coinInfo) {
             this.coinInfo = coinInfo;
@@ -158,7 +158,7 @@ public class Reward {
          * Sets the total hashrate.
          *
          * @param totalHashrate the new total hashrate
-         * @return estimated reward builder
+         * @return builder of estimated reward
          */
         public Builder setTotalHashrate(BigDecimal totalHashrate) {
             this.totalHashrate = totalHashrate.stripTrailingZeros();
@@ -169,7 +169,7 @@ public class Reward {
          * Sets the reward per hour.
          *
          * @param rewardPerHour the new reward per hour
-         * @return estimated reward builder
+         * @return builder of estimated reward
          */
         public Builder rewardPerHour(BigDecimal rewardPerHour) {
             this.rewardPerHour = rewardPerHour.stripTrailingZeros();
@@ -180,7 +180,7 @@ public class Reward {
          * Sets the reward per day.
          *
          * @param rewardPerDay the new reward per day
-         * @return estimated reward builder
+         * @return builder of estimated reward
          */
         public Builder rewardPerDay(BigDecimal rewardPerDay) {
             this.rewardPerDay = rewardPerDay.stripTrailingZeros();
@@ -191,7 +191,7 @@ public class Reward {
          * Sets the reward per week.
          *
          * @param rewardPerWeek the new reward per week
-         * @return estimated reward builder
+         * @return builder of estimated reward
          */
         public Builder rewardPerWeek(BigDecimal rewardPerWeek) {
             this.rewardPerWeek = rewardPerWeek.stripTrailingZeros();
@@ -202,7 +202,7 @@ public class Reward {
          * Sets the reward per month.
          *
          * @param rewardPerMonth the new reward per month
-         * @return estimated reward builder
+         * @return builder of estimated reward
          */
         public Builder rewardPerMonth(BigDecimal rewardPerMonth) {
             this.rewardPerMonth = rewardPerMonth.stripTrailingZeros();
@@ -213,7 +213,7 @@ public class Reward {
          * Sets the reward per year.
          *
          * @param rewardPerYear the new reward per year
-         * @return estimated reward builder
+         * @return builder of estimated reward
          */
         public Builder rewardPerYear(BigDecimal rewardPerYear) {
             this.rewardPerYear = rewardPerYear.stripTrailingZeros();
@@ -223,7 +223,7 @@ public class Reward {
         /**
          * Build estimated reward.
          *
-         * @return estimated rewards
+         * @return estimated reward
          */
         public Reward build() {
             return new Reward(coinInfo,

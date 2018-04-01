@@ -21,22 +21,22 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Class for retrieving ETH reward.
+ * Requestor of ethereum estimated reward.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class ETHRewardRequestor {
+public class EthereumRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
     /** Endpoints update. */
     private final int endpointsUpdate;
-    /** WhatToMine API url. */
+    /** API url. */
     private static final String API_URL = "https://whattomine.com/coins/151.json";
-    /** Next update of reward. */
+    /** Next update of estimated reward. */
     private static Date NEXT_UPDATE;
-    /** Cached reward. */
+    /** Cached estimated reward. */
     private static Reward REWARD;
 
     /**
@@ -45,17 +45,17 @@ public class ETHRewardRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public ETHRewardRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    public EthereumRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super();
         this.httpClient = httpClient;
         this.endpointsUpdate = endpointsUpdate;
     }
 
     /**
-     * Requests ETH reward.
+     * Requests estimated reward for ethereum.
      *
      * @param hashrate reported total hashrate
-     * @return ETH reward
+     * @return estimated reward for ethereum
      * @throws RewardRequestorException if there is any error in request executing
      */
     public Reward request(BigDecimal hashrate) throws RewardRequestorException {
@@ -83,7 +83,7 @@ public class ETHRewardRequestor {
     /**
      * Sets next update.
      *
-     * @param jsonResponse reward in JSON format
+     * @param jsonResponse JSON response
      */
     private void setNextUpdate(JSONObject jsonResponse) {
         Long lastUpdated = jsonResponse.getLong("timestamp");

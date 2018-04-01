@@ -10,7 +10,7 @@ import com.mined.in.reward.RewardRequestorException;
 import okhttp3.OkHttpClient;
 
 /**
- * Implementation of WhatToMine requestor.
+ * WhatToMine estimated reward requestor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -19,8 +19,8 @@ public class WhatToMineRewardRequestor implements RewardRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** ETH reward lock. */
-    private static final ReentrantLock ETH_LOCK = new ReentrantLock();
+    /** Ethereum reward lock. */
+    private static final ReentrantLock ETHEREUM_LOCK = new ReentrantLock();
     /** Endpoints update. */
     private static final int ENDPOINTS_UPDATE = 4;
 
@@ -35,12 +35,12 @@ public class WhatToMineRewardRequestor implements RewardRequestor {
     }
 
     @Override
-    public Reward getETHReward(BigDecimal hashrate) throws RewardRequestorException {
-        ETH_LOCK.lock();
+    public Reward requestEthereumReward(BigDecimal hashrate) throws RewardRequestorException {
+        ETHEREUM_LOCK.lock();
         try {
-            return new ETHRewardRequestor(httpClient, ENDPOINTS_UPDATE).request(hashrate);
+            return new EthereumRequestor(httpClient, ENDPOINTS_UPDATE).request(hashrate);
         } finally {
-            ETH_LOCK.unlock();
+            ETHEREUM_LOCK.unlock();
         }
     }
 

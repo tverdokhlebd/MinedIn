@@ -13,7 +13,7 @@ import com.mined.in.reward.Reward;
 import com.mined.in.reward.Reward.Builder;
 
 /**
- * Utils for working with WhatToMine reward.
+ * Utils for working with WhatToMine estimated reward requestor.
  *
  * @author Dmitry Tverdokhleb
  *
