@@ -3,7 +3,7 @@ package com.mined.in.pool;
 import java.math.BigDecimal;
 
 /**
- * Class for representing pool account.
+ * Pool account. It uses as intermediate result of calculations.
  *
  * @author Dmitry Tverdokhleb
  *

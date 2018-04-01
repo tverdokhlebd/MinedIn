@@ -43,7 +43,7 @@ public class DwarfpoolAccountRequestorTest {
                 + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
-        Account account = accountRequestor.getETHAccount(WALLET_ADDRESS);
+        Account account = accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.78665394), account.getWalletBalance());
         assertEquals(BigDecimal.valueOf(174.03), account.getTotalHashrate());
@@ -55,7 +55,7 @@ public class DwarfpoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals("API_DOWN", e.getMessage());
@@ -68,7 +68,7 @@ public class DwarfpoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
@@ -80,7 +80,7 @@ public class DwarfpoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
@@ -92,7 +92,7 @@ public class DwarfpoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount("");
+            accountRequestor.requestEthereumAccount("");
         } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals("BAD_WALLET", e.getMessage());

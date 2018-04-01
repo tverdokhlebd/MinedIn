@@ -39,7 +39,7 @@ public class EthermineAccountRequestorTest {
                 + "\"btcPerMin\":0.0000015963919745655347}}");
         OkHttpClient httpClient = Utils.getHttpClient(responseStats.toString(), 200);
         AccountRequestor accountRequestor = new EthermineAccountRequestor(httpClient);
-        Account account = accountRequestor.getETHAccount(WALLET_ADDRESS);
+        Account account = accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.04401808541303854), account.getWalletBalance());
         assertEquals(BigDecimal.valueOf(543.427584), account.getTotalHashrate());
@@ -51,7 +51,7 @@ public class EthermineAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         AccountRequestor accountRequestor = new EthermineAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals("Invalid address", e.getMessage());
@@ -64,7 +64,7 @@ public class EthermineAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         AccountRequestor accountRequestor = new EthermineAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
@@ -76,7 +76,7 @@ public class EthermineAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountRequestor accountRequestor = new EthermineAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
@@ -89,7 +89,7 @@ public class EthermineAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountRequestor accountRequestor = new EthermineAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount("");
+            accountRequestor.requestEthereumAccount("");
         } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals(errorCode, e.getMessage());

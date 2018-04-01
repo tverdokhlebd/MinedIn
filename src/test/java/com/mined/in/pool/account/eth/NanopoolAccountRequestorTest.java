@@ -54,7 +54,7 @@ public class NanopoolAccountRequestorTest {
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
         AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
-        Account account = accountRequestor.getETHAccount(WALLET_ADDRESS);
+        Account account = accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.05288338), account.getWalletBalance());
         assertEquals(BigDecimal.valueOf(1711.978), account.getTotalHashrate());
@@ -66,7 +66,7 @@ public class NanopoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(responseJSON.toString(), 200);
         AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals("Account not found", e.getMessage());
@@ -79,7 +79,7 @@ public class NanopoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
@@ -91,7 +91,7 @@ public class NanopoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount(WALLET_ADDRESS);
+            accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
@@ -104,7 +104,7 @@ public class NanopoolAccountRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountRequestor.getETHAccount("");
+            accountRequestor.requestEthereumAccount("");
         } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals(errorCode, e.getMessage());

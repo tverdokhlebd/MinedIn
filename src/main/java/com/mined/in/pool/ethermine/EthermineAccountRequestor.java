@@ -20,7 +20,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Implementation of Ethermine requestor.
+ * Ethermine account requestor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -29,7 +29,7 @@ public class EthermineAccountRequestor implements AccountRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** Ethermine API statistic url. */
+    /** API statistic url. */
     private static final String API_STATS_URL = "https://api.ethermine.org/miner/:miner/currentStats";
     /** Wei. */
     private final static BigDecimal WEI = BigDecimal.valueOf(1_000_000_000_000_000_000L);
@@ -47,7 +47,7 @@ public class EthermineAccountRequestor implements AccountRequestor {
     }
 
     @Override
-    public Account getETHAccount(String walletAddress) throws AccountRequestorException {
+    public Account requestEthereumAccount(String walletAddress) throws AccountRequestorException {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }

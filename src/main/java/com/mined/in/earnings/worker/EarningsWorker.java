@@ -14,7 +14,7 @@ import com.mined.in.reward.RewardRequestorException;
 public interface EarningsWorker {
 
     /**
-     * Calculates earnings of pool account by wallet address.
+     * Calculates earnings of pool account.
      *
      * @param walletAddress wallet address
      * @return earnings

@@ -45,7 +45,7 @@ class EthereumWorker implements EarningsWorker {
     @Override
     public Earnings calculate(String walletAddress)
             throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
-        Account account = accountRequestor.getETHAccount(walletAddress);
+        Account account = accountRequestor.requestEthereumAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
         CoinMarket coinMarket = marketRequestor.getETHCoin();
         BigDecimal coinPrice = coinMarket.getPrice();

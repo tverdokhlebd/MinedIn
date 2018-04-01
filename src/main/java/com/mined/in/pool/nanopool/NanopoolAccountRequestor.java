@@ -20,7 +20,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Implementation of Nanopool requestor.
+ * Nanopool account requestor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -29,9 +29,9 @@ public class NanopoolAccountRequestor implements AccountRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** Nanopool API balance url. */
+    /** API balance url. */
     private static final String API_BALANCE_URL = "https://api.nanopool.org/v1/eth/balance/";
-    /** Nanopool API reported hashrate url. */
+    /** API reported hashrate url. */
     private static final String API_HASHRATE_URL = "https://api.nanopool.org/v1/eth/reportedhashrate/";
 
     /**
@@ -45,7 +45,7 @@ public class NanopoolAccountRequestor implements AccountRequestor {
     }
 
     @Override
-    public Account getETHAccount(String walletAddress) throws AccountRequestorException {
+    public Account requestEthereumAccount(String walletAddress) throws AccountRequestorException {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }
@@ -59,7 +59,7 @@ public class NanopoolAccountRequestor implements AccountRequestor {
      *
      * @param walletAddress wallet address
      * @return account with balance
-     * @throws AccountRequestorException if there is any error in account creating
+     * @throws AccountRequestorException if there is any error in account requesting
      */
     private Account createAccountWithBalance(String walletAddress) throws AccountRequestorException {
         Request request = new Request.Builder().url(API_BALANCE_URL + walletAddress).build();
@@ -83,7 +83,7 @@ public class NanopoolAccountRequestor implements AccountRequestor {
      * Sets reported hashrate to existing account.
      *
      * @param account created account
-     * @throws AccountRequestorException if there is any error in account creating
+     * @throws AccountRequestorException if there is any error in account requesting
      */
     private void setReportedHashrate(Account account) throws AccountRequestorException {
         Request request = new Request.Builder().url(API_HASHRATE_URL + account.getWalletAddress()).build();

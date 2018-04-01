@@ -1,7 +1,7 @@
 package com.mined.in.pool;
 
 /**
- * Interface for retrieving pool account.
+ * Interface for requesting pool account.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -9,12 +9,12 @@ package com.mined.in.pool;
 public interface AccountRequestor {
 
     /**
-     * Gets ETH account by wallet address.
+     * Requests ethereum pool account.
      *
      * @param walletAddress the wallet address
-     * @return ETH account
-     * @throws AccountRequestorException if there is any error in account creating
+     * @return ethereum pool account
+     * @throws AccountRequestorException if there is any error in account requesting
      */
-    Account getETHAccount(String walletAddress) throws AccountRequestorException;
+    Account requestEthereumAccount(String walletAddress) throws AccountRequestorException;
 
 }

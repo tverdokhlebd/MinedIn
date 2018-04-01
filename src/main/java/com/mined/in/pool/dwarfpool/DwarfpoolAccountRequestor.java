@@ -20,7 +20,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Implementation of Dwarfpool requestor.
+ * Dwarfpool account requestor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -43,7 +43,7 @@ public class DwarfpoolAccountRequestor implements AccountRequestor {
     }
 
     @Override
-    public Account getETHAccount(String walletAddress) throws AccountRequestorException {
+    public Account requestEthereumAccount(String walletAddress) throws AccountRequestorException {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }
