@@ -1,8 +1,9 @@
-package com.mined.in.worker.eth;
+package com.mined.in.earnings.worker;
 
 import java.math.BigDecimal;
 
 import com.mined.in.coin.CoinMarket;
+import com.mined.in.earnings.Earnings;
 import com.mined.in.market.MarketRequestor;
 import com.mined.in.market.MarketRequestorException;
 import com.mined.in.pool.Account;
@@ -11,21 +12,19 @@ import com.mined.in.pool.AccountRequestorException;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.RewardRequestor;
 import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.worker.MinedEarnings;
-import com.mined.in.worker.MinedEarningsWorker;
 
 /**
- * Worker for calculating ETH mined earnings.
+ * Worker for calculating ethereum earnings.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class ETHMinedEarningsWorker implements MinedEarningsWorker {
+class EthereumWorker implements EarningsWorker {
 
     /** Pool account requestor. */
     private final AccountRequestor accountRequestor;
     /** Market requestor. */
-    private final MarketRequestor pairRequestor;
+    private final MarketRequestor marketRequestor;
     /** Estimated reward requestor. */
     private final RewardRequestor rewardRequestor;
 
@@ -36,23 +35,23 @@ public class ETHMinedEarningsWorker implements MinedEarningsWorker {
      * @param marketRequestor market requestor
      * @param rewardRequestor estimated reward requestor
      */
-    public ETHMinedEarningsWorker(AccountRequestor accountRequestor, MarketRequestor marketRequestor, RewardRequestor rewardRequestor) {
+    EthereumWorker(AccountRequestor accountRequestor, MarketRequestor marketRequestor, RewardRequestor rewardRequestor) {
         super();
         this.accountRequestor = accountRequestor;
-        this.pairRequestor = marketRequestor;
+        this.marketRequestor = marketRequestor;
         this.rewardRequestor = rewardRequestor;
     }
 
     @Override
-    public MinedEarnings calculate(String walletAddress)
+    public Earnings calculate(String walletAddress)
             throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         Account account = accountRequestor.getETHAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
-        CoinMarket coinMarket = pairRequestor.getETHCoin();
+        CoinMarket coinMarket = marketRequestor.getETHCoin();
         BigDecimal coinPrice = coinMarket.getPrice();
         BigDecimal balanceInUSD = walletBalance.multiply(coinPrice);
         Reward reward = rewardRequestor.getETHReward(account.getTotalHashrate());
-        return new MinedEarnings(walletBalance, balanceInUSD, coinPrice, reward);
+        return new Earnings(walletBalance, balanceInUSD, coinPrice, reward);
     }
 
 }
