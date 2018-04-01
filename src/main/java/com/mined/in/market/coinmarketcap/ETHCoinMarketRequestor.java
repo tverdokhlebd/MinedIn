@@ -36,7 +36,7 @@ public class ETHCoinMarketRequestor {
     /** CoinMarketCap API url. */
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/ethereum";
     /** Next update of coin market. */
-    private static Date NEXT_UPDATED;
+    private static Date NEXT_UPDATE;
     /** Cached coin market. */
     private static CoinMarket COIN_MARKET;
 
@@ -60,7 +60,7 @@ public class ETHCoinMarketRequestor {
      */
     public CoinMarket request() throws MarketExecutorException {
         Date currentDate = new Date();
-        if (NEXT_UPDATED == null || currentDate.after(NEXT_UPDATED)) {
+        if (NEXT_UPDATE == null || currentDate.after(NEXT_UPDATE)) {
             Request request = new Request.Builder().url(API_URL).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -68,7 +68,7 @@ public class ETHCoinMarketRequestor {
                 }
                 try (ResponseBody body = response.body()) {
                     JSONObject jsonResponse = new JSONArray(body.string()).getJSONObject(0);
-                    setNextUpdated(endpointsUpdate, jsonResponse);
+                    setNextUpdate(jsonResponse);
                     createCoinMarket(jsonResponse);
                 }
             } catch (JSONException e) {
@@ -83,15 +83,14 @@ public class ETHCoinMarketRequestor {
     /**
      * Sets next update.
      *
-     * @param endpointsUpdate endpoints update
      * @param jsonResponse coin market in JSON format
      */
-    private void setNextUpdated(int endpointsUpdate, JSONObject jsonResponse) {
+    private void setNextUpdate(JSONObject jsonResponse) {
         Long lastUpdated = jsonResponse.getLong("last_updated");
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(lastUpdated * 1000);
         now.add(Calendar.MINUTE, endpointsUpdate);
-        NEXT_UPDATED = now.getTime();
+        NEXT_UPDATE = now.getTime();
     }
 
     /**

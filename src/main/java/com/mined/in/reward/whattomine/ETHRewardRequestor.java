@@ -35,7 +35,7 @@ public class ETHRewardRequestor {
     /** WhatToMine API url. */
     private static final String API_URL = "https://whattomine.com/coins/151.json";
     /** Next update of reward. */
-    private static Date NEXT_UPDATED;
+    private static Date NEXT_UPDATE;
     /** Cached reward. */
     private static Reward REWARD;
 
@@ -60,7 +60,7 @@ public class ETHRewardRequestor {
      */
     public Reward request(BigDecimal hashrate) throws RewardExecutorException {
         Date currentDate = new Date();
-        if (NEXT_UPDATED == null || currentDate.after(NEXT_UPDATED)) {
+        if (NEXT_UPDATE == null || currentDate.after(NEXT_UPDATE)) {
             Request request = new Request.Builder().url(API_URL).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -68,7 +68,7 @@ public class ETHRewardRequestor {
                 }
                 try (ResponseBody body = response.body()) {
                     JSONObject jsonResponse = new JSONObject(body.string());
-                    setNextUpdated(jsonResponse);
+                    setNextUpdate(jsonResponse);
                     REWARD = RewardUtil.createEstimatedReward(ETH, hashrate, jsonResponse);
                 }
             } catch (JSONException e) {
@@ -85,12 +85,12 @@ public class ETHRewardRequestor {
      *
      * @param jsonResponse reward in JSON format
      */
-    private void setNextUpdated(JSONObject jsonResponse) {
+    private void setNextUpdate(JSONObject jsonResponse) {
         Long lastUpdated = jsonResponse.getLong("timestamp");
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(lastUpdated * 1000);
         now.add(Calendar.MINUTE, endpointsUpdate);
-        NEXT_UPDATED = now.getTime();
+        NEXT_UPDATE = now.getTime();
     }
 
 }
