@@ -105,8 +105,8 @@ public class TelegramBotUpdates implements BotUpdates {
             case REWARD: {
                 responseMessage.parsePreviousResultMessage(incomingMessage);
                 String walletAddress = incomingMessage.replyToMessage().text();
-                Earnings minedEarnings = calculateMinedEarnings(walletAddress);
-                createMinedEarningsMessage(minedEarnings);
+                Earnings earnings = calculateEarnings(walletAddress);
+                createMinedEarningsMessage(earnings);
                 break;
             }
             }
@@ -179,7 +179,7 @@ public class TelegramBotUpdates implements BotUpdates {
      * @throws MarketRequestorException if there is any error in market requesting
      * @throws RewardRequestorException if there is any error in estimated reward requesting
      */
-    private Earnings calculateMinedEarnings(String walletAddress)
+    private Earnings calculateEarnings(String walletAddress)
             throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         TelegramStepData stepData = responseMessage.getStepData();
         CoinType coinType = stepData.getCoinType();
