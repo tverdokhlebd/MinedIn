@@ -9,7 +9,7 @@ import com.mined.in.pool.PoolType;
 import com.mined.in.reward.RewardType;
 
 /**
- * Class for representing data of current step.
+ * Data of current step.
  *
  * @author Dmitry Tverdokhleb
  *

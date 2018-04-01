@@ -45,7 +45,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
 
 /**
- * Class for processing incoming updates from Telegram bot.
+ * Handler of incoming updates from Telegram bot.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -171,13 +171,13 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Calculates mined earnings.
+     * Calculates earnings of pool account.
      *
      * @param walletAddress wallet address
-     * @return mined earnings
-     * @throws AccountRequestorException if there is any error in account creating
-     * @throws MarketRequestorException if there is any error in market creating
-     * @throws RewardRequestorException if there is any error in estimated reward creating
+     * @return earnings of pool account
+     * @throws AccountRequestorException if there is any error in account requesting
+     * @throws MarketRequestorException if there is any error in market requesting
+     * @throws RewardRequestorException if there is any error in estimated reward requesting
      */
     private Earnings calculateMinedEarnings(String walletAddress)
             throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
@@ -194,20 +194,20 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Creates mined earnings message.
+     * Creates earnings of pool account message.
      *
-     * @param minedEarnings mined earnings
+     * @param earnings earnings of pool account
      */
-    private void createMinedEarningsMessage(Earnings minedEarnings) {
+    private void createMinedEarningsMessage(Earnings earnings) {
         TelegramStepData stepData = responseMessage.getStepData();
-        BigDecimal coinBalance = minedEarnings.getCoinBalance().setScale(8, DOWN);
-        BigDecimal usdBalance = minedEarnings.getUsdBalance().setScale(2, DOWN);
-        BigDecimal coinPrice = minedEarnings.getCoinPrice().setScale(2, DOWN);
+        BigDecimal coinBalance = earnings.getCoinBalance().setScale(8, DOWN);
+        BigDecimal usdBalance = earnings.getUsdBalance().setScale(2, DOWN);
+        BigDecimal coinPrice = earnings.getCoinPrice().setScale(2, DOWN);
         String balanceMessage = RESOURCE.getString("balance");
         balanceMessage = String.format(balanceMessage,
                                        "$" + usdBalance,
                                        "$" + coinPrice);
-        Reward reward = minedEarnings.getEstimatedReward();
+        Reward reward = earnings.getEstimatedReward();
         String accountMessage = RESOURCE.getString("account");
         accountMessage = String.format(accountMessage,
                                        stepData.getPoolType().getName(),

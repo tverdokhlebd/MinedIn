@@ -14,7 +14,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 
 /**
- * Class for representing telegram response message.
+ * Telegram response message.
  *
  * @author Dmitry Tverdokhleb
  *
