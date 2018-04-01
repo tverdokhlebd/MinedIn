@@ -45,7 +45,7 @@ public class RewardUtil {
                    .blockCount(BigDecimal.valueOf(jsonResponse.getDouble("last_block")))
                    .difficulty(BigDecimal.valueOf(jsonResponse.getDouble("difficulty")))
                    .networkHashrate(BigDecimal.valueOf(jsonResponse.getDouble("nethash")));
-        CoinInfo coinInfo = coinBuilder.createCoinInfo();
+        CoinInfo coinInfo = coinBuilder.build();
         // Base rewards based on 84.0 MH/s
         BigDecimal estimatedRewardPerDay = BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards"));
         BigDecimal calculatedRewardPerDay =

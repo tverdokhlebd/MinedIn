@@ -3,7 +3,7 @@ package com.mined.in.coin;
 import java.math.BigDecimal;
 
 /**
- * Class for representing coin info in market (rank, price, market cap and etc.).
+ * Market information about coin (rank, price, market cap and etc.).
  *
  * @author Dmitry Tverdokhleb
  *

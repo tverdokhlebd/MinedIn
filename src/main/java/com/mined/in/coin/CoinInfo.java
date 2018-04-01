@@ -3,7 +3,7 @@ package com.mined.in.coin;
 import java.math.BigDecimal;
 
 /**
- * Class for representing general coin info (block time, block reward and etc.).
+ * General information about coin (block time, block reward and etc.).
  *
  * @author Dmitry Tverdokhleb
  *
@@ -99,7 +99,7 @@ public class CoinInfo {
     }
 
     /**
-     * Class for representing a coin information builder.
+     * Builder of general information about coin.
      *
      * @author Dmitry Tverdokhleb
      *
@@ -130,6 +130,7 @@ public class CoinInfo {
          * Sets the coin type.
          *
          * @param coinType the new coin type
+         * @return builder of general information about coin
          */
         public CoinInfoBuilder coinType(CoinType coinType) {
             this.coinType = coinType;
@@ -140,6 +141,7 @@ public class CoinInfo {
          * Sets the block time.
          *
          * @param blockTime the new block time
+         * @return builder of general information about coin
          */
         public CoinInfoBuilder blockTime(BigDecimal blockTime) {
             this.blockTime = blockTime.stripTrailingZeros();
@@ -150,6 +152,7 @@ public class CoinInfo {
          * Sets the block reward.
          *
          * @param blockReward the new block reward
+         * @return builder of general information about coin
          */
         public CoinInfoBuilder blockReward(BigDecimal blockReward) {
             this.blockReward = blockReward.stripTrailingZeros();
@@ -160,6 +163,7 @@ public class CoinInfo {
          * Sets the block count.
          *
          * @param blockCount the new block count
+         * @return builder of general information about coin
          */
         public CoinInfoBuilder blockCount(BigDecimal blockCount) {
             this.blockCount = blockCount.stripTrailingZeros();
@@ -170,6 +174,7 @@ public class CoinInfo {
          * Sets the difficulty.
          *
          * @param difficulty the new difficulty
+         * @return builder of general information about coin
          */
         public CoinInfoBuilder difficulty(BigDecimal difficulty) {
             this.difficulty = difficulty.stripTrailingZeros();
@@ -180,6 +185,7 @@ public class CoinInfo {
          * Sets the network hashrate.
          *
          * @param networkHashrate the new network hashrate
+         * @return builder of general information about coin
          */
         public CoinInfoBuilder networkHashrate(BigDecimal networkHashrate) {
             this.networkHashrate = networkHashrate.stripTrailingZeros();
@@ -187,11 +193,11 @@ public class CoinInfo {
         }
 
         /**
-         * Gets created coin information.
+         * Build general information about coin.
          *
-         * @return created coin information
+         * @return general information about coin
          */
-        public CoinInfo createCoinInfo() {
+        public CoinInfo build() {
             return new CoinInfo(coinType, blockTime, blockReward, blockCount, difficulty, networkHashrate);
         }
 
