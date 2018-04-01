@@ -44,7 +44,7 @@ public class WhatToMineRewardRequestorTest {
                         + "\"status\":\"Active\",\"lagging\":false,\"timestamp\":1521986783}");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
         RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
-        Reward reward = rewardRequestor.getETHReward(hashrate);
+        Reward reward = rewardRequestor.requestEthereumReward(hashrate);
         CoinInfo coinInfo = reward.getCoinInfo();
         assertEquals(ETH, coinInfo.getCoinType());
         assertEquals(hashrate, reward.getTotalHashrate());
@@ -65,7 +65,7 @@ public class WhatToMineRewardRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
         try {
-            rewardRequestor.getETHReward(BigDecimal.valueOf(174));
+            rewardRequestor.requestEthereumReward(BigDecimal.valueOf(174));
         } catch (RewardRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
@@ -77,7 +77,7 @@ public class WhatToMineRewardRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
         try {
-            rewardRequestor.getETHReward(BigDecimal.valueOf(174));
+            rewardRequestor.requestEthereumReward(BigDecimal.valueOf(174));
         } catch (RewardRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
