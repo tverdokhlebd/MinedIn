@@ -33,7 +33,7 @@ import com.mined.in.reward.RewardRequestor;
 import com.mined.in.reward.RewardRequestorException;
 import com.mined.in.reward.RewardRequestorFactory;
 import com.mined.in.reward.RewardType;
-import com.mined.in.util.HashrateConverter;
+import com.mined.in.utils.HashrateConverter;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;

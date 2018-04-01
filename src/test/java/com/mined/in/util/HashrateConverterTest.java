@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.mined.in.utils.HashrateConverter;
+
 /**
  * Tests of hashrate converter.
  *

@@ -1,4 +1,4 @@
-package com.mined.in.util;
+package com.mined.in.utils;
 
 import static java.math.RoundingMode.DOWN;
 
