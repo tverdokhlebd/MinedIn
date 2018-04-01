@@ -47,7 +47,7 @@ class EthereumWorker implements EarningsWorker {
             throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         Account account = accountRequestor.requestEthereumAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
-        CoinMarket coinMarket = marketRequestor.getETHCoin();
+        CoinMarket coinMarket = marketRequestor.requestEthereumCoin();
         BigDecimal coinPrice = coinMarket.getPrice();
         BigDecimal balanceInUSD = walletBalance.multiply(coinPrice);
         Reward reward = rewardRequestor.requestEthereumReward(account.getTotalHashrate());

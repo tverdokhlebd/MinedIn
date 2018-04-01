@@ -22,18 +22,18 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Class for retrieving ETH coin market.
+ * Requestor of ethereum coin market.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class ETHCoinMarketRequestor {
+public class EthereumRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
     /** Endpoints update. */
     private final int endpointsUpdate;
-    /** CoinMarketCap API url. */
+    /** API url. */
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/ethereum";
     /** Next update of coin market. */
     private static Date NEXT_UPDATE;
@@ -46,17 +46,17 @@ public class ETHCoinMarketRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public ETHCoinMarketRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    public EthereumRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super();
         this.httpClient = httpClient;
         this.endpointsUpdate = endpointsUpdate;
     }
 
     /**
-     * Requests ETH coin market.
+     * Requests ethereum coin market.
      *
-     * @return ETH coin market
-     * @throws MarketRequestorException if there is any error in request executing
+     * @return ethereum coin market
+     * @throws MarketRequestorException if there is any error in market requesting
      */
     public CoinMarket request() throws MarketRequestorException {
         Date currentDate = new Date();
@@ -83,7 +83,7 @@ public class ETHCoinMarketRequestor {
     /**
      * Sets next update.
      *
-     * @param jsonResponse coin market in JSON format
+     * @param jsonResponse JSON response
      */
     private void setNextUpdate(JSONObject jsonResponse) {
         Long lastUpdated = jsonResponse.getLong("last_updated");
@@ -96,7 +96,7 @@ public class ETHCoinMarketRequestor {
     /**
      * Creates coin market.
      *
-     * @param jsonResponse coin market in JSON format
+     * @param jsonResponse JSON response
      */
     private void createCoinMarket(JSONObject jsonResponse) {
         BigDecimal price = BigDecimal.valueOf(jsonResponse.getDouble("price_usd"));

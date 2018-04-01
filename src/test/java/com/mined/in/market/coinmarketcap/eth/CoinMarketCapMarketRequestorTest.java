@@ -39,7 +39,7 @@ public class CoinMarketCapMarketRequestorTest {
                 + "\"last_updated\": \"1521743654\" }"));
         OkHttpClient httpClient = Utils.getHttpClient(marketArray.toString(), 200);
         MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(httpClient);
-        CoinMarket coinMarket = marketRequestor.getETHCoin();
+        CoinMarket coinMarket = marketRequestor.requestEthereumCoin();
         assertEquals(coinPrice, coinMarket.getPrice());
     }
 
@@ -48,7 +48,7 @@ public class CoinMarketCapMarketRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(httpClient);
         try {
-            marketRequestor.getETHCoin();
+            marketRequestor.requestEthereumCoin();
         } catch (MarketRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
@@ -60,7 +60,7 @@ public class CoinMarketCapMarketRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(httpClient);
         try {
-            marketRequestor.getETHCoin();
+            marketRequestor.requestEthereumCoin();
         } catch (MarketRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;

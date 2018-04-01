@@ -9,7 +9,7 @@ import com.mined.in.market.MarketRequestorException;
 import okhttp3.OkHttpClient;
 
 /**
- * Implementation of CoinMarketCap requestor.
+ * CoinMarketCap market requestor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -18,8 +18,8 @@ public class CoinMarketCapMarketRequestor implements MarketRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** ETH coin market lock. */
-    private static final ReentrantLock ETH_LOCK = new ReentrantLock();
+    /** Ethereum coin market lock. */
+    private static final ReentrantLock ETHEREUM_LOCK = new ReentrantLock();
     /** Endpoints update. */
     private static final int ENDPOINTS_UPDATE = 6;
 
@@ -34,12 +34,12 @@ public class CoinMarketCapMarketRequestor implements MarketRequestor {
     }
 
     @Override
-    public CoinMarket getETHCoin() throws MarketRequestorException {
-        ETH_LOCK.lock();
+    public CoinMarket requestEthereumCoin() throws MarketRequestorException {
+        ETHEREUM_LOCK.lock();
         try {
-            return new ETHCoinMarketRequestor(httpClient, ENDPOINTS_UPDATE).request();
+            return new EthereumRequestor(httpClient, ENDPOINTS_UPDATE).request();
         } finally {
-            ETH_LOCK.unlock();
+            ETHEREUM_LOCK.unlock();
         }
     }
 
