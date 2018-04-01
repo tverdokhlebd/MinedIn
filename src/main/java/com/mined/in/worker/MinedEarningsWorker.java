@@ -1,8 +1,8 @@
 package com.mined.in.worker;
 
-import com.mined.in.market.MarketExecutorException;
-import com.mined.in.pool.AccountExecutorException;
-import com.mined.in.reward.RewardExecutorException;
+import com.mined.in.market.MarketRequestorException;
+import com.mined.in.pool.AccountRequestorException;
+import com.mined.in.reward.RewardRequestorException;
 
 /**
  * Interface of worker for calculating mined earnings.
@@ -17,10 +17,10 @@ public interface MinedEarningsWorker {
      *
      * @param walletAddress the wallet address
      * @return mined earnings
-     * @throws AccountExecutorException if there is any error in account creating
-     * @throws MarketExecutorException if there is any error in market creating
-     * @throws RewardExecutorException if there is any error in estimated reward creating
+     * @throws AccountRequestorException if there is any error in account creating
+     * @throws MarketRequestorException if there is any error in market creating
+     * @throws RewardRequestorException if there is any error in estimated reward creating
      */
-    MinedEarnings calculate(String walletAddress) throws AccountExecutorException, MarketExecutorException, RewardExecutorException;
+    MinedEarnings calculate(String walletAddress) throws AccountRequestorException, MarketRequestorException, RewardRequestorException;
 
 }

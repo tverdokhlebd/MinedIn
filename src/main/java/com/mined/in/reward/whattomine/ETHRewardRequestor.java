@@ -13,7 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mined.in.reward.Reward;
-import com.mined.in.reward.RewardExecutorException;
+import com.mined.in.reward.RewardRequestorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -56,15 +56,15 @@ public class ETHRewardRequestor {
      *
      * @param hashrate reported total hashrate
      * @return ETH reward
-     * @throws RewardExecutorException if there is any error in request executing
+     * @throws RewardRequestorException if there is any error in request executing
      */
-    public Reward request(BigDecimal hashrate) throws RewardExecutorException {
+    public Reward request(BigDecimal hashrate) throws RewardRequestorException {
         Date currentDate = new Date();
         if (NEXT_UPDATE == null || currentDate.after(NEXT_UPDATE)) {
             Request request = new Request.Builder().url(API_URL).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
-                    throw new RewardExecutorException(HTTP_ERROR, response.message());
+                    throw new RewardRequestorException(HTTP_ERROR, response.message());
                 }
                 try (ResponseBody body = response.body()) {
                     JSONObject jsonResponse = new JSONObject(body.string());
@@ -72,9 +72,9 @@ public class ETHRewardRequestor {
                     REWARD = RewardUtil.createEstimatedReward(ETH, hashrate, jsonResponse);
                 }
             } catch (JSONException e) {
-                throw new RewardExecutorException(JSON_ERROR, e);
+                throw new RewardRequestorException(JSON_ERROR, e);
             } catch (IOException e) {
-                throw new RewardExecutorException(HTTP_ERROR, e);
+                throw new RewardRequestorException(HTTP_ERROR, e);
             }
         }
         return REWARD;

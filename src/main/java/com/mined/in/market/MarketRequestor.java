@@ -8,14 +8,14 @@ import com.mined.in.coin.CoinMarket;
  * @author Dmitry Tverdokhleb
  *
  */
-public interface MarketExecutor {
+public interface MarketRequestor {
 
     /**
      * Gets ETH coin market.
      *
      * @return ETH coin market
-     * @throws MarketExecutorException if there is any error in request executing
+     * @throws MarketRequestorException if there is any error in request executing
      */
-    CoinMarket getETHCoin() throws MarketExecutorException;
+    CoinMarket getETHCoin() throws MarketRequestorException;
 
 }

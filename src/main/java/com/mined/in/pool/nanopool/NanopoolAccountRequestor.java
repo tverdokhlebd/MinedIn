@@ -11,8 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mined.in.pool.Account;
-import com.mined.in.pool.AccountExecutor;
-import com.mined.in.pool.AccountExecutorException;
+import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,12 +20,12 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Implementation of Nanopool executor.
+ * Implementation of Nanopool requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class NanopoolAccountExecutor implements AccountExecutor {
+public class NanopoolAccountRequestor implements AccountRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
@@ -39,15 +39,15 @@ public class NanopoolAccountExecutor implements AccountExecutor {
      *
      * @param httpClient HTTP client
      */
-    public NanopoolAccountExecutor(OkHttpClient httpClient) {
+    public NanopoolAccountRequestor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
     }
 
     @Override
-    public Account getETHAccount(String walletAddress) throws AccountExecutorException {
+    public Account getETHAccount(String walletAddress) throws AccountRequestorException {
         if (walletAddress == null || walletAddress.isEmpty()) {
-            throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
+            throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }
         Account account = createAccountWithBalance(walletAddress);
         setReportedHashrate(account);
@@ -59,13 +59,13 @@ public class NanopoolAccountExecutor implements AccountExecutor {
      *
      * @param walletAddress wallet address
      * @return account with balance
-     * @throws AccountExecutorException if there is any error in account creating
+     * @throws AccountRequestorException if there is any error in account creating
      */
-    private Account createAccountWithBalance(String walletAddress) throws AccountExecutorException {
+    private Account createAccountWithBalance(String walletAddress) throws AccountRequestorException {
         Request request = new Request.Builder().url(API_BALANCE_URL + walletAddress).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new AccountExecutorException(HTTP_ERROR, response.message());
+                throw new AccountRequestorException(HTTP_ERROR, response.message());
             }
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
@@ -73,9 +73,9 @@ public class NanopoolAccountExecutor implements AccountExecutor {
                 return createAccount(walletAddress, jsonResponse);
             }
         } catch (JSONException e) {
-            throw new AccountExecutorException(JSON_ERROR, e);
+            throw new AccountRequestorException(JSON_ERROR, e);
         } catch (IOException e) {
-            throw new AccountExecutorException(HTTP_ERROR, e);
+            throw new AccountRequestorException(HTTP_ERROR, e);
         }
     }
 
@@ -83,13 +83,13 @@ public class NanopoolAccountExecutor implements AccountExecutor {
      * Sets reported hashrate to existing account.
      *
      * @param account created account
-     * @throws AccountExecutorException if there is any error in account creating
+     * @throws AccountRequestorException if there is any error in account creating
      */
-    private void setReportedHashrate(Account account) throws AccountExecutorException {
+    private void setReportedHashrate(Account account) throws AccountRequestorException {
         Request request = new Request.Builder().url(API_HASHRATE_URL + account.getWalletAddress()).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new AccountExecutorException(HTTP_ERROR, response.message());
+                throw new AccountRequestorException(HTTP_ERROR, response.message());
             }
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
@@ -97,9 +97,9 @@ public class NanopoolAccountExecutor implements AccountExecutor {
                 account.setTotalHashrate(BigDecimal.valueOf(jsonResponse.getDouble("data")));
             }
         } catch (JSONException e) {
-            throw new AccountExecutorException(JSON_ERROR, e);
+            throw new AccountRequestorException(JSON_ERROR, e);
         } catch (IOException e) {
-            throw new AccountExecutorException(HTTP_ERROR, e);
+            throw new AccountRequestorException(HTTP_ERROR, e);
         }
     }
 
@@ -119,13 +119,13 @@ public class NanopoolAccountExecutor implements AccountExecutor {
      * Check presence of error in JSON response.
      *
      * @param jsonResponse response in JSON format
-     * @throws AccountExecutorException if there is any error in JSON response
+     * @throws AccountRequestorException if there is any error in JSON response
      */
-    private void checkError(JSONObject jsonResponse) throws AccountExecutorException {
+    private void checkError(JSONObject jsonResponse) throws AccountRequestorException {
         boolean status = jsonResponse.getBoolean("status");
         if (!status) {
             String errorMessage = jsonResponse.getString("error");
-            throw new AccountExecutorException(API_ERROR, errorMessage);
+            throw new AccountRequestorException(API_ERROR, errorMessage);
         }
     }
 

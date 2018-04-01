@@ -1,18 +1,18 @@
-package com.mined.in.reward;
+package com.mined.in.market;
 
 import com.mined.in.http.ErrorCode;
 import com.mined.in.http.RequestException;
 
 /**
- * Exception for working with estimated reward executor.
+ * Exception for working with market requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class RewardExecutorException extends RequestException {
+public class MarketRequestorException extends RequestException {
 
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 4078780829401257645L;
+    private static final long serialVersionUID = 3067598387432040867L;
 
     /**
      * Creates the instance.
@@ -20,7 +20,7 @@ public class RewardExecutorException extends RequestException {
      * @param errorCode error code
      * @param message the detail message
      */
-    public RewardExecutorException(ErrorCode errorCode, String message) {
+    public MarketRequestorException(ErrorCode errorCode, String message) {
         super(errorCode, message);
     }
 
@@ -30,7 +30,7 @@ public class RewardExecutorException extends RequestException {
      * @param errorCode error code
      * @param cause the cause
      */
-    public RewardExecutorException(ErrorCode errorCode, Throwable cause) {
+    public MarketRequestorException(ErrorCode errorCode, Throwable cause) {
         super(errorCode, cause);
     }
 

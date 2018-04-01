@@ -13,25 +13,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
 import com.mined.in.pool.Account;
-import com.mined.in.pool.AccountExecutor;
-import com.mined.in.pool.AccountExecutorException;
-import com.mined.in.pool.dwarfpool.DwarfpoolAccountExecutor;
+import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorException;
+import com.mined.in.pool.dwarfpool.DwarfpoolAccountRequestor;
 
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of Dwarfpool ETH executor.
+ * Tests of Dwarfpool ETH requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
 @SpringBootTest
-public class DwarfpoolAccountExecutorTest {
+public class DwarfpoolAccountRequestorTest {
 
     private final static String WALLET_ADDRESS = "0x4e2c24519354a63c37869d04cefb7d113d17fdc3";
 
     @Test
-    public void testCorrectJsonResponse() throws AccountExecutorException {
+    public void testCorrectJsonResponse() throws AccountRequestorException {
         JSONObject response = new JSONObject("{ \"autopayout_from\": \"5.000\", \"earning_24_hours\": \"0.01137842\", \"error\": false, "
                 + "\"immature_earning\": 0.000455540976, \"last_payment_amount\": 0, \"last_payment_date\": null, \"last_share_date\": "
                 + "\"Sat, 24 Mar 2018 21:09:25 GMT\", \"payout_daily\": false, \"payout_request\": false, \"total_hashrate\": 174.03, "
@@ -42,58 +42,58 @@ public class DwarfpoolAccountExecutorTest {
                 + "\"tv\": { \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
                 + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
-        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
-        Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
+        Account account = accountRequestor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.78665394), account.getWalletBalance());
         assertEquals(BigDecimal.valueOf(174.03), account.getTotalHashrate());
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void testCorrectJsonResponseWithApiError() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void testCorrectJsonResponseWithApiError() throws AccountRequestorException {
         JSONObject response = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
-        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount(WALLET_ADDRESS);
+        } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals("API_DOWN", e.getMessage());
             throw e;
         }
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void test500HttpError() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void test500HttpError() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount(WALLET_ADDRESS);
+        } catch (AccountRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
         }
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void testEmptyResponse() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void testEmptyResponse() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount(WALLET_ADDRESS);
+        } catch (AccountRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
         }
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void testWithEmptyWalletAddress() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void testWithEmptyWalletAddress() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountExecutor accountExecutor = new DwarfpoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount("");
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount("");
+        } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals("BAD_WALLET", e.getMessage());
             throw e;

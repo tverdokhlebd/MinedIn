@@ -1,28 +1,28 @@
 package com.mined.in.market;
 
-import com.mined.in.market.coinmarketcap.CoinMarketCapMarketExecutor;
+import com.mined.in.market.coinmarketcap.CoinMarketCapMarketRequestor;
 
 import okhttp3.OkHttpClient;
 
 /**
- * Factory for creating market executor.
+ * Factory for creating market requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class MarketExecutorFactory {
+public class MarketRequestorFactory {
 
     /**
-     * Creates market executor.
+     * Creates market requestor.
      *
      * @param marketType market type
-     * @return market executor
+     * @return market requestor
      */
-    public static MarketExecutor create(MarketType marketType) {
+    public static MarketRequestor create(MarketType marketType) {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         switch (marketType) {
         case COIN_MARKET_CAP: {
-            return new CoinMarketCapMarketExecutor(okHttpBuilder.build());
+            return new CoinMarketCapMarketRequestor(okHttpBuilder.build());
         }
         default:
             throw new IllegalArgumentException(marketType.name());

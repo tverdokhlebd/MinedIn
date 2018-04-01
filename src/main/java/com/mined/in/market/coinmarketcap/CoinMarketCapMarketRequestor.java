@@ -3,18 +3,18 @@ package com.mined.in.market.coinmarketcap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.mined.in.coin.CoinMarket;
-import com.mined.in.market.MarketExecutor;
-import com.mined.in.market.MarketExecutorException;
+import com.mined.in.market.MarketRequestor;
+import com.mined.in.market.MarketRequestorException;
 
 import okhttp3.OkHttpClient;
 
 /**
- * Implementation of CoinMarketCap executor.
+ * Implementation of CoinMarketCap requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class CoinMarketCapMarketExecutor implements MarketExecutor {
+public class CoinMarketCapMarketRequestor implements MarketRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
@@ -28,13 +28,13 @@ public class CoinMarketCapMarketExecutor implements MarketExecutor {
      *
      * @param httpClient HTTP client
      */
-    public CoinMarketCapMarketExecutor(OkHttpClient httpClient) {
+    public CoinMarketCapMarketRequestor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
     }
 
     @Override
-    public CoinMarket getETHCoin() throws MarketExecutorException {
+    public CoinMarket getETHCoin() throws MarketRequestorException {
         ETH_LOCK.lock();
         try {
             return new ETHCoinMarketRequestor(httpClient, ENDPOINTS_UPDATE).request();

@@ -3,14 +3,14 @@ package com.mined.in.worker.eth;
 import java.math.BigDecimal;
 
 import com.mined.in.coin.CoinMarket;
-import com.mined.in.market.MarketExecutor;
-import com.mined.in.market.MarketExecutorException;
+import com.mined.in.market.MarketRequestor;
+import com.mined.in.market.MarketRequestorException;
 import com.mined.in.pool.Account;
-import com.mined.in.pool.AccountExecutor;
-import com.mined.in.pool.AccountExecutorException;
+import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorException;
 import com.mined.in.reward.Reward;
-import com.mined.in.reward.RewardExecutor;
-import com.mined.in.reward.RewardExecutorException;
+import com.mined.in.reward.RewardRequestor;
+import com.mined.in.reward.RewardRequestorException;
 import com.mined.in.worker.MinedEarnings;
 import com.mined.in.worker.MinedEarningsWorker;
 
@@ -22,36 +22,36 @@ import com.mined.in.worker.MinedEarningsWorker;
  */
 public class ETHMinedEarningsWorker implements MinedEarningsWorker {
 
-    /** Pool account executor. */
-    private final AccountExecutor accountExecutor;
-    /** Market executor. */
-    private final MarketExecutor pairExecutor;
-    /** Estimated reward executor. */
-    private final RewardExecutor rewardExecutor;
+    /** Pool account requestor. */
+    private final AccountRequestor accountRequestor;
+    /** Market requestor. */
+    private final MarketRequestor pairRequestor;
+    /** Estimated reward requestor. */
+    private final RewardRequestor rewardRequestor;
 
     /**
      * Creates the instance.
      *
-     * @param accountExecutor pool account executor
-     * @param marketExecutor market executor
-     * @param rewardExecutor estimated reward executor
+     * @param accountRequestor pool account requestor
+     * @param marketRequestor market requestor
+     * @param rewardRequestor estimated reward requestor
      */
-    public ETHMinedEarningsWorker(AccountExecutor accountExecutor, MarketExecutor marketExecutor, RewardExecutor rewardExecutor) {
+    public ETHMinedEarningsWorker(AccountRequestor accountRequestor, MarketRequestor marketRequestor, RewardRequestor rewardRequestor) {
         super();
-        this.accountExecutor = accountExecutor;
-        this.pairExecutor = marketExecutor;
-        this.rewardExecutor = rewardExecutor;
+        this.accountRequestor = accountRequestor;
+        this.pairRequestor = marketRequestor;
+        this.rewardRequestor = rewardRequestor;
     }
 
     @Override
     public MinedEarnings calculate(String walletAddress)
-            throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
-        Account account = accountExecutor.getETHAccount(walletAddress);
+            throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
+        Account account = accountRequestor.getETHAccount(walletAddress);
         BigDecimal walletBalance = account.getWalletBalance();
-        CoinMarket coinMarket = pairExecutor.getETHCoin();
+        CoinMarket coinMarket = pairRequestor.getETHCoin();
         BigDecimal coinPrice = coinMarket.getPrice();
         BigDecimal balanceInUSD = walletBalance.multiply(coinPrice);
-        Reward reward = rewardExecutor.getETHReward(account.getTotalHashrate());
+        Reward reward = rewardRequestor.getETHReward(account.getTotalHashrate());
         return new MinedEarnings(walletBalance, balanceInUSD, coinPrice, reward);
     }
 

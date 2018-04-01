@@ -11,8 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mined.in.pool.Account;
-import com.mined.in.pool.AccountExecutor;
-import com.mined.in.pool.AccountExecutorException;
+import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,12 +20,12 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Implementation of Dwarfpool executor.
+ * Implementation of Dwarfpool requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class DwarfpoolAccountExecutor implements AccountExecutor {
+public class DwarfpoolAccountRequestor implements AccountRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
@@ -37,20 +37,20 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      *
      * @param httpClient HTTP client
      */
-    public DwarfpoolAccountExecutor(OkHttpClient httpClient) {
+    public DwarfpoolAccountRequestor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
     }
 
     @Override
-    public Account getETHAccount(String walletAddress) throws AccountExecutorException {
+    public Account getETHAccount(String walletAddress) throws AccountRequestorException {
         if (walletAddress == null || walletAddress.isEmpty()) {
-            throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
+            throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }
         Request request = new Request.Builder().url(API_URL + walletAddress).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new AccountExecutorException(HTTP_ERROR, response.message());
+                throw new AccountRequestorException(HTTP_ERROR, response.message());
             }
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
@@ -58,9 +58,9 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
                 return createAccount(walletAddress, jsonResponse);
             }
         } catch (JSONException e) {
-            throw new AccountExecutorException(JSON_ERROR, e);
+            throw new AccountRequestorException(JSON_ERROR, e);
         } catch (IOException e) {
-            throw new AccountExecutorException(HTTP_ERROR, e);
+            throw new AccountRequestorException(HTTP_ERROR, e);
         }
     }
 
@@ -81,13 +81,13 @@ public class DwarfpoolAccountExecutor implements AccountExecutor {
      * Check presence of error in JSON response.
      *
      * @param jsonResponse response in JSON format
-     * @throws AccountExecutorException if there is any error in JSON response
+     * @throws AccountRequestorException if there is any error in JSON response
      */
-    private void checkError(JSONObject jsonResponse) throws AccountExecutorException {
+    private void checkError(JSONObject jsonResponse) throws AccountRequestorException {
         boolean error = jsonResponse.getBoolean("error");
         if (error) {
             String errorCode = jsonResponse.getString("error_code");
-            throw new AccountExecutorException(API_ERROR, errorCode);
+            throw new AccountRequestorException(API_ERROR, errorCode);
         }
     }
 

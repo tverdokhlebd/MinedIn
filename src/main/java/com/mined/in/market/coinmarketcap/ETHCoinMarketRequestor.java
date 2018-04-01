@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mined.in.coin.CoinMarket;
-import com.mined.in.market.MarketExecutorException;
+import com.mined.in.market.MarketRequestorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -56,15 +56,15 @@ public class ETHCoinMarketRequestor {
      * Requests ETH coin market.
      *
      * @return ETH coin market
-     * @throws MarketExecutorException if there is any error in request executing
+     * @throws MarketRequestorException if there is any error in request executing
      */
-    public CoinMarket request() throws MarketExecutorException {
+    public CoinMarket request() throws MarketRequestorException {
         Date currentDate = new Date();
         if (NEXT_UPDATE == null || currentDate.after(NEXT_UPDATE)) {
             Request request = new Request.Builder().url(API_URL).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
-                    throw new MarketExecutorException(HTTP_ERROR, response.message());
+                    throw new MarketRequestorException(HTTP_ERROR, response.message());
                 }
                 try (ResponseBody body = response.body()) {
                     JSONObject jsonResponse = new JSONArray(body.string()).getJSONObject(0);
@@ -72,9 +72,9 @@ public class ETHCoinMarketRequestor {
                     createCoinMarket(jsonResponse);
                 }
             } catch (JSONException e) {
-                throw new MarketExecutorException(JSON_ERROR, e);
+                throw new MarketRequestorException(JSON_ERROR, e);
             } catch (IOException e) {
-                throw new MarketExecutorException(HTTP_ERROR, e);
+                throw new MarketRequestorException(HTTP_ERROR, e);
             }
         }
         return COIN_MARKET;

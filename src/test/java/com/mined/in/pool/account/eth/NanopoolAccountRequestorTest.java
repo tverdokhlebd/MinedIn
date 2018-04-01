@@ -14,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
 import com.mined.in.pool.Account;
-import com.mined.in.pool.AccountExecutor;
-import com.mined.in.pool.AccountExecutorException;
-import com.mined.in.pool.nanopool.NanopoolAccountExecutor;
+import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorException;
+import com.mined.in.pool.nanopool.NanopoolAccountRequestor;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -26,19 +26,19 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Tests of Nanopool ETH executor.
+ * Tests of Nanopool ETH requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
 @SpringBootTest
-public class NanopoolAccountExecutorTest {
+public class NanopoolAccountRequestorTest {
 
     private final static String WALLET_ADDRESS = "0x1bd02ad76aa949a452e3b14d002de68a7713f03b";
     private static final MediaType MEDIA_JSON = MediaType.parse("application/json");
 
     @Test
-    public void testCorrectJsonResponse() throws AccountExecutorException {
+    public void testCorrectJsonResponse() throws AccountRequestorException {
         JSONObject responseBalance = new JSONObject("{\"status\":true,\"data\":0.05288338}");
         JSONObject responseReportedHashrate =
                 new JSONObject("{ \"status\": true, \"data\": 1711.978 }");
@@ -53,59 +53,59 @@ public class NanopoolAccountExecutorTest {
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
-        Account account = accountExecutor.getETHAccount(WALLET_ADDRESS);
+        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
+        Account account = accountRequestor.getETHAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.05288338), account.getWalletBalance());
         assertEquals(BigDecimal.valueOf(1711.978), account.getTotalHashrate());
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void testCorrectJsonResponseWithApiError() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void testCorrectJsonResponseWithApiError() throws AccountRequestorException {
         JSONObject responseJSON = new JSONObject("{\"status\":false,\"error\":\"Account not found\"}");
         OkHttpClient httpClient = Utils.getHttpClient(responseJSON.toString(), 200);
-        AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount(WALLET_ADDRESS);
+        } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals("Account not found", e.getMessage());
             throw e;
         }
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void test500HttpError() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void test500HttpError() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount(WALLET_ADDRESS);
+        } catch (AccountRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
         }
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void testEmptyResponse() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void testEmptyResponse() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount(WALLET_ADDRESS);
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount(WALLET_ADDRESS);
+        } catch (AccountRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
         }
     }
 
-    @Test(expected = AccountExecutorException.class)
-    public void testWithEmptyWalletAddress() throws AccountExecutorException {
+    @Test(expected = AccountRequestorException.class)
+    public void testWithEmptyWalletAddress() throws AccountRequestorException {
         String errorCode = "BAD_WALLET";
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountExecutor accountExecutor = new NanopoolAccountExecutor(httpClient);
+        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient);
         try {
-            accountExecutor.getETHAccount("");
-        } catch (AccountExecutorException e) {
+            accountRequestor.getETHAccount("");
+        } catch (AccountRequestorException e) {
             assertEquals(API_ERROR, e.getErrorCode());
             assertEquals(errorCode, e.getMessage());
             throw e;

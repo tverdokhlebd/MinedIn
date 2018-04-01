@@ -8,15 +8,15 @@ import java.math.BigDecimal;
  * @author Dmitry Tverdokhleb
  *
  */
-public interface RewardExecutor {
+public interface RewardRequestor {
 
     /**
      * Gets ETH estimated reward.
      *
      * @param hashrate reported total hashrate
      * @return ETH estimated reward
-     * @throws RewardExecutorException if there is any error in request executing
+     * @throws RewardRequestorException if there is any error in request executing
      */
-    Reward getETHReward(BigDecimal hashrate) throws RewardExecutorException;
+    Reward getETHReward(BigDecimal hashrate) throws RewardRequestorException;
 
 }

@@ -17,18 +17,18 @@ import org.slf4j.LoggerFactory;
 import com.mined.in.bot.BotUpdates;
 import com.mined.in.coin.CoinInfo;
 import com.mined.in.coin.CoinType;
-import com.mined.in.market.MarketExecutor;
-import com.mined.in.market.MarketExecutorException;
-import com.mined.in.market.MarketExecutorFactory;
+import com.mined.in.market.MarketRequestor;
+import com.mined.in.market.MarketRequestorException;
+import com.mined.in.market.MarketRequestorFactory;
 import com.mined.in.market.MarketType;
-import com.mined.in.pool.AccountExecutor;
-import com.mined.in.pool.AccountExecutorException;
-import com.mined.in.pool.AccountExecutorFactory;
+import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorException;
+import com.mined.in.pool.AccountRequestorFactory;
 import com.mined.in.pool.PoolType;
 import com.mined.in.reward.Reward;
-import com.mined.in.reward.RewardExecutor;
-import com.mined.in.reward.RewardExecutorException;
-import com.mined.in.reward.RewardExecutorFactory;
+import com.mined.in.reward.RewardRequestor;
+import com.mined.in.reward.RewardRequestorException;
+import com.mined.in.reward.RewardRequestorFactory;
 import com.mined.in.reward.RewardType;
 import com.mined.in.util.HashrateConverter;
 import com.mined.in.worker.MinedEarnings;
@@ -110,13 +110,13 @@ public class TelegramBotUpdates implements BotUpdates {
                 break;
             }
             }
-        } catch (AccountExecutorException e) {
+        } catch (AccountRequestorException e) {
             responseMessage.setError(String.format(RESOURCE.getString("pool_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
-        } catch (MarketExecutorException e) {
+        } catch (MarketRequestorException e) {
             responseMessage.setError(String.format(RESOURCE.getString("market_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
-        } catch (RewardExecutorException e) {
+        } catch (RewardRequestorException e) {
             responseMessage.setError(String.format(RESOURCE.getString("reward_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
         } catch (Exception e) {
@@ -175,21 +175,21 @@ public class TelegramBotUpdates implements BotUpdates {
      *
      * @param walletAddress wallet address
      * @return mined earnings
-     * @throws AccountExecutorException if there is any error in account creating
-     * @throws MarketExecutorException if there is any error in market creating
-     * @throws RewardExecutorException if there is any error in estimated reward creating
+     * @throws AccountRequestorException if there is any error in account creating
+     * @throws MarketRequestorException if there is any error in market creating
+     * @throws RewardRequestorException if there is any error in estimated reward creating
      */
     private MinedEarnings calculateMinedEarnings(String walletAddress)
-            throws AccountExecutorException, MarketExecutorException, RewardExecutorException {
+            throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         TelegramStepData stepData = responseMessage.getStepData();
         CoinType coinType = stepData.getCoinType();
         PoolType poolType = stepData.getPoolType();
         MarketType marketType = stepData.getMarketType();
         RewardType rewardType = stepData.getRewardType();
-        AccountExecutor accountExecutor = AccountExecutorFactory.create(poolType);
-        MarketExecutor marketExecutor = MarketExecutorFactory.create(marketType);
-        RewardExecutor rewardExecutor = RewardExecutorFactory.create(rewardType);
-        MinedEarningsWorker minedWorker = MinedEarningsWorkerFactory.create(coinType, accountExecutor, marketExecutor, rewardExecutor);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(poolType);
+        MarketRequestor marketRequestor = MarketRequestorFactory.create(marketType);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(rewardType);
+        MinedEarningsWorker minedWorker = MinedEarningsWorkerFactory.create(coinType, accountRequestor, marketRequestor, rewardRequestor);
         return minedWorker.calculate(walletAddress);
     }
 

@@ -14,23 +14,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.mined.in.Utils;
 import com.mined.in.coin.CoinInfo;
 import com.mined.in.reward.Reward;
-import com.mined.in.reward.RewardExecutor;
-import com.mined.in.reward.RewardExecutorException;
-import com.mined.in.reward.whattomine.WhatToMineRewardExecutor;
+import com.mined.in.reward.RewardRequestor;
+import com.mined.in.reward.RewardRequestorException;
+import com.mined.in.reward.whattomine.WhatToMineRewardRequestor;
 
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of WhatToMine ETH executor.
+ * Tests of WhatToMine ETH requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
 @SpringBootTest
-public class WhatToMineRewardExecutorTest {
+public class WhatToMineRewardRequestorTest {
 
     @Test
-    public void testCorrectJsonResponse() throws RewardExecutorException {
+    public void testCorrectJsonResponse() throws RewardRequestorException {
         BigDecimal hashrate = BigDecimal.valueOf(174);
         JSONObject response =
                 new JSONObject("{\"id\":151,\"name\":\"Ethereum\",\"tag\":\"ETH\",\"algorithm\":\"Ethash\",\"block_time\":\"14.4406\","
@@ -43,8 +43,8 @@ public class WhatToMineRewardExecutorTest {
                         + "\"btc_revenue\":\"0.00039220\",\"revenue\":\"$3.35\",\"cost\":\"$0.97\",\"profit\":\"$2.37\","
                         + "\"status\":\"Active\",\"lagging\":false,\"timestamp\":1521986783}");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
-        RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(httpClient);
-        Reward reward = rewardExecutor.getETHReward(hashrate);
+        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
+        Reward reward = rewardRequestor.getETHReward(hashrate);
         CoinInfo coinInfo = reward.getCoinInfo();
         assertEquals(ETH, coinInfo.getCoinType());
         assertEquals(hashrate, reward.getTotalHashrate());
@@ -60,25 +60,25 @@ public class WhatToMineRewardExecutorTest {
         assertEquals(BigDecimal.valueOf(4.85669), reward.getRewardPerYear());
     }
 
-    @Test(expected = RewardExecutorException.class)
-    public void testEmptyResponse() throws RewardExecutorException {
+    @Test(expected = RewardRequestorException.class)
+    public void testEmptyResponse() throws RewardRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(httpClient);
+        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
         try {
-            rewardExecutor.getETHReward(BigDecimal.valueOf(174));
-        } catch (RewardExecutorException e) {
+            rewardRequestor.getETHReward(BigDecimal.valueOf(174));
+        } catch (RewardRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
         }
     }
 
-    @Test(expected = RewardExecutorException.class)
-    public void test500HttpError() throws RewardExecutorException {
+    @Test(expected = RewardRequestorException.class)
+    public void test500HttpError() throws RewardRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        RewardExecutor rewardExecutor = new WhatToMineRewardExecutor(httpClient);
+        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
         try {
-            rewardExecutor.getETHReward(BigDecimal.valueOf(174));
-        } catch (RewardExecutorException e) {
+            rewardRequestor.getETHReward(BigDecimal.valueOf(174));
+        } catch (RewardRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
         }

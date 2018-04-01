@@ -6,15 +6,15 @@ package com.mined.in.pool;
  * @author Dmitry Tverdokhleb
  *
  */
-public interface AccountExecutor {
+public interface AccountRequestor {
 
     /**
      * Gets ETH account by wallet address.
      *
      * @param walletAddress the wallet address
      * @return ETH account
-     * @throws AccountExecutorException if there is any error in account creating
+     * @throws AccountRequestorException if there is any error in account creating
      */
-    Account getETHAccount(String walletAddress) throws AccountExecutorException;
+    Account getETHAccount(String walletAddress) throws AccountRequestorException;
 
 }

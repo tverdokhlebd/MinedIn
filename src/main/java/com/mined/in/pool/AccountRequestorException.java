@@ -1,18 +1,18 @@
-package com.mined.in.market;
+package com.mined.in.pool;
 
 import com.mined.in.http.ErrorCode;
 import com.mined.in.http.RequestException;
 
 /**
- * Exception for working with market executor.
+ * Exception for working with pool account requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class MarketExecutorException extends RequestException {
+public class AccountRequestorException extends RequestException {
 
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 3067598387432040867L;
+    private static final long serialVersionUID = -2187968069795783438L;
 
     /**
      * Creates the instance.
@@ -20,7 +20,7 @@ public class MarketExecutorException extends RequestException {
      * @param errorCode error code
      * @param message the detail message
      */
-    public MarketExecutorException(ErrorCode errorCode, String message) {
+    public AccountRequestorException(ErrorCode errorCode, String message) {
         super(errorCode, message);
     }
 
@@ -30,7 +30,7 @@ public class MarketExecutorException extends RequestException {
      * @param errorCode error code
      * @param cause the cause
      */
-    public MarketExecutorException(ErrorCode errorCode, Throwable cause) {
+    public AccountRequestorException(ErrorCode errorCode, Throwable cause) {
         super(errorCode, cause);
     }
 

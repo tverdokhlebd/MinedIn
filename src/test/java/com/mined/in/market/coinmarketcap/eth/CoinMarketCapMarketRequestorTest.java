@@ -13,23 +13,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mined.in.Utils;
 import com.mined.in.coin.CoinMarket;
-import com.mined.in.market.MarketExecutor;
-import com.mined.in.market.MarketExecutorException;
-import com.mined.in.market.coinmarketcap.CoinMarketCapMarketExecutor;
+import com.mined.in.market.MarketRequestor;
+import com.mined.in.market.MarketRequestorException;
+import com.mined.in.market.coinmarketcap.CoinMarketCapMarketRequestor;
 
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of CoinMarketCap ETH executor.
+ * Tests of CoinMarketCap ETH requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
 @SpringBootTest
-public class CoinMarketCapMarketExecutorTest {
+public class CoinMarketCapMarketRequestorTest {
 
     @Test
-    public void testCorrectJsonResponse() throws MarketExecutorException {
+    public void testCorrectJsonResponse() throws MarketRequestorException {
         BigDecimal coinPrice = new BigDecimal("536.854");
         JSONArray marketArray = new JSONArray();
         marketArray.put(new JSONObject("{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": "
@@ -38,30 +38,30 @@ public class CoinMarketCapMarketExecutorTest {
                 + "\"percent_change_1h\": \"0.94\", \"percent_change_24h\": \"-4.19\", \"percent_change_7d\": \"-11.61\", "
                 + "\"last_updated\": \"1521743654\" }"));
         OkHttpClient httpClient = Utils.getHttpClient(marketArray.toString(), 200);
-        MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(httpClient);
-        CoinMarket coinMarket = marketExecutor.getETHCoin();
+        MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(httpClient);
+        CoinMarket coinMarket = marketRequestor.getETHCoin();
         assertEquals(coinPrice, coinMarket.getPrice());
     }
 
-    @Test(expected = MarketExecutorException.class)
-    public void testEmptyResponse() throws MarketExecutorException {
+    @Test(expected = MarketRequestorException.class)
+    public void testEmptyResponse() throws MarketRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(httpClient);
+        MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(httpClient);
         try {
-            marketExecutor.getETHCoin();
-        } catch (MarketExecutorException e) {
+            marketRequestor.getETHCoin();
+        } catch (MarketRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
         }
     }
 
-    @Test(expected = MarketExecutorException.class)
-    public void test500HttpError() throws MarketExecutorException {
+    @Test(expected = MarketRequestorException.class)
+    public void test500HttpError() throws MarketRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        MarketExecutor marketExecutor = new CoinMarketCapMarketExecutor(httpClient);
+        MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(httpClient);
         try {
-            marketExecutor.getETHCoin();
-        } catch (MarketExecutorException e) {
+            marketRequestor.getETHCoin();
+        } catch (MarketRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;
         }

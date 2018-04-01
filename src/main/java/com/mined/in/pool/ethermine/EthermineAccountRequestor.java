@@ -11,8 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mined.in.pool.Account;
-import com.mined.in.pool.AccountExecutor;
-import com.mined.in.pool.AccountExecutorException;
+import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,12 +20,12 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Implementation of Ethermine executor.
+ * Implementation of Ethermine requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class EthermineAccountExecutor implements AccountExecutor {
+public class EthermineAccountRequestor implements AccountRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
@@ -41,20 +41,20 @@ public class EthermineAccountExecutor implements AccountExecutor {
      *
      * @param httpClient HTTP client
      */
-    public EthermineAccountExecutor(OkHttpClient httpClient) {
+    public EthermineAccountRequestor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
     }
 
     @Override
-    public Account getETHAccount(String walletAddress) throws AccountExecutorException {
+    public Account getETHAccount(String walletAddress) throws AccountRequestorException {
         if (walletAddress == null || walletAddress.isEmpty()) {
-            throw new AccountExecutorException(API_ERROR, "BAD_WALLET");
+            throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }
         Request request = new Request.Builder().url(API_STATS_URL.replace(":miner", walletAddress)).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new AccountExecutorException(HTTP_ERROR, response.message());
+                throw new AccountRequestorException(HTTP_ERROR, response.message());
             }
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
@@ -62,9 +62,9 @@ public class EthermineAccountExecutor implements AccountExecutor {
                 return createAccount(walletAddress, jsonResponse);
             }
         } catch (JSONException e) {
-            throw new AccountExecutorException(JSON_ERROR, e);
+            throw new AccountRequestorException(JSON_ERROR, e);
         } catch (IOException e) {
-            throw new AccountExecutorException(HTTP_ERROR, e);
+            throw new AccountRequestorException(HTTP_ERROR, e);
         }
     }
 
@@ -87,13 +87,13 @@ public class EthermineAccountExecutor implements AccountExecutor {
      * Check presence of error in JSON response.
      *
      * @param jsonResponse response in JSON format
-     * @throws AccountExecutorException if there is any error in JSON response
+     * @throws AccountRequestorException if there is any error in JSON response
      */
-    private void checkError(JSONObject jsonResponse) throws AccountExecutorException {
+    private void checkError(JSONObject jsonResponse) throws AccountRequestorException {
         String status = jsonResponse.getString("status");
         if (status.equalsIgnoreCase("error")) {
             String errorMessage = jsonResponse.getString("error");
-            throw new AccountExecutorException(API_ERROR, errorMessage);
+            throw new AccountRequestorException(API_ERROR, errorMessage);
         }
     }
 
