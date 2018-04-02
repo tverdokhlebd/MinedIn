@@ -76,8 +76,8 @@ public class NanopoolAccountRequestor implements AccountRequestor {
         }
         SimpleEntry<Account, Date> entry = ACCOUNT_MAP.get(walletAddress);
         if (entry == null) {
-            Account account = createAccountWithBalance(walletAddress);
-            setReportedHashrate(account);
+            Account account = requestAccountWithBalance(walletAddress);
+            account.setTotalHashrate(requestReportedHashrate(walletAddress));
             entry = new SimpleEntry<Account, Date>(account, setNextRemoveDate());
             ACCOUNT_MAP.put(walletAddress, entry);
         }
@@ -85,13 +85,13 @@ public class NanopoolAccountRequestor implements AccountRequestor {
     }
 
     /**
-     * Creates account with balance.
+     * Requests account with balance.
      *
      * @param walletAddress wallet address
      * @return account with balance
      * @throws AccountRequestorException if there is any error in account requesting
      */
-    private Account createAccountWithBalance(String walletAddress) throws AccountRequestorException {
+    private Account requestAccountWithBalance(String walletAddress) throws AccountRequestorException {
         Request request = new Request.Builder().url(API_BALANCE_URL + walletAddress).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
@@ -110,13 +110,14 @@ public class NanopoolAccountRequestor implements AccountRequestor {
     }
 
     /**
-     * Sets reported hashrate to existing account.
+     * Requests reported hashrate.
      *
-     * @param account created account
+     * @param walletAddress wallet address
+     * @return reported hashrate
      * @throws AccountRequestorException if there is any error in account requesting
      */
-    private void setReportedHashrate(Account account) throws AccountRequestorException {
-        Request request = new Request.Builder().url(API_HASHRATE_URL + account.getWalletAddress()).build();
+    private BigDecimal requestReportedHashrate(String walletAddress) throws AccountRequestorException {
+        Request request = new Request.Builder().url(API_HASHRATE_URL + walletAddress).build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new AccountRequestorException(HTTP_ERROR, response.message());
@@ -124,7 +125,7 @@ public class NanopoolAccountRequestor implements AccountRequestor {
             try (ResponseBody body = response.body()) {
                 JSONObject jsonResponse = new JSONObject(body.string());
                 checkError(jsonResponse);
-                account.setTotalHashrate(BigDecimal.valueOf(jsonResponse.getDouble("data")));
+                return BigDecimal.valueOf(jsonResponse.getDouble("data"));
             }
         } catch (JSONException e) {
             throw new AccountRequestorException(JSON_ERROR, e);
