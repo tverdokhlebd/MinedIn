@@ -54,7 +54,7 @@ public class EthereumWorkerTest {
                         + "\"tv\": { \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
                         + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
         BigDecimal coinPrice = BigDecimal.valueOf(536.854);
         JSONObject marketJSON =
                 new JSONObject("{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": \"536.854\", "
@@ -102,7 +102,7 @@ public class EthereumWorkerTest {
     public void testPoolError() throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         JSONObject poolResponseJSON = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
         OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(marketHttpClient);
         OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
@@ -122,7 +122,7 @@ public class EthereumWorkerTest {
         JSONObject poolResponseJSON =
                 new JSONObject("{ \"autopayout_from\": \"5.000\", \"earning_24_hours\": \"0.01137842\", \"error\": false, "
                         + "\"immature_earning\": 0.000455540976, \"last_payment_amount\": 0, \"last_payment_date\": null, \"last_share_date\": "
-                        + "\"Sat, 24 Mar 2018 21:09:25 GMT\", \"payout_daily\": false, \"payout_request\": false, \"total_hashrate\": 174, "
+                        + "\"Sat, 24 Mar 2018 21:09:25 GMT\", \"payout_daily\": false, \"payout_request\": false, \"total_hashrate\": 174.03, "
                         + "\"total_hashrate_calculated\": 197.03, \"transferring_to_balance\": 0, \"wallet\": "
                         + "\"0x4e2c24519354a63c37869d04cefb7d113d17fdc3\", \"wallet_balance\": \"0.78665394\", \"workers\": { \"dmtry\": "
                         + "{ \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
@@ -130,7 +130,7 @@ public class EthereumWorkerTest {
                         + "\"tv\": { \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
                         + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
         OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(marketHttpClient);
         OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
@@ -157,7 +157,7 @@ public class EthereumWorkerTest {
                         + "\"tv\": { \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
                         + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
         JSONObject marketJSON =
                 new JSONObject("{ \"id\": \"ethereum\", \"name\": \"Ethereum\", \"symbol\": \"ETH\", \"rank\": \"2\", \"price_usd\": \"536.854\", "
                         + "\"price_btc\": \"0.0619693\", \"24h_volume_usd\": \"1560240000.0\", \"market_cap_usd\": \"52799438836.0\", "

@@ -42,7 +42,7 @@ public class DwarfpoolAccountRequestorTest {
                 + "\"tv\": { \"alive\": true, \"hashrate\": 87.015, \"hashrate_below_threshold\": false, \"hashrate_calculated\": 98.515, "
                 + "\"last_submit\": \"Sat, 24 Mar 2018 20:06:25 GMT\", \"second_since_submit\": 305, \"worker\": \"tv\" } } }");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient, false);
         Account account = accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.78665394), account.getWalletBalance());
@@ -53,7 +53,7 @@ public class DwarfpoolAccountRequestorTest {
     public void testCorrectJsonResponseWithApiError() throws AccountRequestorException {
         JSONObject response = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient, false);
         try {
             accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
@@ -66,7 +66,7 @@ public class DwarfpoolAccountRequestorTest {
     @Test(expected = AccountRequestorException.class)
     public void test500HttpError() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient, false);
         try {
             accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
@@ -78,7 +78,7 @@ public class DwarfpoolAccountRequestorTest {
     @Test(expected = AccountRequestorException.class)
     public void testEmptyResponse() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient, false);
         try {
             accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
@@ -90,7 +90,7 @@ public class DwarfpoolAccountRequestorTest {
     @Test(expected = AccountRequestorException.class)
     public void testWithEmptyWalletAddress() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient);
+        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(httpClient, false);
         try {
             accountRequestor.requestEthereumAccount("");
         } catch (AccountRequestorException e) {

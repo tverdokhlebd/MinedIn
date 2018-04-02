@@ -37,6 +37,8 @@ public class NanopoolAccountRequestor implements AccountRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
+    /** Use accounts caching or not. */
+    private final boolean useAccountCaching;
     /** API balance url. */
     private static final String API_BALANCE_URL = "https://api.nanopool.org/v1/eth/balance/";
     /** API reported hashrate url. */
@@ -67,6 +69,19 @@ public class NanopoolAccountRequestor implements AccountRequestor {
     public NanopoolAccountRequestor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
+        this.useAccountCaching = true;
+    }
+
+    /**
+     * Creates the instance.
+     *
+     * @param httpClient HTTP client
+     * @param useAccountCaching use accounts caching or not
+     */
+    public NanopoolAccountRequestor(OkHttpClient httpClient, boolean useAccountCaching) {
+        super();
+        this.httpClient = httpClient;
+        this.useAccountCaching = useAccountCaching;
     }
 
     @Override
@@ -74,14 +89,30 @@ public class NanopoolAccountRequestor implements AccountRequestor {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }
-        SimpleEntry<Account, Date> entry = ACCOUNT_MAP.get(walletAddress);
-        if (entry == null) {
-            Account account = requestAccountWithBalance(walletAddress);
-            account.setTotalHashrate(requestReportedHashrate(walletAddress));
-            entry = new SimpleEntry<Account, Date>(account, setNextRemoveDate());
-            ACCOUNT_MAP.put(walletAddress, entry);
+        if (useAccountCaching) {
+            SimpleEntry<Account, Date> entry = ACCOUNT_MAP.get(walletAddress);
+            if (entry == null) {
+                Account account = requestAccount(walletAddress);
+                entry = new SimpleEntry<Account, Date>(account, setNextRemoveDate());
+                ACCOUNT_MAP.put(walletAddress, entry);
+            }
+            return entry.getKey();
+        } else {
+            return requestAccount(walletAddress);
         }
-        return entry.getKey();
+    }
+
+    /**
+     * Requests ethereum pool account.
+     *
+     * @param walletAddress the wallet address
+     * @return ethereum pool account
+     * @throws AccountRequestorException if there is any error in account requesting
+     */
+    private Account requestAccount(String walletAddress) throws AccountRequestorException {
+        Account account = requestAccountWithBalance(walletAddress);
+        account.setTotalHashrate(requestReportedHashrate(walletAddress));
+        return account;
     }
 
     /**

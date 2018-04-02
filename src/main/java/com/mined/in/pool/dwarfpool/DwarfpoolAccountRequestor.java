@@ -36,9 +36,11 @@ public class DwarfpoolAccountRequestor implements AccountRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
-    /** Dwarfpool API url. */
+    /** Use accounts caching or not. */
+    private final boolean useAccountCaching;
+    /** API url. */
     private static final String API_URL = "http://dwarfpool.com/eth/api?wallet=";
-    /** Cached dwarfpool accounts. */
+    /** Cached accounts. */
     private static final Map<String, SimpleEntry<Account, Date>> ACCOUNT_MAP = new ConcurrentHashMap<>();
     /** Two minutes for repeated task. */
     private static final int TWO_MINUTES = 1000 * 60 * 2;
@@ -64,6 +66,19 @@ public class DwarfpoolAccountRequestor implements AccountRequestor {
     public DwarfpoolAccountRequestor(OkHttpClient httpClient) {
         super();
         this.httpClient = httpClient;
+        this.useAccountCaching = true;
+    }
+
+    /**
+     * Creates the instance.
+     *
+     * @param httpClient HTTP client
+     * @param useAccountCaching use accounts caching or not
+     */
+    public DwarfpoolAccountRequestor(OkHttpClient httpClient, boolean useAccountCaching) {
+        super();
+        this.httpClient = httpClient;
+        this.useAccountCaching = useAccountCaching;
     }
 
     @Override
@@ -71,27 +86,42 @@ public class DwarfpoolAccountRequestor implements AccountRequestor {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountRequestorException(API_ERROR, "BAD_WALLET");
         }
-        SimpleEntry<Account, Date> entry = ACCOUNT_MAP.get(walletAddress);
-        if (entry == null) {
-            Request request = new Request.Builder().url(API_URL + walletAddress).build();
-            try (Response response = httpClient.newCall(request).execute()) {
-                if (!response.isSuccessful()) {
-                    throw new AccountRequestorException(HTTP_ERROR, response.message());
-                }
-                try (ResponseBody body = response.body()) {
-                    JSONObject jsonResponse = new JSONObject(body.string());
-                    checkError(jsonResponse);
-                    Account account = createAccount(walletAddress, jsonResponse);
-                    entry = new SimpleEntry<Account, Date>(account, setNextRemoveDate());
-                    ACCOUNT_MAP.put(walletAddress, entry);
-                }
-            } catch (JSONException e) {
-                throw new AccountRequestorException(JSON_ERROR, e);
-            } catch (IOException e) {
-                throw new AccountRequestorException(HTTP_ERROR, e);
+        if (useAccountCaching) {
+            SimpleEntry<Account, Date> entry = ACCOUNT_MAP.get(walletAddress);
+            if (entry == null) {
+                Account account = requestAccount(walletAddress);
+                entry = new SimpleEntry<Account, Date>(account, setNextRemoveDate());
+                ACCOUNT_MAP.put(walletAddress, entry);
             }
+            return entry.getKey();
+        } else {
+            return requestAccount(walletAddress);
         }
-        return entry.getKey();
+    }
+
+    /**
+     * Requests ethereum pool account.
+     *
+     * @param walletAddress the wallet address
+     * @return ethereum pool account
+     * @throws AccountRequestorException if there is any error in account requesting
+     */
+    private Account requestAccount(String walletAddress) throws AccountRequestorException {
+        Request request = new Request.Builder().url(API_URL + walletAddress).build();
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new AccountRequestorException(HTTP_ERROR, response.message());
+            }
+            try (ResponseBody body = response.body()) {
+                JSONObject jsonResponse = new JSONObject(body.string());
+                checkError(jsonResponse);
+                return createAccount(walletAddress, jsonResponse);
+            }
+        } catch (JSONException e) {
+            throw new AccountRequestorException(JSON_ERROR, e);
+        } catch (IOException e) {
+            throw new AccountRequestorException(HTTP_ERROR, e);
+        }
     }
 
     /**
