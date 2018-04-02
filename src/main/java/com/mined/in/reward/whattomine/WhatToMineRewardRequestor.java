@@ -1,6 +1,7 @@
 package com.mined.in.reward.whattomine;
 
 import java.math.BigDecimal;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.mined.in.reward.Reward;
@@ -20,7 +21,7 @@ public class WhatToMineRewardRequestor implements RewardRequestor {
     /** HTTP client. */
     private final OkHttpClient httpClient;
     /** Ethereum reward lock. */
-    private static final ReentrantLock ETHEREUM_LOCK = new ReentrantLock();
+    private static final Lock ETHEREUM_LOCK = new ReentrantLock();
     /** Endpoints update. */
     private static final int ENDPOINTS_UPDATE = 4;
 
