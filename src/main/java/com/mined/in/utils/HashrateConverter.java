@@ -13,6 +13,8 @@ import java.util.ResourceBundle;
  */
 public class HashrateConverter {
 
+    /** Ether value. */
+    private static final BigDecimal ETHER = BigDecimal.valueOf(1_000_000_000_000_000_000L);
     /** 1 kH/s is 1,000 hashes per second. */
     private static final BigDecimal KH_S = BigDecimal.valueOf(1_000);
     /** 1 MH/s is 1,000,000 hashes per second. */
@@ -62,6 +64,16 @@ public class HashrateConverter {
             return hashrate.divide(PH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("ph_s");
         }
         return hashrate.divide(EH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("eh_s");
+    }
+
+    /**
+     * Divides base unit to ether value.
+     *
+     * @param baseUnit the base unit
+     * @return result of dividing
+     */
+    public static BigDecimal divideBaseUnitToEther(BigDecimal baseUnit) {
+        return baseUnit.divide(ETHER);
     }
 
 }

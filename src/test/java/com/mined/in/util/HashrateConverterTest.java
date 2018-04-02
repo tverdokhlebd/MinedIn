@@ -87,4 +87,10 @@ public class HashrateConverterTest {
         assertEquals("9367.03 EH/s", HashrateConverter.convertToReadableHashPower(hashrateWith22Digits));
     }
 
+    @Test
+    public void testDividingBaseUnitToEther() {
+        BigDecimal baseUnit = BigDecimal.valueOf(337801253194463L);
+        assertEquals(BigDecimal.valueOf(0.000337801253194463), HashrateConverter.divideBaseUnitToEther(baseUnit));
+    }
+
 }
