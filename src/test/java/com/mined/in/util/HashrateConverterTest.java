@@ -20,7 +20,6 @@ public class HashrateConverterTest {
 
     @Test
     public void testConvertingToKH() {
-        HashrateConverter.convertToReadableHashPower(BigDecimal.valueOf(9));
         BigDecimal hashrateWith1Digits = BigDecimal.valueOf(9);
         assertEquals("0.00 kH/s", HashrateConverter.convertToReadableHashPower(hashrateWith1Digits));
         BigDecimal hashrateWith2Digits = BigDecimal.valueOf(93);
@@ -88,9 +87,23 @@ public class HashrateConverterTest {
     }
 
     @Test
-    public void testDividingBaseUnitToEther() {
-        BigDecimal baseUnit = BigDecimal.valueOf(337801253194463L);
-        assertEquals(BigDecimal.valueOf(0.000337801253194463), HashrateConverter.divideBaseUnitToEther(baseUnit));
+    public void testConvertingMegaHashesToHashes() {
+        BigDecimal megaHashes1 = BigDecimal.valueOf(174.05);
+        assertEquals(BigDecimal.valueOf(174050000), HashrateConverter.convertMegaHashesToHashes(megaHashes1));
+        BigDecimal megaHashes2 = BigDecimal.valueOf(174);
+        assertEquals(BigDecimal.valueOf(174000000), HashrateConverter.convertMegaHashesToHashes(megaHashes2));
+        BigDecimal megaHashes3 = BigDecimal.valueOf(1740.5);
+        assertEquals(BigDecimal.valueOf(1740500000), HashrateConverter.convertMegaHashesToHashes(megaHashes3));
+    }
+
+    @Test
+    public void testConvertingHashesToMegaHashes() {
+        BigDecimal hashes1 = BigDecimal.valueOf(174050000);
+        assertEquals(BigDecimal.valueOf(174.05), HashrateConverter.convertHashesToMegaHashes(hashes1));
+        BigDecimal hashes2 = BigDecimal.valueOf(174000000);
+        assertEquals(BigDecimal.valueOf(174), HashrateConverter.convertHashesToMegaHashes(hashes2));
+        BigDecimal hashes3 = BigDecimal.valueOf(1740517405);
+        assertEquals(BigDecimal.valueOf(1740.517405), HashrateConverter.convertHashesToMegaHashes(hashes3));
     }
 
 }

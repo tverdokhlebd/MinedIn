@@ -21,6 +21,7 @@ import com.mined.in.pool.Account;
 import com.mined.in.pool.AccountRequestor;
 import com.mined.in.pool.AccountRequestorException;
 import com.mined.in.pool.ethermine.EthermineAccountRequestor;
+import com.mined.in.utils.HashrateConverter;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -111,7 +112,9 @@ public class NanopoolAccountRequestor implements AccountRequestor {
      */
     private Account requestAccount(String walletAddress) throws AccountRequestorException {
         Account account = requestAccountWithBalance(walletAddress);
-        account.setTotalHashrate(requestReportedHashrate(walletAddress));
+        BigDecimal reportedHashrate = requestReportedHashrate(walletAddress);
+        reportedHashrate = HashrateConverter.convertMegaHashesToHashes(reportedHashrate);
+        account.setTotalHashrate(reportedHashrate);
         return account;
     }
 

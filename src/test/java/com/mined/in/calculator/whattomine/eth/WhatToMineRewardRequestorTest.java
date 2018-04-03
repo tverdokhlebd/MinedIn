@@ -31,7 +31,7 @@ public class WhatToMineRewardRequestorTest {
 
     @Test
     public void testCorrectJsonResponse() throws RewardRequestorException {
-        BigDecimal hashrate = BigDecimal.valueOf(174);
+        BigDecimal hashrate = BigDecimal.valueOf(1.74e+8);
         JSONObject response =
                 new JSONObject("{\"id\":151,\"name\":\"Ethereum\",\"tag\":\"ETH\",\"algorithm\":\"Ethash\",\"block_time\":\"14.4406\","
                         + "\"block_reward\":2.91,\"block_reward24\":2.91000000000001,\"block_reward3\":2.91,\"block_reward7\":2.91,"

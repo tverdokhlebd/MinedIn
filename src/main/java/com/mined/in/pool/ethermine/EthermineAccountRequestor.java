@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import com.mined.in.pool.Account;
 import com.mined.in.pool.AccountRequestor;
 import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.utils.HashrateConverter;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -41,6 +40,8 @@ public class EthermineAccountRequestor implements AccountRequestor {
     private final boolean useAccountCaching;
     /** API statistic url. */
     private static final String API_STATS_URL = "https://api.ethermine.org/miner/:miner/currentStats";
+    /** Ether value. */
+    private static final BigDecimal ETHER = BigDecimal.valueOf(1_000_000_000_000_000_000L);
     /** Cached accounts. */
     private static final Map<String, SimpleEntry<Account, Date>> ACCOUNT_MAP = new ConcurrentHashMap<>();
     /** Two minutes for repeated task. */
@@ -135,8 +136,8 @@ public class EthermineAccountRequestor implements AccountRequestor {
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         JSONObject data = jsonAccount.getJSONObject("data");
         BigDecimal walletBalance = BigDecimal.valueOf(data.getLong("unpaid"));
-        walletBalance = HashrateConverter.divideBaseUnitToEther(walletBalance);
-        BigDecimal totalHashrate = BigDecimal.valueOf(data.getDouble("reportedHashrate") / 1_000_000L);
+        walletBalance = walletBalance.divide(ETHER);
+        BigDecimal totalHashrate = BigDecimal.valueOf(data.getDouble("reportedHashrate"));
         return new Account(walletAddress, walletBalance, totalHashrate);
     }
 

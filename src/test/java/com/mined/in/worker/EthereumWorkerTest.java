@@ -85,7 +85,7 @@ public class EthereumWorkerTest {
         assertEquals(coinPrice, earnings.getCoinPrice());
         CoinInfo coinInfo = earnings.getEstimatedReward().getCoinInfo();
         assertEquals(ETH, coinInfo.getCoinType());
-        assertEquals(BigDecimal.valueOf(174), earnings.getEstimatedReward().getTotalHashrate());
+        assertEquals(BigDecimal.valueOf(1.74e+8), earnings.getEstimatedReward().getTotalHashrate());
         assertEquals(BigDecimal.valueOf(14.4406), coinInfo.getBlockTime());
         assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
         assertEquals(BigDecimal.valueOf(5319532), coinInfo.getBlockCount());

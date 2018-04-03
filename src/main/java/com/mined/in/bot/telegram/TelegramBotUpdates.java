@@ -213,7 +213,7 @@ public class TelegramBotUpdates implements BotUpdates {
                                        stepData.getPoolType().getName(),
                                        coinBalance + " " + stepData.getCoinType().getSymbol(),
                                        stepData.getPoolType().getName(),
-                                       reward.getTotalHashrate().setScale(2, DOWN) + " " + RESOURCE.getString("mh_s"));
+                                       HashrateConverter.convertToReadableHashPower(reward.getTotalHashrate()));
         BigDecimal perHour = reward.getRewardPerHour().setScale(6, DOWN);
         BigDecimal perDay = reward.getRewardPerDay().setScale(6, DOWN);
         BigDecimal perWeek = reward.getRewardPerWeek().setScale(6, DOWN);

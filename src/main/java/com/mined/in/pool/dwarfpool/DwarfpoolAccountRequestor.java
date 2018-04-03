@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import com.mined.in.pool.Account;
 import com.mined.in.pool.AccountRequestor;
 import com.mined.in.pool.AccountRequestorException;
+import com.mined.in.utils.HashrateConverter;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -134,6 +135,7 @@ public class DwarfpoolAccountRequestor implements AccountRequestor {
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));
         BigDecimal totalHashrate = BigDecimal.valueOf(jsonAccount.getDouble("total_hashrate"));
+        totalHashrate = HashrateConverter.convertMegaHashesToHashes(totalHashrate);
         return new Account(walletAddress, walletBalance, totalHashrate);
     }
 

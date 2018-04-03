@@ -14,7 +14,7 @@ public class Account {
     private final String walletAddress;
     /** Wallet balance. */
     private final BigDecimal walletBalance;
-    /** Reported total hashrate in MH/s. */
+    /** Reported total hashrate in H/s. */
     private BigDecimal totalHashrate;
 
     /**
