@@ -13,7 +13,7 @@ public interface RewardRequestor {
     /**
      * Requests estimated reward for ethereum.
      *
-     * @param hashrate reported total hashrate
+     * @param hashrate reported hashrate in H/s
      * @return estimated reward for ethereum
      * @throws RewardRequestorException if there is any error in request executing
      */

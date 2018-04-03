@@ -14,8 +14,8 @@ public class Reward {
 
     /** Coin information. */
     private final CoinInfo coinInfo;
-    /** Reported total hashrate. */
-    private final BigDecimal totalHashrate;
+    /** Reported hashrate. */
+    private final BigDecimal reportedHashrate;
     /** Reward per hour. */
     private final BigDecimal rewardPerHour;
     /** Reward per day. */
@@ -31,18 +31,19 @@ public class Reward {
      * Creates the instance.
      *
      * @param coinInfo coin information
-     * @param totalHashrate reported total hashrate
+     * @param reportedHashrate reported hashrate
      * @param rewardPerHour reward per hour
      * @param rewardPerDay reward per day
      * @param rewardPerWeek reward per week
      * @param rewardPerMonth reward per month
      * @param rewardPerYear reward per year
      */
-    public Reward(CoinInfo coinInfo, BigDecimal totalHashrate, BigDecimal rewardPerHour, BigDecimal rewardPerDay, BigDecimal rewardPerWeek,
+    public Reward(CoinInfo coinInfo, BigDecimal reportedHashrate, BigDecimal rewardPerHour, BigDecimal rewardPerDay,
+            BigDecimal rewardPerWeek,
             BigDecimal rewardPerMonth, BigDecimal rewardPerYear) {
         super();
         this.coinInfo = coinInfo;
-        this.totalHashrate = totalHashrate;
+        this.reportedHashrate = reportedHashrate;
         this.rewardPerHour = rewardPerHour;
         this.rewardPerDay = rewardPerDay;
         this.rewardPerWeek = rewardPerWeek;
@@ -60,12 +61,12 @@ public class Reward {
     }
 
     /**
-     * Gets the total hashrate.
+     * Gets the reported hashrate.
      *
-     * @return the total hashrate
+     * @return the reported hashrate
      */
-    public BigDecimal getTotalHashrate() {
-        return totalHashrate;
+    public BigDecimal getReportedHashrate() {
+        return reportedHashrate;
     }
 
     /**
@@ -123,8 +124,8 @@ public class Reward {
 
         /** Coin information. */
         private CoinInfo coinInfo;
-        /** Reported total hashrate. */
-        private BigDecimal totalHashrate;
+        /** Reported hashrate. */
+        private BigDecimal reportedHashrate;
         /** Reward per hour. */
         private BigDecimal rewardPerHour;
         /** Reward per day. */
@@ -155,13 +156,13 @@ public class Reward {
         }
 
         /**
-         * Sets the total hashrate.
+         * Sets the reported hashrate.
          *
-         * @param totalHashrate the new total hashrate
+         * @param reportedHashrate the new reported hashrate
          * @return builder of estimated reward
          */
-        public Builder setTotalHashrate(BigDecimal totalHashrate) {
-            this.totalHashrate = totalHashrate.stripTrailingZeros();
+        public Builder setReportedHashrate(BigDecimal reportedHashrate) {
+            this.reportedHashrate = reportedHashrate.stripTrailingZeros();
             return this;
         }
 
@@ -227,7 +228,7 @@ public class Reward {
          */
         public Reward build() {
             return new Reward(coinInfo,
-                              totalHashrate,
+                              reportedHashrate,
                               rewardPerHour,
                               rewardPerDay,
                               rewardPerWeek,

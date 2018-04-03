@@ -137,8 +137,8 @@ public class EthermineAccountRequestor implements AccountRequestor {
         JSONObject data = jsonAccount.getJSONObject("data");
         BigDecimal walletBalance = BigDecimal.valueOf(data.getLong("unpaid"));
         walletBalance = walletBalance.divide(ETHER);
-        BigDecimal totalHashrate = BigDecimal.valueOf(data.getDouble("reportedHashrate"));
-        return new Account(walletAddress, walletBalance, totalHashrate);
+        BigDecimal reportedHashrate = BigDecimal.valueOf(data.getDouble("reportedHashrate"));
+        return new Account(walletAddress, walletBalance, reportedHashrate);
     }
 
     /**

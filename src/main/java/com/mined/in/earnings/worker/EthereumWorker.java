@@ -50,7 +50,7 @@ class EthereumWorker implements EarningsWorker {
         CoinMarket coinMarket = marketRequestor.requestEthereumCoin();
         BigDecimal coinPrice = coinMarket.getPrice();
         BigDecimal balanceInUSD = walletBalance.multiply(coinPrice);
-        Reward reward = rewardRequestor.requestEthereumReward(account.getTotalHashrate());
+        Reward reward = rewardRequestor.requestEthereumReward(account.getReportedHashrate());
         return new Earnings(walletBalance, balanceInUSD, coinPrice, reward);
     }
 

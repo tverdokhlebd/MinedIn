@@ -14,21 +14,21 @@ public class Account {
     private final String walletAddress;
     /** Wallet balance. */
     private final BigDecimal walletBalance;
-    /** Reported total hashrate in H/s. */
-    private BigDecimal totalHashrate;
+    /** Reported hashrate in H/s. */
+    private BigDecimal reportedHashrate;
 
     /**
      * Creates the instance.
      *
      * @param walletAddress wallet address
      * @param walletBalance wallet balance
-     * @param totalHashrate reported total hashrate
+     * @param reportedHashrate reported hashrate
      */
-    public Account(String walletAddress, BigDecimal walletBalance, BigDecimal totalHashrate) {
+    public Account(String walletAddress, BigDecimal walletBalance, BigDecimal reportedHashrate) {
         super();
         this.walletAddress = walletAddress;
         this.walletBalance = walletBalance.stripTrailingZeros();
-        this.totalHashrate = totalHashrate != null ? totalHashrate.stripTrailingZeros() : totalHashrate;
+        this.reportedHashrate = reportedHashrate != null ? reportedHashrate.stripTrailingZeros() : reportedHashrate;
     }
 
     /**
@@ -50,21 +50,21 @@ public class Account {
     }
 
     /**
-     * Gets the total hashrate.
+     * Gets the reported hashrate.
      *
-     * @return the total hashrate
+     * @return the reported hashrate
      */
-    public BigDecimal getTotalHashrate() {
-        return totalHashrate;
+    public BigDecimal getReportedHashrate() {
+        return reportedHashrate;
     }
 
     /**
-     * Sets the total hashrate.
+     * Sets the reported hashrate.
      *
-     * @param totalHashrate the new total hashrate
+     * @param reportedHashrate the new reported hashrate
      */
-    public void setTotalHashrate(BigDecimal totalHashrate) {
-        this.totalHashrate = totalHashrate.stripTrailingZeros();
+    public void setReportedHashrate(BigDecimal reportedHashrate) {
+        this.reportedHashrate = reportedHashrate.stripTrailingZeros();
     }
 
 }

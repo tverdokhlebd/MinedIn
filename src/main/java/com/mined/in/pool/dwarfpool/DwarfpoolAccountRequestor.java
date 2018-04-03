@@ -134,9 +134,9 @@ public class DwarfpoolAccountRequestor implements AccountRequestor {
      */
     private Account createAccount(String walletAddress, JSONObject jsonAccount) {
         BigDecimal walletBalance = BigDecimal.valueOf(jsonAccount.getDouble("wallet_balance"));
-        BigDecimal totalHashrate = BigDecimal.valueOf(jsonAccount.getDouble("total_hashrate"));
-        totalHashrate = HashrateConverter.convertMegaHashesToHashes(totalHashrate);
-        return new Account(walletAddress, walletBalance, totalHashrate);
+        BigDecimal reportedHashrate = BigDecimal.valueOf(jsonAccount.getDouble("total_hashrate"));
+        reportedHashrate = HashrateConverter.convertMegaHashesToHashes(reportedHashrate);
+        return new Account(walletAddress, walletBalance, reportedHashrate);
     }
 
     /**

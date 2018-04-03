@@ -114,7 +114,7 @@ public class NanopoolAccountRequestor implements AccountRequestor {
         Account account = requestAccountWithBalance(walletAddress);
         BigDecimal reportedHashrate = requestReportedHashrate(walletAddress);
         reportedHashrate = HashrateConverter.convertMegaHashesToHashes(reportedHashrate);
-        account.setTotalHashrate(reportedHashrate);
+        account.setReportedHashrate(reportedHashrate);
         return account;
     }
 

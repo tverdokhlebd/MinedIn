@@ -68,7 +68,7 @@ public class EthereumRequestor {
     /**
      * Requests estimated reward for ethereum.
      *
-     * @param hashrate reported total hashrate
+     * @param hashrate reported hashrate
      * @return estimated reward for ethereum
      * @throws RewardRequestorException if there is any error in request executing
      */
@@ -98,7 +98,7 @@ public class EthereumRequestor {
      * Creates estimated reward from JSON response.
      *
      * @param coinType type of coin
-     * @param hashrate reported total hashrate
+     * @param hashrate reported hashrate
      * @param jsonResponse JSON response
      * @return estimated reward
      */
@@ -117,7 +117,7 @@ public class EthereumRequestor {
         BigDecimal calculatedRewardPerDay = hashrateInMegahashes.multiply(estimatedRewardPerDay).divide(BigDecimal.valueOf(84), 6, DOWN);
         Reward.Builder rewardBuilder = new Builder();
         rewardBuilder.coinInfo(coinInfo)
-                     .setTotalHashrate(hashrate)
+                     .setReportedHashrate(hashrate)
                      .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
                      .rewardPerDay(calculatedRewardPerDay)
                      .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))
