@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.ResourceBundle;
 
 /**
- * Utils for converting hashrate to readable hash power.
+ * Utils for working with hashrate.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -39,10 +39,10 @@ public class HashrateConverter {
     private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
 
     /**
-     * Converts hashrate to readable hash power.
+     * Converts hashrate to readable hash power format.
      *
      * @param hashrate hashrate in H/s
-     * @return readable hash power
+     * @return readable hash power format
      */
     public static String convertToReadableHashPower(BigDecimal hashrate) {
         int digitsNumber = hashrate.setScale(0, DOWN).toPlainString().length();

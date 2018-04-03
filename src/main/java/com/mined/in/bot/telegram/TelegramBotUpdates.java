@@ -34,6 +34,7 @@ import com.mined.in.reward.RewardRequestorException;
 import com.mined.in.reward.RewardRequestorFactory;
 import com.mined.in.reward.RewardType;
 import com.mined.in.utils.HashrateConverter;
+import com.mined.in.utils.TimeConverter;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
@@ -232,7 +233,7 @@ public class TelegramBotUpdates implements BotUpdates {
                                        "$" + perMonth.multiply(coinPrice).setScale(2, DOWN),
                                        perYear,
                                        "$" + perYear.multiply(coinPrice).setScale(2, DOWN),
-                                       coinInfo.getBlockTime().toPlainString() + "s",
+                                       TimeConverter.convertToReadableTime(coinInfo.getBlockTime()),
                                        coinInfo.getBlockCount(),
                                        coinInfo.getDifficulty(),
                                        HashrateConverter.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
