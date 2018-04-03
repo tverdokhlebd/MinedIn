@@ -1,4 +1,4 @@
-package com.mined.in.calculator.whattomine.eth;
+package com.mined.in.reward.whattomine.eth;
 
 import static com.mined.in.coin.CoinType.ETH;
 import static com.mined.in.http.ErrorCode.HTTP_ERROR;
@@ -51,6 +51,7 @@ public class WhatToMineRewardRequestorTest {
         assertEquals(BigDecimal.valueOf(14.4406), coinInfo.getBlockTime());
         assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
         assertEquals(BigDecimal.valueOf(5319532), coinInfo.getBlockCount());
+        assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
         assertEquals(BigDecimal.valueOf(3.23405110864068e+15), coinInfo.getDifficulty());
         assertEquals(BigDecimal.valueOf(223955452587889L), coinInfo.getNetworkHashrate());
         assertEquals(BigDecimal.valueOf(0.000554), reward.getRewardPerHour());

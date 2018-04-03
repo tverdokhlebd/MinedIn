@@ -235,6 +235,7 @@ public class TelegramBotUpdates implements BotUpdates {
                                        "$" + perYear.multiply(coinPrice).setScale(2, DOWN),
                                        TimeConverter.convertToReadableTime(coinInfo.getBlockTime()),
                                        coinInfo.getBlockCount(),
+                                       coinInfo.getBlockReward(),
                                        coinInfo.getDifficulty(),
                                        HashrateConverter.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
         responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage);
