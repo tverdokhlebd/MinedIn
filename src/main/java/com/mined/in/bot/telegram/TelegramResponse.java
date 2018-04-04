@@ -1,7 +1,5 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.bot.telegram.TelegramStepData.Step.REWARD;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -61,16 +59,28 @@ public class TelegramResponse {
      * @return the formatted message
      */
     public String getFormattedMessage() {
-        boolean isMessageResult = stepData.getStep() == REWARD;
-        String formattedMessage = message;
-        if (isMessageResult) {
+        StringBuilder resultMessage = new StringBuilder();
+        switch (stepData.getStep()) {
+        case START:
+            createSimpleResultMessage(resultMessage);
+            break;
+        case WALLET:
+            createSimpleResultMessage(resultMessage);
+            break;
+        case COIN:
+            createSimpleResultMessage(resultMessage);
+            break;
+        case POOL:
+            break;
+        case MARKET:
+            break;
+        case REWARD: {
             boolean firstMessageWithError = error != null && message == null;
             if (firstMessageWithError) {
                 message = RESOURCE.getString("no_result");
             }
             String currentDate = getCurrentDate();
             int maxStrLength = getStringMaxLength(message, currentDate);
-            StringBuilder resultMessage = new StringBuilder();
             resultMessage.append(insertSeparatorsAndPreTag(message, maxStrLength));
             resultMessage.append("\n");
             String formattedDate = String.format(RESOURCE.getString("last_update"), currentDate);
@@ -79,9 +89,10 @@ public class TelegramResponse {
                 resultMessage.append("\n");
                 resultMessage.append(error);
             }
-            formattedMessage = resultMessage.toString();
+            break;
         }
-        return formattedMessage;
+        }
+        return resultMessage.toString();
     }
 
     /**
@@ -218,6 +229,20 @@ public class TelegramResponse {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return "UTC: " + dateFormat.format(new Date());
+    }
+
+    /**
+     * Creates simple result message without "Update" button.
+     *
+     * @param resultMessage result message builder
+     */
+    private void createSimpleResultMessage(StringBuilder resultMessage) {
+        if (error != null) {
+            resultMessage.append("\n");
+            resultMessage.append(error);
+        } else {
+            resultMessage.append(message);
+        }
     }
 
 }

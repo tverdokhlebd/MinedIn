@@ -1,5 +1,8 @@
 package com.mined.in.coin;
 
+import com.mined.in.coin.wallet.AddressValidator;
+import com.mined.in.coin.wallet.EthereumAddressValidator;
+
 /**
  * Enumerations of supporting coin types.
  *
@@ -8,7 +11,7 @@ package com.mined.in.coin;
  */
 public enum CoinType {
 
-    ETH("Ethereum", "ETH", "https://www.ethereum.org/");
+    ETH("Ethereum", "ETH", "https://www.ethereum.org/", new EthereumAddressValidator());
 
     /** Coin type name. */
     private String name;
@@ -16,6 +19,8 @@ public enum CoinType {
     private String symbol;
     /** Coin type official site. */
     private String website;
+    /** Address validator. */
+    private AddressValidator addressValidator;
 
     /**
      * Creates the instance.
@@ -23,11 +28,13 @@ public enum CoinType {
      * @param name coin type name
      * @param symbol coin type symbol
      * @param website coin type official site
+     * @param addressValidator address validator
      */
-    private CoinType(String name, String symbol, String website) {
+    private CoinType(String name, String symbol, String website, AddressValidator addressValidator) {
         this.name = name;
         this.symbol = symbol;
         this.website = website;
+        this.addressValidator = addressValidator;
     }
 
     /**
@@ -55,6 +62,15 @@ public enum CoinType {
      */
     public String getWebsite() {
         return website;
+    }
+
+    /**
+     * Gets the address validator.
+     *
+     * @return the address validator
+     */
+    public AddressValidator getAddressValidator() {
+        return addressValidator;
     }
 
     /**
