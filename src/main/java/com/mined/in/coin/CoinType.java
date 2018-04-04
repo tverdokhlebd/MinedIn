@@ -11,7 +11,7 @@ import com.mined.in.coin.wallet.EthereumAddressValidator;
  */
 public enum CoinType {
 
-    ETH("Ethereum", "ETH", "https://www.ethereum.org/", new EthereumAddressValidator());
+    ETH("Ethereum", "ETH", "https://www.ethereum.org", new EthereumAddressValidator());
 
     /** Coin type name. */
     private String name;
