@@ -14,7 +14,7 @@ public class Reward {
 
     /** Coin information. */
     private final CoinInfo coinInfo;
-    /** Reported hashrate. */
+    /** Reported hashrate in H/s. */
     private final BigDecimal reportedHashrate;
     /** Reward per hour. */
     private final BigDecimal rewardPerHour;
@@ -124,7 +124,7 @@ public class Reward {
 
         /** Coin information. */
         private CoinInfo coinInfo;
-        /** Reported hashrate. */
+        /** Reported hashrate in H/s. */
         private BigDecimal reportedHashrate;
         /** Reward per hour. */
         private BigDecimal rewardPerHour;

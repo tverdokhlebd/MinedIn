@@ -39,7 +39,7 @@ public class EthereumRequestor {
     /** Endpoints update. */
     private final int endpointsUpdate;
     /** API url. */
-    private static final String API_URL = "https://whattomine.com/coins/151.json";
+    private static final String API_URL = "https://whattomine.com/coins/151-eth-ethash.json?hr=";
     /** Next update of estimated reward. */
     private static Date NEXT_UPDATE;
     /** Cached estimated reward. */
@@ -75,7 +75,8 @@ public class EthereumRequestor {
     public Reward request(BigDecimal hashrate) throws RewardRequestorException {
         Date currentDate = new Date();
         if (NEXT_UPDATE == null || currentDate.after(NEXT_UPDATE)) {
-            Request request = new Request.Builder().url(API_URL).build();
+            BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
+            Request request = new Request.Builder().url(API_URL + hashrateInMegahashes.toPlainString()).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new RewardRequestorException(HTTP_ERROR, response.message());
@@ -111,18 +112,15 @@ public class EthereumRequestor {
                    .difficulty(BigDecimal.valueOf(jsonResponse.getDouble("difficulty")))
                    .networkHashrate(BigDecimal.valueOf(jsonResponse.getDouble("nethash")));
         CoinInfo coinInfo = coinBuilder.build();
-        BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
         BigDecimal estimatedRewardPerDay = BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards"));
-        // Base rewards based on 84.0 MH/s
-        BigDecimal calculatedRewardPerDay = hashrateInMegahashes.multiply(estimatedRewardPerDay).divide(BigDecimal.valueOf(84), 6, DOWN);
         Reward.Builder rewardBuilder = new Builder();
         rewardBuilder.coinInfo(coinInfo)
                      .setReportedHashrate(hashrate)
-                     .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
-                     .rewardPerDay(calculatedRewardPerDay)
-                     .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))
-                     .rewardPerMonth(calculatedRewardPerDay.multiply(DAYS_IN_MONTH))
-                     .rewardPerYear(calculatedRewardPerDay.multiply(DAYS_IN_YEAR));
+                     .rewardPerHour(estimatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
+                     .rewardPerDay(estimatedRewardPerDay)
+                     .rewardPerWeek(estimatedRewardPerDay.multiply(DAYS_IN_WEEK))
+                     .rewardPerMonth(estimatedRewardPerDay.multiply(DAYS_IN_MONTH))
+                     .rewardPerYear(estimatedRewardPerDay.multiply(DAYS_IN_YEAR));
         return rewardBuilder.build();
     }
 
