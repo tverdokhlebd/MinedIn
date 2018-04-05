@@ -1,7 +1,6 @@
 package com.mined.in.bot.telegram;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
@@ -77,14 +76,12 @@ public class TelegramResponse {
         case REWARD: {
             boolean firstMessageWithError = error != null && message == null;
             if (firstMessageWithError) {
-                message = RESOURCE.getString("no_result");
+                message = String.format(RESOURCE.getString("no_result"));
             }
-            String currentDate = getCurrentDate();
-            int maxStrLength = getStringMaxLength(message, currentDate);
-            resultMessage.append(insertSeparatorsAndPreTag(message, maxStrLength));
+            resultMessage.append("<pre>" + message + "</pre>");
             resultMessage.append("\n");
-            String formattedDate = String.format(RESOURCE.getString("last_update"), currentDate);
-            resultMessage.append(insertSeparatorsAndPreTag(formattedDate, maxStrLength));
+            String formattedDate = String.format(RESOURCE.getString("last_update"), getCurrentDate());
+            resultMessage.append("<pre>" + formattedDate + "</pre>");
             if (error != null) {
                 resultMessage.append("\n");
                 resultMessage.append(error);
@@ -166,9 +163,8 @@ public class TelegramResponse {
      */
     private void parseHtmlMarkup(Message resultMessage) {
         StringBuilder messageBuilder = new StringBuilder(resultMessage.text());
-        // Position of result message beginning
-        if (messageBuilder.indexOf("-\n") != -1) {
-            MessageEntity[] entityArray = resultMessage.entities();
+        MessageEntity[] entityArray = resultMessage.entities();
+        if (entityArray != null) {
             int globalOffset = 0;
             String preStart = "<pre>";
             String preEnd = "</pre>";
@@ -195,32 +191,6 @@ public class TelegramResponse {
     }
 
     /**
-     * Gets length of string with maximum number of symbols.
-     *
-     * @param message result message
-     * @param date current date
-     * @return length of string with maximum number of symbols
-     */
-    private int getStringMaxLength(String message, String date) {
-        int messageMaxStrLength = Arrays.asList(message.split("\n")).stream().mapToInt(value -> value.length()).max().getAsInt();
-        return messageMaxStrLength > date.length() ? messageMaxStrLength : date.length();
-    }
-
-    /**
-     * Inserts separators and "pre" tag.
-     *
-     * @param message result message
-     * @param separatorLength length of separator
-     * @return result message with separators and "pre" tag
-     */
-    private String insertSeparatorsAndPreTag(String message, int separatorLength) {
-        String separator = String.format("%-" + separatorLength + "s", "-").replace(" ", "-");
-        message = message.replaceAll("<separator>", separator);
-        message = "<pre>" + message + "</pre>";
-        return message;
-    }
-
-    /**
      * Gets current date with set user time zone.
      *
      * @return current date with set user time zone
@@ -228,7 +198,7 @@ public class TelegramResponse {
     private String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return "UTC: " + dateFormat.format(new Date());
+        return dateFormat.format(new Date());
     }
 
     /**

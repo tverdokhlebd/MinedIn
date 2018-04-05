@@ -207,6 +207,7 @@ public class TelegramBotUpdates implements BotUpdates {
         BigDecimal coinPrice = earnings.getCoinPrice().setScale(2, DOWN);
         String balanceMessage = RESOURCE.getString("balance");
         balanceMessage = String.format(balanceMessage,
+                                       stepData.getMarketType().getName(),
                                        "$" + usdBalance,
                                        "$" + coinPrice);
         Reward reward = earnings.getEstimatedReward();
@@ -214,7 +215,6 @@ public class TelegramBotUpdates implements BotUpdates {
         accountMessage = String.format(accountMessage,
                                        stepData.getPoolType().getName(),
                                        coinBalance + " " + stepData.getCoinType().getSymbol(),
-                                       stepData.getPoolType().getName(),
                                        HashrateConverter.convertToReadableHashPower(reward.getReportedHashrate()));
         BigDecimal perHour = reward.getRewardPerHour().setScale(6, DOWN);
         BigDecimal perDay = reward.getRewardPerDay().setScale(6, DOWN);
@@ -222,8 +222,8 @@ public class TelegramBotUpdates implements BotUpdates {
         BigDecimal perMonth = reward.getRewardPerMonth().setScale(6, DOWN);
         BigDecimal perYear = reward.getRewardPerYear().setScale(6, DOWN);
         String rewardsMessage = RESOURCE.getString("rewards");
-        CoinInfo coinInfo = reward.getCoinInfo();
         rewardsMessage = String.format(rewardsMessage,
+                                       stepData.getRewardType().getName(),
                                        perHour,
                                        "$" + perHour.multiply(coinPrice).setScale(2, DOWN),
                                        perDay,
@@ -233,13 +233,16 @@ public class TelegramBotUpdates implements BotUpdates {
                                        perMonth,
                                        "$" + perMonth.multiply(coinPrice).setScale(2, DOWN),
                                        perYear,
-                                       "$" + perYear.multiply(coinPrice).setScale(2, DOWN),
-                                       TimeConverter.convertToReadableTime(coinInfo.getBlockTime()),
-                                       coinInfo.getBlockCount(),
-                                       coinInfo.getBlockReward(),
-                                       coinInfo.getDifficulty(),
-                                       HashrateConverter.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
-        responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage);
+                                       "$" + perYear.multiply(coinPrice).setScale(2, DOWN));
+        String infoMessage = RESOURCE.getString("info");
+        CoinInfo coinInfo = reward.getCoinInfo();
+        infoMessage = String.format(infoMessage,
+                                    stepData.getRewardType().getName(),
+                                    TimeConverter.convertToReadableTime(coinInfo.getBlockTime()),
+                                    coinInfo.getBlockCount(),
+                                    coinInfo.getBlockReward(),
+                                    HashrateConverter.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
+        responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage + infoMessage);
     }
 
     /**
