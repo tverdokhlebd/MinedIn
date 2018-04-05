@@ -56,15 +56,14 @@ public class EthereumWorkerTest {
                     + "\"percent_change_1h\": \"0.94\", \"percent_change_24h\": \"-4.19\", \"percent_change_7d\": \"-11.61\", "
                     + "\"last_updated\": \"1521743654\" }]");
     private final static JSONObject REWARD_RESPONSE =
-            new JSONObject("{\"id\":151,\"name\":\"Ethereum\",\"tag\":\"ETH\",\"algorithm\":\"Ethash\",\"block_time\":\"14.4406\","
-                    + "\"block_reward\":2.91,\"block_reward24\":2.91000000000001,\"block_reward3\":2.91,\"block_reward7\":2.91,"
-                    + "\"last_block\":5319532,\"difficulty\":3.23405110864068e+15,\"difficulty24\":3.28768043075892e+15,"
-                    + "\"difficulty3\":3.26138538264012e+15,\"difficulty7\":3.26159879702061e+15,\"nethash\":223955452587889,"
-                    + "\"exchange_rate\":0.061054,\"exchange_rate24\":0.0607868093126386,\"exchange_rate3\":0.0611831939414956,"
-                    + "\"exchange_rate7\":0.062520153768632,\"exchange_rate_vol\":7094.59432922,\"exchange_rate_curr\":\"BTC\","
-                    + "\"market_cap\":\"$51,261,485,391\",\"pool_fee\":\"0.000000\",\"estimated_rewards\":\"0.006424\","
-                    + "\"btc_revenue\":\"0.00039220\",\"revenue\":\"$3.35\",\"cost\":\"$0.97\",\"profit\":\"$2.37\","
-                    + "\"status\":\"Active\",\"lagging\":false,\"timestamp\":1521986783}");
+            new JSONObject("{\"id\":151,\"name\":\"Ethereum\",\"tag\":\"ETH\",\"algorithm\":\"Ethash\",\"block_time\":\"14.5339\","
+                    + "\"block_reward\":2.91,\"block_reward24\":2.91000000000001,\"block_reward3\":2.91,\"block_reward7\":2.91000000000001,"
+                    + "\"last_block\":5386367,\"difficulty\":3.08359377889012e+15,\"difficulty24\":3.15113330321897e+15,\"difficulty3\""
+                    + ":3.15333133159424e+15,\"difficulty7\":3.18760003087741e+15,\"nethash\":212165611356216,\"exchange_rate\":0.055872,"
+                    + "\"exchange_rate24\":0.0558127599164927,\"exchange_rate3\":0.0551308601768426,\"exchange_rate7\":0.0556511829329325,"
+                    + "\"exchange_rate_vol\":8433.85786587,\"exchange_rate_curr\":\"BTC\",\"market_cap\":\"$36,926,348,303\",\"pool_fee\":"
+                    + "\"0.000000\",\"estimated_rewards\":\"0.013883\",\"btc_revenue\":\"0.00077568\",\"revenue\":\"$5.20\",\"cost\":"
+                    + "\"$0.97\",\"profit\":\"$4.23\",\"status\":\"Active\",\"lagging\":false,\"timestamp\":1522951041}");
 
     @Test
     public void testCorrectJsonResponse() throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
@@ -84,16 +83,16 @@ public class EthereumWorkerTest {
         CoinInfo coinInfo = earnings.getEstimatedReward().getCoinInfo();
         assertEquals(ETH, coinInfo.getCoinType());
         assertEquals(BigDecimal.valueOf(1.74e+8), earnings.getEstimatedReward().getReportedHashrate());
-        assertEquals(BigDecimal.valueOf(14.4406), coinInfo.getBlockTime());
+        assertEquals(BigDecimal.valueOf(14.5339), coinInfo.getBlockTime());
         assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
-        assertEquals(BigDecimal.valueOf(5319532), coinInfo.getBlockCount());
-        assertEquals(BigDecimal.valueOf(3.23405110864068e+15), coinInfo.getDifficulty());
-        assertEquals(BigDecimal.valueOf(223955452587889L), coinInfo.getNetworkHashrate());
-        assertEquals(BigDecimal.valueOf(0.000554), earnings.getEstimatedReward().getRewardPerHour());
-        assertEquals(BigDecimal.valueOf(0.013306), earnings.getEstimatedReward().getRewardPerDay());
-        assertEquals(BigDecimal.valueOf(0.093142), earnings.getEstimatedReward().getRewardPerWeek());
-        assertEquals(BigDecimal.valueOf(0.39918), earnings.getEstimatedReward().getRewardPerMonth());
-        assertEquals(BigDecimal.valueOf(4.85669), earnings.getEstimatedReward().getRewardPerYear());
+        assertEquals(BigDecimal.valueOf(5386367), coinInfo.getBlockCount());
+        assertEquals(BigDecimal.valueOf(3.08359377889012e+15), coinInfo.getDifficulty());
+        assertEquals(BigDecimal.valueOf(212165611356216L), coinInfo.getNetworkHashrate());
+        assertEquals(BigDecimal.valueOf(0.000578), earnings.getEstimatedReward().getRewardPerHour());
+        assertEquals(BigDecimal.valueOf(0.013883), earnings.getEstimatedReward().getRewardPerDay());
+        assertEquals(BigDecimal.valueOf(0.097181), earnings.getEstimatedReward().getRewardPerWeek());
+        assertEquals(BigDecimal.valueOf(0.41649), earnings.getEstimatedReward().getRewardPerMonth());
+        assertEquals(BigDecimal.valueOf(5.067295), earnings.getEstimatedReward().getRewardPerYear());
     }
 
     @Test(expected = AccountRequestorException.class)
