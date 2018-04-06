@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mined.in.bot.telegram.TelegramBotUpdates;
 
 /**
- * Controller for Telegram API.
+ * Controller for telegram API.
  *
  * @author Dmitry Tverdokhleb
  *

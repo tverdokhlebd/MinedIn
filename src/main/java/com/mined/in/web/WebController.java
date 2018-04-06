@@ -23,11 +23,22 @@ import com.mined.in.reward.RewardType;
 @RequestMapping("/web")
 public class WebController {
 
+    /**
+     * Requests supporting coin types.
+     *
+     * @return supporting coin types
+     */
     @RequestMapping("/coins")
     public List<CoinType> requestCoins() {
         return Arrays.asList(CoinType.values());
     }
 
+    /**
+     * Requests supporting pool types by coin type.
+     *
+     * @param coin coin type
+     * @return supporting pool types by coin type
+     */
     @RequestMapping("/pools")
     public List<PoolType> requestPools(@RequestParam("coin") String coin) {
         CoinType coinType = CoinType.valueOf(coin);
@@ -36,11 +47,21 @@ public class WebController {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Requests supporting market types.
+     *
+     * @return supporting market types
+     */
     @RequestMapping("/markets")
     public List<MarketType> requestMarkets() {
         return Arrays.asList(MarketType.values());
     }
 
+    /**
+     * Requests supporting reward types.
+     *
+     * @return supporting reward types
+     */
     @RequestMapping("/rewards")
     public List<RewardType> requestRewards() {
         return Arrays.asList(RewardType.values());
