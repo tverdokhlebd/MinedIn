@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mined.in.coin.CoinType;
+import com.mined.in.market.MarketType;
 import com.mined.in.pool.PoolType;
+import com.mined.in.reward.RewardType;
 
 /**
  * Controller for web API.
@@ -32,6 +34,16 @@ public class WebController {
         return Arrays.asList(PoolType.values()).stream().filter(pool -> {
             return pool.getCoinTypeList().indexOf(coinType) != -1;
         }).collect(Collectors.toList());
+    }
+
+    @RequestMapping("/markets")
+    public List<MarketType> requestMarkets() {
+        return Arrays.asList(MarketType.values());
+    }
+
+    @RequestMapping("/rewards")
+    public List<RewardType> requestRewards() {
+        return Arrays.asList(RewardType.values());
     }
 
 }
