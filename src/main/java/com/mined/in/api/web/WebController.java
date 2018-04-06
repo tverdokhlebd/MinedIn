@@ -1,4 +1,4 @@
-package com.mined.in.web;
+package com.mined.in.api.web;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 

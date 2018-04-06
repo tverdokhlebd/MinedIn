@@ -1,4 +1,4 @@
-package com.mined.in.web;
+package com.mined.in.api.telegram;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
