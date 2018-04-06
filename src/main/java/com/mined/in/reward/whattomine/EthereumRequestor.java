@@ -39,11 +39,15 @@ public class EthereumRequestor {
     /** Endpoints update. */
     private final int endpointsUpdate;
     /** API url. */
-    private static final String API_URL = "https://whattomine.com/coins/151-eth-ethash.json?hr=";
+    private static final String API_URL = "https://whattomine.com/coins/151.json";
     /** Next update of estimated reward. */
     private static Date NEXT_UPDATE;
-    /** Cached estimated reward. */
-    private static Reward REWARD;
+    /** Cached coin info. */
+    private static CoinInfo COIN_INFO;
+    /** Cached estimated reward per day. */
+    private static BigDecimal ESTIMATED_REWARD_PER_DAY;
+    /** Base rewards is for 84.0 MH/s. */
+    private static final BigDecimal MEGAHASHES_BASE_REWARD = BigDecimal.valueOf(84);
     /** Hours in day. */
     private static final BigDecimal HOURS_IN_DAY = BigDecimal.valueOf(24);
     /** Days in week. */
@@ -68,15 +72,14 @@ public class EthereumRequestor {
     /**
      * Requests estimated reward for ethereum.
      *
-     * @param hashrate reported hashrate
+     * @param hashrate reported hashrate in H/s
      * @return estimated reward for ethereum
      * @throws RewardRequestorException if there is any error in request executing
      */
     public Reward request(BigDecimal hashrate) throws RewardRequestorException {
         Date currentDate = new Date();
         if (NEXT_UPDATE == null || currentDate.after(NEXT_UPDATE)) {
-            BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
-            Request request = new Request.Builder().url(API_URL + hashrateInMegahashes.toPlainString()).build();
+            Request request = new Request.Builder().url(API_URL).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new RewardRequestorException(HTTP_ERROR, response.message());
@@ -84,7 +87,8 @@ public class EthereumRequestor {
                 try (ResponseBody body = response.body()) {
                     JSONObject jsonResponse = new JSONObject(body.string());
                     setNextUpdate(jsonResponse);
-                    REWARD = createEstimatedReward(ETH, hashrate, jsonResponse);
+                    createCoinInfo(ETH, jsonResponse);
+                    ESTIMATED_REWARD_PER_DAY = BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards"));
                 }
             } catch (JSONException e) {
                 throw new RewardRequestorException(JSON_ERROR, e);
@@ -92,18 +96,16 @@ public class EthereumRequestor {
                 throw new RewardRequestorException(HTTP_ERROR, e);
             }
         }
-        return REWARD;
+        return calculateEstimatedReward(hashrate);
     }
 
     /**
-     * Creates estimated reward from JSON response.
+     * Creates coin information.
      *
-     * @param coinType type of coin
-     * @param hashrate reported hashrate
-     * @param jsonResponse JSON response
-     * @return estimated reward
+     * @param coinType coin type
+     * @param jsonResponse jsonResponse JSON response
      */
-    public Reward createEstimatedReward(CoinType coinType, BigDecimal hashrate, JSONObject jsonResponse) {
+    private void createCoinInfo(CoinType coinType, JSONObject jsonResponse) {
         CoinInfo.CoinInfoBuilder coinBuilder = new CoinInfoBuilder();
         coinBuilder.coinType(coinType)
                    .blockTime(BigDecimal.valueOf(jsonResponse.getDouble("block_time")))
@@ -111,16 +113,26 @@ public class EthereumRequestor {
                    .blockCount(BigDecimal.valueOf(jsonResponse.getDouble("last_block")))
                    .difficulty(BigDecimal.valueOf(jsonResponse.getDouble("difficulty")))
                    .networkHashrate(BigDecimal.valueOf(jsonResponse.getDouble("nethash")));
-        CoinInfo coinInfo = coinBuilder.build();
-        BigDecimal estimatedRewardPerDay = BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards"));
+        COIN_INFO = coinBuilder.build();
+    }
+
+    /**
+     * Calculates estimated reward.
+     *
+     * @param hashrate reported hashrate in H/s
+     * @return estimated reward
+     */
+    private Reward calculateEstimatedReward(BigDecimal hashrate) {
+        BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
+        BigDecimal calculatedRewardPerDay = hashrateInMegahashes.multiply(ESTIMATED_REWARD_PER_DAY).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
         Reward.Builder rewardBuilder = new Builder();
-        rewardBuilder.coinInfo(coinInfo)
+        rewardBuilder.coinInfo(COIN_INFO)
                      .setReportedHashrate(hashrate)
-                     .rewardPerHour(estimatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
-                     .rewardPerDay(estimatedRewardPerDay)
-                     .rewardPerWeek(estimatedRewardPerDay.multiply(DAYS_IN_WEEK))
-                     .rewardPerMonth(estimatedRewardPerDay.multiply(DAYS_IN_MONTH))
-                     .rewardPerYear(estimatedRewardPerDay.multiply(DAYS_IN_YEAR));
+                     .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
+                     .rewardPerDay(calculatedRewardPerDay)
+                     .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))
+                     .rewardPerMonth(calculatedRewardPerDay.multiply(DAYS_IN_MONTH))
+                     .rewardPerYear(calculatedRewardPerDay.multiply(DAYS_IN_YEAR));
         return rewardBuilder.build();
     }
 

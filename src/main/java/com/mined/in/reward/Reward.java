@@ -31,7 +31,7 @@ public class Reward {
      * Creates the instance.
      *
      * @param coinInfo coin information
-     * @param reportedHashrate reported hashrate
+     * @param reportedHashrate reported hashrate in H/s
      * @param rewardPerHour reward per hour
      * @param rewardPerDay reward per day
      * @param rewardPerWeek reward per week
@@ -61,9 +61,9 @@ public class Reward {
     }
 
     /**
-     * Gets the reported hashrate.
+     * Gets the reported hashrate in H/s.
      *
-     * @return the reported hashrate
+     * @return the reported hashrate in H/s
      */
     public BigDecimal getReportedHashrate() {
         return reportedHashrate;
@@ -158,7 +158,7 @@ public class Reward {
         /**
          * Sets the reported hashrate.
          *
-         * @param reportedHashrate the new reported hashrate
+         * @param reportedHashrate the new reported hashrate in H/s
          * @return builder of estimated reward
          */
         public Builder setReportedHashrate(BigDecimal reportedHashrate) {
