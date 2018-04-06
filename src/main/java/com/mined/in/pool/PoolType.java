@@ -1,5 +1,12 @@
 package com.mined.in.pool;
 
+import static com.mined.in.coin.CoinType.ETH;
+
+import java.util.Arrays;
+import java.util.List;
+
+import com.mined.in.coin.CoinType;
+
 /**
  * Enumerations of supporting pool types.
  *
@@ -8,24 +15,28 @@ package com.mined.in.pool;
  */
 public enum PoolType {
 
-    DWARFPOOL("Dwarfpool", "https://dwarfpool.com"),
-    ETHERMINE("Ethermine", "https://ethermine.org"),
-    NANOPOOL("Nanopool", "https://nanopool.org");
+    DWARFPOOL("Dwarfpool", "https://dwarfpool.com", Arrays.asList(ETH)),
+    ETHERMINE("Ethermine", "https://ethermine.org", Arrays.asList(ETH)),
+    NANOPOOL("Nanopool", "https://nanopool.org", Arrays.asList(ETH));
 
     /** Pool type name. */
     private String name;
     /** Pool type official site. */
     private String website;
+    /** Supported list of coin types. */
+    private List<CoinType> coinTypeList;
 
     /**
      * Creates the instance.
      *
      * @param name pool type name
      * @param website pool type official site
+     * @param coinTypeList supported list of coin types
      */
-    private PoolType(String name, String website) {
+    private PoolType(String name, String website, List<CoinType> coinTypeList) {
         this.name = name;
         this.website = website;
+        this.coinTypeList = coinTypeList;
     }
 
     /**
@@ -44,6 +55,15 @@ public enum PoolType {
      */
     public String getWebsite() {
         return website;
+    }
+
+    /**
+     * Gets the coin type list.
+     *
+     * @return the coin type list
+     */
+    public List<CoinType> getCoinTypeList() {
+        return coinTypeList;
     }
 
     /**
