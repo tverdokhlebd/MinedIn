@@ -1,18 +1,16 @@
-package com.mined.in.api.web;
-
-import static org.springframework.http.HttpStatus.OK;
+package com.mined.in.web.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Web response with custom format.
+ * API response with custom format.
  *
  * @author Dmitry Tverdokhleb
  *
  * @param <T> type of data
  */
-public class WebResponse<T> {
+public class ApiResponse<T> {
 
     /** HTTP status. */
     private HttpStatus status;
@@ -24,7 +22,7 @@ public class WebResponse<T> {
     /**
      * Creates the instance.
      */
-    public WebResponse() {
+    public ApiResponse() {
         super();
     }
 
@@ -33,31 +31,30 @@ public class WebResponse<T> {
      *
      * @param data response data
      */
-    public WebResponse(T data) {
+    public ApiResponse(T data) {
         this.data = data;
     }
 
     /**
-     * Creates response entity with successful status.
+     * Creates response entity with data.
      *
-     * @return response entity with successful status
+     * @return response entity with data
      */
-    public ResponseEntity<WebResponse<T>> create() {
+    public ResponseEntity<ApiResponse<T>> createSuccess() {
         this.status = HttpStatus.OK;
-        return new ResponseEntity<WebResponse<T>>(this, status);
+        return new ResponseEntity<ApiResponse<T>>(this, status);
     }
 
     /**
-     * Creates response entity with unsuccessful status.
+     * Creates response entity with error.
      *
-     * @param status HTTP status
      * @param error error message
-     * @return response entity with unsuccessful status
+     * @return response entity with error
      */
-    public ResponseEntity<WebResponse<T>> create(HttpStatus status, String error) {
-        this.status = status;
+    public ResponseEntity<ApiResponse<T>> createError(String error) {
+        this.status = HttpStatus.OK;
         this.error = error;
-        return new ResponseEntity<WebResponse<T>>(this, status);
+        return new ResponseEntity<ApiResponse<T>>(this, status);
     }
 
     /**
@@ -84,7 +81,7 @@ public class WebResponse<T> {
      * @return the status
      */
     public boolean getStatus() {
-        return this.status == OK;
+        return this.error == null || this.error.isEmpty();
     }
 
 }
