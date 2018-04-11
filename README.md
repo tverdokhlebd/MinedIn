@@ -7,6 +7,9 @@ Besides the mined earnings in USD it also provides next useful information:
 - pool balance and reported hashrate
 - estimated rewards per hour/day/week/month/year
 - coin information (block time, last block, difficulty, nethash and etc)
+
+If you want to develop own app see https://github.com/tverdokhlebd/MinedIn/wiki/JSON-API-Documentation.
+
 ---
 Public API of services are listed below. New public API of services will be added with time.
 
