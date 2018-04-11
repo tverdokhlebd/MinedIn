@@ -14,14 +14,8 @@ import com.mined.in.coin.CoinType;
 import com.mined.in.earnings.Earnings;
 import com.mined.in.earnings.worker.EarningsWorker;
 import com.mined.in.earnings.worker.EarningsWorkerFactory;
-import com.mined.in.market.MarketRequestor;
-import com.mined.in.market.MarketRequestorFactory;
 import com.mined.in.market.MarketType;
-import com.mined.in.pool.AccountRequestor;
-import com.mined.in.pool.AccountRequestorFactory;
 import com.mined.in.pool.PoolType;
-import com.mined.in.reward.RewardRequestor;
-import com.mined.in.reward.RewardRequestorFactory;
 import com.mined.in.reward.RewardType;
 
 /**
@@ -111,10 +105,10 @@ public class ApiController {
             @RequestParam("wallet_address") String walletAddress) {
         try {
             CoinType coinType = CoinType.valueOf(coin);
-            AccountRequestor accountRequestor = AccountRequestorFactory.create(PoolType.valueOf(pool));
-            MarketRequestor marketRequestor = MarketRequestorFactory.create(MarketType.valueOf(market));
-            RewardRequestor rewardRequestor = RewardRequestorFactory.create(RewardType.valueOf(reward));
-            EarningsWorker worker = EarningsWorkerFactory.create(coinType, accountRequestor, marketRequestor, rewardRequestor);
+            PoolType poolType = PoolType.valueOf(pool);
+            MarketType marketType = MarketType.valueOf(market);
+            RewardType rewardType = RewardType.valueOf(reward);
+            EarningsWorker worker = EarningsWorkerFactory.create(coinType, poolType, marketType, rewardType);
             Earnings earnings = worker.calculate(walletAddress);
             return new ApiResponse<Earnings>(earnings).createSuccess();
         } catch (Exception e) {

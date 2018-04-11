@@ -20,18 +20,12 @@ import com.mined.in.coin.CoinType;
 import com.mined.in.earnings.Earnings;
 import com.mined.in.earnings.worker.EarningsWorker;
 import com.mined.in.earnings.worker.EarningsWorkerFactory;
-import com.mined.in.market.MarketRequestor;
 import com.mined.in.market.MarketRequestorException;
-import com.mined.in.market.MarketRequestorFactory;
 import com.mined.in.market.MarketType;
-import com.mined.in.pool.AccountRequestor;
 import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.pool.AccountRequestorFactory;
 import com.mined.in.pool.PoolType;
 import com.mined.in.reward.Reward;
-import com.mined.in.reward.RewardRequestor;
 import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.reward.RewardRequestorFactory;
 import com.mined.in.reward.RewardType;
 import com.mined.in.utils.HashrateConverter;
 import com.mined.in.utils.TimeConverter;
@@ -188,10 +182,7 @@ public class TelegramBotUpdates implements BotUpdates {
         PoolType poolType = stepData.getPoolType();
         MarketType marketType = stepData.getMarketType();
         RewardType rewardType = stepData.getRewardType();
-        AccountRequestor accountRequestor = AccountRequestorFactory.create(poolType);
-        MarketRequestor marketRequestor = MarketRequestorFactory.create(marketType);
-        RewardRequestor rewardRequestor = RewardRequestorFactory.create(rewardType);
-        EarningsWorker minedWorker = EarningsWorkerFactory.create(coinType, accountRequestor, marketRequestor, rewardRequestor);
+        EarningsWorker minedWorker = EarningsWorkerFactory.create(coinType, poolType, marketType, rewardType);
         return minedWorker.calculate(walletAddress);
     }
 

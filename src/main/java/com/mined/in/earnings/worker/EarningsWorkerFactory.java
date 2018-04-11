@@ -2,8 +2,14 @@ package com.mined.in.earnings.worker;
 
 import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketRequestor;
+import com.mined.in.market.MarketRequestorFactory;
+import com.mined.in.market.MarketType;
 import com.mined.in.pool.AccountRequestor;
+import com.mined.in.pool.AccountRequestorFactory;
+import com.mined.in.pool.PoolType;
 import com.mined.in.reward.RewardRequestor;
+import com.mined.in.reward.RewardRequestorFactory;
+import com.mined.in.reward.RewardType;
 
 /**
  * Factory for creating earnings worker.
@@ -12,6 +18,22 @@ import com.mined.in.reward.RewardRequestor;
  *
  */
 public class EarningsWorkerFactory {
+
+    /**
+     * Creates earnings worker.
+     *
+     * @param coinType coin type
+     * @param poolType pool type
+     * @param marketType market type
+     * @param rewardType estimated reward type
+     * @return earnings worker
+     */
+    public static EarningsWorker create(CoinType coinType, PoolType poolType, MarketType marketType, RewardType rewardType) {
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(poolType);
+        MarketRequestor marketRequestor = MarketRequestorFactory.create(marketType);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(rewardType);
+        return create(coinType, accountRequestor, marketRequestor, rewardRequestor);
+    }
 
     /**
      * Creates earnings worker.
