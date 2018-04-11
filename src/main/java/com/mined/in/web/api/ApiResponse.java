@@ -12,18 +12,35 @@ import org.springframework.http.ResponseEntity;
  */
 public class ApiResponse<T> {
 
+    /**
+     * Enumerations of error types.
+     */
+    public static enum ErrorType {
+
+        COMMON,
+        POOL,
+        MARKET,
+        REWARD
+
+    }
+
     /** HTTP status. */
     private HttpStatus status;
     /** Response data. */
     private T data;
+    /** Error flag. */
+    private boolean error;
+    /** Error type. */
+    private ErrorType errorType;
     /** Error message. */
-    private String error;
+    private String errorMessage;
 
     /**
      * Creates the instance.
      */
     public ApiResponse() {
         super();
+        this.status = HttpStatus.OK;
     }
 
     /**
@@ -32,6 +49,7 @@ public class ApiResponse<T> {
      * @param data response data
      */
     public ApiResponse(T data) {
+        this();
         this.data = data;
     }
 
@@ -40,20 +58,20 @@ public class ApiResponse<T> {
      *
      * @return response entity with data
      */
-    public ResponseEntity<ApiResponse<T>> createSuccess() {
-        this.status = HttpStatus.OK;
+    public ResponseEntity<ApiResponse<T>> create() {
+        this.error = false;
         return new ResponseEntity<ApiResponse<T>>(this, status);
     }
 
     /**
      * Creates response entity with error.
      *
-     * @param error error message
      * @return response entity with error
      */
-    public ResponseEntity<ApiResponse<T>> createError(String error) {
-        this.status = HttpStatus.OK;
-        this.error = error;
+    public ResponseEntity<ApiResponse<T>> create(ErrorType errorType, String errorMessage) {
+        this.error = true;
+        this.errorType = errorType;
+        this.errorMessage = errorMessage;
         return new ResponseEntity<ApiResponse<T>>(this, status);
     }
 
@@ -67,21 +85,30 @@ public class ApiResponse<T> {
     }
 
     /**
-     * Gets the error.
+     * Checks if is error.
      *
-     * @return the error
+     * @return true, if is error
      */
-    public String getError() {
+    public boolean isError() {
         return error;
     }
 
     /**
-     * Gets the status.
+     * Gets the error type.
      *
-     * @return the status
+     * @return the error type
      */
-    public boolean getStatus() {
-        return this.error == null || this.error.isEmpty();
+    public ErrorType getErrorType() {
+        return errorType;
+    }
+
+    /**
+     * Gets the error message.
+     *
+     * @return the error message
+     */
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
 }
