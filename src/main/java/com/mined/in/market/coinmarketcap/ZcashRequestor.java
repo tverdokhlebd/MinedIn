@@ -22,19 +22,19 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Requestor of ethereum coin market.
+ * Requestor of zcash coin market.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class EthereumRequestor {
+public class ZcashRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
     /** Endpoints update. */
     private final int endpointsUpdate;
     /** API url. */
-    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/ethereum";
+    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/zcash";
     /** Next update of coin market. */
     private static Date NEXT_UPDATE;
     /** Cached coin market. */
@@ -46,16 +46,16 @@ public class EthereumRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public EthereumRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    public ZcashRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super();
         this.httpClient = httpClient;
         this.endpointsUpdate = endpointsUpdate;
     }
 
     /**
-     * Requests ethereum coin market.
+     * Requests zcash coin market.
      *
-     * @return ethereum coin market
+     * @return zcash coin market
      * @throws MarketRequestorException if there is any error in market requesting
      */
     public CoinMarket request() throws MarketRequestorException {
