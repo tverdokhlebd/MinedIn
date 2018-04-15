@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,7 +154,10 @@ public class TelegramBotUpdates implements BotUpdates {
      * Creates supporting pool types message.
      */
     private void createSupportingPoolsMessage() {
-        List<PoolType> poolList = Arrays.asList(PoolType.values());
+        CoinType coinType = responseMessage.getStepData().getCoinType();
+        List<PoolType> poolList = Arrays.asList(PoolType.values()).stream().filter(pool -> {
+            return pool.getCoinTypeList().indexOf(coinType) != -1;
+        }).collect(Collectors.toList());
         poolList.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
         InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[poolList.size()][1];
         for (int i = 0; i < poolList.size(); i++) {
