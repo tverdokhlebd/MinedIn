@@ -2,6 +2,7 @@ package com.mined.in.coin;
 
 import com.mined.in.coin.wallet.AddressValidator;
 import com.mined.in.coin.wallet.EthereumAddressValidator;
+import com.mined.in.coin.wallet.ZCashAddressValidator;
 
 /**
  * Enumerations of supporting coin types.
@@ -11,7 +12,9 @@ import com.mined.in.coin.wallet.EthereumAddressValidator;
  */
 public enum CoinType {
 
-    ETH("Ethereum", "ETH", "https://www.ethereum.org", new EthereumAddressValidator());
+    ETH("Ethereum", "ETH", "https://www.ethereum.org", new EthereumAddressValidator()),
+    ETC("Ethereum Classic", "ETC", "https://ethereumclassic.github.io/", new EthereumAddressValidator()),
+    ZEC("Zcash", "ZEC", "https://z.cash/", new ZCashAddressValidator());
 
     /** Coin type name. */
     private String name;
