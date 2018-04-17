@@ -1,0 +1,12 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="mt-5">Please select a coin</h1>
+            <br /> <br />
+            <tr th:each="coin : ${coin_list}">
+                <a th:href="@{${'/' + coin.coin.symbol}}" th:text="${coin.coin.symbol}" role="button"
+                    class="btn btn-outline-dark btn-lg pr-5 pl-5 mr-4 ml-4 mb-4"></a>
+            </tr>
+        </div>
+    </div>
+</th:block>

@@ -26,19 +26,19 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Requestor of ethereum estimated reward.
+ * Requestor of ethereum classic estimated reward.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class EthereumRequestor {
+public class EthereumClassicRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
     /** Endpoints update. */
     private final int endpointsUpdate;
     /** API url. */
-    private static final String API_URL = "https://whattomine.com/coins/151.json";
+    private static final String API_URL = "https://whattomine.com/coins/162.json";
     /** Next update of estimated reward. */
     private static Date NEXT_UPDATE;
     /** Cached coin info. */
@@ -62,17 +62,17 @@ public class EthereumRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public EthereumRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    public EthereumClassicRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super();
         this.httpClient = httpClient;
         this.endpointsUpdate = endpointsUpdate;
     }
 
     /**
-     * Requests estimated reward for ethereum.
+     * Requests estimated reward for ethereum classic.
      *
      * @param hashrate reported hashrate in H/s
-     * @return estimated reward for ethereum
+     * @return estimated reward for ethereum classic
      * @throws RewardRequestorException if there is any error in request executing
      */
     public Reward request(BigDecimal hashrate) throws RewardRequestorException {

@@ -22,6 +22,10 @@ public class WhatToMineRewardRequestor implements RewardRequestor {
     private final OkHttpClient httpClient;
     /** Ethereum reward lock. */
     private static final Lock ETHEREUM_LOCK = new ReentrantLock();
+    /** Ethereum classic reward lock. */
+    private static final Lock ETHEREUM_CLASSIC_LOCK = new ReentrantLock();
+    /** Zcash reward lock. */
+    private static final Lock ZCASH_LOCK = new ReentrantLock();
     /** Endpoints update. */
     private static final int ENDPOINTS_UPDATE = 4;
 
@@ -42,6 +46,26 @@ public class WhatToMineRewardRequestor implements RewardRequestor {
             return new EthereumRequestor(httpClient, ENDPOINTS_UPDATE).request(hashrate);
         } finally {
             ETHEREUM_LOCK.unlock();
+        }
+    }
+
+    @Override
+    public Reward requestEthereumClassicReward(BigDecimal hashrate) throws RewardRequestorException {
+        ETHEREUM_CLASSIC_LOCK.lock();
+        try {
+            return new EthereumClassicRequestor(httpClient, ENDPOINTS_UPDATE).request(hashrate);
+        } finally {
+            ETHEREUM_CLASSIC_LOCK.unlock();
+        }
+    }
+
+    @Override
+    public Reward requestZcashReward(BigDecimal hashrate) throws RewardRequestorException {
+        ZCASH_LOCK.lock();
+        try {
+            return new ZcashRequestor(httpClient, ENDPOINTS_UPDATE).request(hashrate);
+        } finally {
+            ZCASH_LOCK.unlock();
         }
     }
 

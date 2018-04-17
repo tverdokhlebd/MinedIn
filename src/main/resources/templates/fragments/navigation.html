@@ -1,0 +1,26 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">MINED IN</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="nav navbar-nav">
+                    <tr th:each="coin : ${coin_list}">
+                        <li class="nav-item"><a class="nav-link" th:href="@{${'/' + coin.coin.symbol}}"><img
+                                th:text="@{${'$' + #numbers.formatDecimal(coin.price, 0, 2)}}"
+                                th:src="@{${'/img/' + coin.coin.symbol + '.png'}}" width="24" height="24" class="d-inline-block align-top" /></a></li>
+                    </tr>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="https://github.com/tverdokhlebd/MinedIn">GitHub</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</th:block>

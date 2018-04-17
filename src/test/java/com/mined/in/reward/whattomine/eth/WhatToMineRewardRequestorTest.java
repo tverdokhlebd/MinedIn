@@ -21,7 +21,7 @@ import com.mined.in.reward.whattomine.WhatToMineRewardRequestor;
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of WhatToMine ETH requestor.
+ * Tests of WhatToMine ethereum requestor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -51,7 +51,6 @@ public class WhatToMineRewardRequestorTest {
         assertEquals(BigDecimal.valueOf(14.4406), coinInfo.getBlockTime());
         assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
         assertEquals(BigDecimal.valueOf(5319532), coinInfo.getBlockCount());
-        assertEquals(BigDecimal.valueOf(2.91), coinInfo.getBlockReward());
         assertEquals(BigDecimal.valueOf(3.23405110864068e+15), coinInfo.getDifficulty());
         assertEquals(BigDecimal.valueOf(223955452587889L), coinInfo.getNetworkHashrate());
         assertEquals(BigDecimal.valueOf(0.000554), reward.getRewardPerHour());
