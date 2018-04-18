@@ -123,7 +123,7 @@ public class EthereumClassicRequestor {
     private Reward calculateEstimatedReward(BigDecimal hashrate) {
         Reward.Builder rewardBuilder = new Builder();
         rewardBuilder.coinInfo(COIN_INFO);
-        if (hashrate == null) {
+        if (hashrate != null) {
             BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
             BigDecimal calculatedRewardPerDay =
                     hashrateInMegahashes.multiply(ESTIMATED_REWARD_PER_DAY).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
