@@ -121,16 +121,19 @@ public class EthereumRequestor {
      * @return estimated reward
      */
     private Reward calculateEstimatedReward(BigDecimal hashrate) {
-        BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
-        BigDecimal calculatedRewardPerDay = hashrateInMegahashes.multiply(ESTIMATED_REWARD_PER_DAY).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
         Reward.Builder rewardBuilder = new Builder();
-        rewardBuilder.coinInfo(COIN_INFO)
-                     .setReportedHashrate(hashrate)
-                     .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
-                     .rewardPerDay(calculatedRewardPerDay)
-                     .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))
-                     .rewardPerMonth(calculatedRewardPerDay.multiply(DAYS_IN_MONTH))
-                     .rewardPerYear(calculatedRewardPerDay.multiply(DAYS_IN_YEAR));
+        rewardBuilder.coinInfo(COIN_INFO);
+        if (hashrate == null) {
+            BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
+            BigDecimal calculatedRewardPerDay =
+                    hashrateInMegahashes.multiply(ESTIMATED_REWARD_PER_DAY).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
+            rewardBuilder.setReportedHashrate(hashrate)
+                         .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
+                         .rewardPerDay(calculatedRewardPerDay)
+                         .rewardPerWeek(calculatedRewardPerDay.multiply(DAYS_IN_WEEK))
+                         .rewardPerMonth(calculatedRewardPerDay.multiply(DAYS_IN_MONTH))
+                         .rewardPerYear(calculatedRewardPerDay.multiply(DAYS_IN_YEAR));
+        }
         return rewardBuilder.build();
     }
 
