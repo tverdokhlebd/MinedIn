@@ -11,7 +11,7 @@
                     <tr th:each="coin : ${coin_list}">
                         <li class="nav-item"><a class="nav-link" th:href="@{${'/' + coin.coin.symbol}}"><img
                                 th:text="@{${'$' + #numbers.formatDecimal(coin.price, 1, 2)}}"
-                                th:src="@{${'/img/' + coin.coin.symbol + '.png'}}" width="24" height="24" class="d-inline-block align-top" /></a></li>
+                                th:src="@{${'/img/' + #strings.toLowerCase(coin.coin.symbol) + '.png'}}" width="24" height="24" class="d-inline-block align-top" /></a></li>
                     </tr>
                 </ul>
             </div>
