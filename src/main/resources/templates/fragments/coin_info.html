@@ -1,0 +1,32 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <div class="row mx-auto w-75 justify-content-md-center">
+        <div class="col text-center font-weight-light" th:text="${text.coin_info}"></div>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_name}"></div>
+        <div class="col text-right font-weight-light" th:text="${coin_info.coinType.name}"></div>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_symbol}"></div>
+        <div class="col text-right font-weight-light" th:text="${coin_info.coinType.symbol}"></div>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_website}"></div>
+        <a class="col text-right font-weight-light" th:text="${coin_info.coinType.website}" th:href="${coin_info.coinType.website}"
+            target="_blank"></a>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_block_time}"></div>
+        <div class="col text-right font-weight-light"
+            th:text="${T(com.mined.in.utils.TimeConverter).convertToReadableTime(coin_info.blockTime)}"></div>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_block_reward}"></div>
+        <div class="col text-right font-weight-light" th:text="${#numbers.formatDecimal(coin_info.blockReward, 1, 2)}"></div>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_block_count}"></div>
+        <div class="col text-right font-weight-light" th:text="${#numbers.formatDecimal(coin_info.blockCount, 1, 'COMMA', 0, 'POINT')}"></div>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_difficulty}"></div>
+        <div class="col text-right font-weight-light" th:text="${#numbers.formatDecimal(coin_info.difficulty, 1, 'COMMA', 0, 'POINT')}"></div>
+        <div class="w-100"></div>
+        <div class="col text-left" th:text="${text.coin_network_hashrate}"></div>
+        <div class="col text-right font-weight-light"
+            th:text="${T(com.mined.in.utils.HashrateConverter).convertToReadableHashPower(coin_info.networkHashrate)}"></div>
+    </div>
+</th:block>

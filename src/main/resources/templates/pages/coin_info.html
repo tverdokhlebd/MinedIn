@@ -1,7 +1,24 @@
 <th:block xmlns:th="http://www.thymeleaf.org">
-    <div class="container">
-        <div class="text-center">
-            <span th:text="${coin_info.networkHashrate}"></span>
+    <div class="container mt-4">
+        <th:block layout:include="fragments/coin_info" />
+        <div class="row input-group mb-3 mx-auto w-75 justify-content-md-center mt-4 pl-3 pr-3">
+            <input type="text" onkeyup="checkWalletAddressAndPool()" class="form-control" id="walletAddress"
+                th:placeholder="${text.enter_wallet_address}" aria-label="WalletAddress" aria-describedby="basic-addon1" />
+            <div class="dropdown input-group-append">
+                <button class="btn btn-outline-dark dropdown-toggle" type="button" id="poolDropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" th:text="${text.select_pool}"></button>
+                <div class="dropdown-menu" aria-labelledby="poolDropdownMenuButton">
+                    <tr th:each="pool : ${pool_list}">
+                        <a href="#"
+                            th:onclick="'changePoolDropdownMenu(\''+ ${pool.name} +'\', \''+ ${pool} +'\', \'poolDropdownMenuButton\')'"
+                            th:text="${pool.name}" class="dropdown-item"></a>
+                    </tr>
+                </div>
+            </div>
+        </div>
+        <div class="row mx-auto w-75 justify-content-md-center mt-4">
+            <button type="submit" id="calculateButton" th:onclick="'calculate(\''+ ${coin_info.coinType} +'\')'"
+                class="btn btn-outline-dark btn-lg pr-4 pl-4" th:text="${text.calculate}" disabled="disabled"></button>
         </div>
     </div>
 </th:block>

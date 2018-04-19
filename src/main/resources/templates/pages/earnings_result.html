@@ -1,0 +1,57 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <div class="container mt-4">
+        <th:block layout:include="fragments/coin_info" />
+        <div class="row mx-auto w-75 justify-content-md-center mt-4">
+            <h3 th:text="@{${text.your_balance_is + #numbers.formatDecimal(usd_balance, 1, 2)}}"></h3>
+        </div>
+        <div class="row mx-auto w-75 justify-content-md-center mt-4">
+            <div class="col text-center font-weight-light" th:text="${pool_info.name}"></div>
+            <div class="w-100"></div>
+            <div class="col text-left" th:text="${text.balance}"></div>
+            <div class="col text-right font-weight-light" th:text="@{${coin_balance + ' ' + coin_info.coinType.symbol}}"></div>
+            <div class="w-100"></div>
+            <div class="col text-left" th:text="${text.hashrate}"></div>
+            <div class="col text-right font-weight-light"
+                th:text="${T(com.mined.in.utils.HashrateConverter).convertToReadableHashPower(reward.reportedHashrate)}"></div>
+        </div>
+        <div class="row mx-auto w-75 justify-content-md-center mt-4">
+            <div class="col text-center font-weight-light" th:text="${text.estimated_rewards}"></div>
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col" th:text="${text.per}"></th>
+                        <th scope="col" th:text="${coin_info.coinType.symbol}"></th>
+                        <th scope="col" th:text="${text.usd}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td th:text="${text.hour}"></td>
+                        <td th:text="${reward.rewardPerHour}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(reward.rewardPerHour * coin_price, 1, 6)}}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${text.day}"></td>
+                        <td th:text="${reward.rewardPerDay}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(reward.rewardPerDay * coin_price, 1, 6)}}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${text.week}"></td>
+                        <td th:text="${reward.rewardPerWeek}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(reward.rewardPerWeek * coin_price, 1, 6)}}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${text.month}"></td>
+                        <td th:text="${reward.rewardPerMonth}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(reward.rewardPerMonth * coin_price, 1, 6)}}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${text.year}"></td>
+                        <td th:text="${reward.rewardPerYear}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(reward.rewardPerYear * coin_price, 1, 6)}}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>

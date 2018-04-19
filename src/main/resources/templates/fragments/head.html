@@ -1,8 +1,8 @@
 <th:block xmlns:th="http://www.thymeleaf.org">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="Open source project for calculating the mined earnings" />
-    <title>MinedIn - calculating the mined earnings</title>
+    <meta name="description" th:content="${text.description}" />
+    <title th:text="${text.title}"></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/minedin.css" />
 </th:block>
