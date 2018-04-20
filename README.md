@@ -27,7 +27,7 @@ Markets:
 Estimated rewards:
 - <a href="https://whattomine.com">WHATTOMINE</a> (Default)
 ---
-There are ready implementation:
+There are ready implementations:
 - <a href="https://t.me/MinedInBot">TELEGRAM BOT</a>
 - WEB VERSION
 - ANDROID APPLICATION
