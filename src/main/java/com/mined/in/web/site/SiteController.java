@@ -5,12 +5,15 @@ import static com.mined.in.reward.RewardType.WHAT_TO_MINE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +29,13 @@ import com.mined.in.earnings.worker.EarningsWorkerFactory;
 import com.mined.in.market.MarketRequestor;
 import com.mined.in.market.MarketRequestorException;
 import com.mined.in.market.MarketRequestorFactory;
+import com.mined.in.market.MarketType;
 import com.mined.in.pool.AccountRequestorException;
 import com.mined.in.pool.PoolType;
 import com.mined.in.reward.RewardRequestor;
 import com.mined.in.reward.RewardRequestorException;
 import com.mined.in.reward.RewardRequestorFactory;
+import com.mined.in.reward.RewardType;
 
 /**
  * Site controller.
@@ -41,8 +46,17 @@ import com.mined.in.reward.RewardRequestorFactory;
 @Controller
 public class SiteController {
 
+    /** Logger. */
+    private final static Logger LOG = LoggerFactory.getLogger(SiteController.class);
     /** Text resources. */
-    private final static ResourceBundle RESOURCES = ResourceBundle.getBundle("web");
+    private final static Map<String, String> TEXT = new HashMap<>();
+    /** Loading text resources. */
+    static {
+        ResourceBundle resources = ResourceBundle.getBundle("web");
+        Collections.list(resources.getKeys()).forEach(key -> {
+            TEXT.put(key, resources.getString(key));
+        });
+    }
 
     /**
      * Requests index page.
@@ -62,31 +76,38 @@ public class SiteController {
      * @param model model attributes
      * @param coinType coin type
      * @return coin info page
-     * @throws RewardRequestorException if there is any error in reward executing
      */
     @GetMapping("/{coinType}")
     public String getCoinInfo(Model model, @PathVariable CoinType coinType) throws RewardRequestorException {
-        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE);
-        CoinInfo coinInfo = null;
-        switch (coinType) {
-        case ETH:
-            coinInfo = rewardRequestor.requestEthereumReward(null).getCoinInfo();
-            break;
-        case ETC:
-            coinInfo = rewardRequestor.requestEthereumClassicReward(null).getCoinInfo();
-            break;
-        case ZEC:
-            coinInfo = rewardRequestor.requestZcashReward(null).getCoinInfo();
-            break;
-        default:
-            break;
+        try {
+            RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE);
+            CoinInfo coinInfo = null;
+            switch (coinType) {
+            case ETH:
+                coinInfo = rewardRequestor.requestEthereumReward(null).getCoinInfo();
+                break;
+            case ETC:
+                coinInfo = rewardRequestor.requestEthereumClassicReward(null).getCoinInfo();
+                break;
+            case ZEC:
+                coinInfo = rewardRequestor.requestZcashReward(null).getCoinInfo();
+                break;
+            default:
+                break;
+            }
+            List<PoolType> poolTypeList = Arrays.asList(PoolType.values()).stream().filter(pool -> {
+                return pool.getCoinTypeList().indexOf(coinType) != -1;
+            }).collect(Collectors.toList());
+            model.addAttribute("coin_info", coinInfo);
+            model.addAttribute("pool_list", poolTypeList);
+        } catch (RewardRequestorException e) {
+            LOG.error("Reward request error", e);
+            handleRewardError(model, WHAT_TO_MINE, e);
+        } catch (Exception e) {
+            LOG.error("Get coin info error", e);
+            handleUnexpectedError(model, e);
         }
-        List<PoolType> poolTypeList = Arrays.asList(PoolType.values()).stream().filter(pool -> {
-            return pool.getCoinTypeList().indexOf(coinType) != -1;
-        }).collect(Collectors.toList());
-        model.addAttribute("page", "coin_info");
-        model.addAttribute("coin_info", coinInfo);
-        model.addAttribute("pool_list", poolTypeList);
+        model.addAttribute("page", "coin");
         return "template";
     }
 
@@ -98,22 +119,33 @@ public class SiteController {
      * @param poolType pool type
      * @param walletAddress wallet address
      * @return calculation page
-     * @throws AccountRequestorException if there is any error in account requesting
-     * @throws MarketRequestorException if there is any error in market requesting
-     * @throws RewardRequestorException if there is any error in reward executing
      */
     @GetMapping("/{coinType}/{poolType}/{walletAddress}")
     public String calculate(Model model, @PathVariable CoinType coinType, @PathVariable PoolType poolType,
             @PathVariable String walletAddress) throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
-        EarningsWorker worker = EarningsWorkerFactory.create(coinType, poolType, COIN_MARKET_CAP, WHAT_TO_MINE);
-        Earnings earnings = worker.calculate(walletAddress);
-        model.addAttribute("coin_info", earnings.getEstimatedReward().getCoinInfo());
-        model.addAttribute("pool_info", poolType);
-        model.addAttribute("usd_balance", earnings.getUsdBalance());
-        model.addAttribute("coin_balance", earnings.getCoinBalance());
-        model.addAttribute("coin_price", earnings.getCoinPrice());
-        model.addAttribute("reward", earnings.getEstimatedReward());
-        model.addAttribute("page", "earnings_result");
+        try {
+            EarningsWorker worker = EarningsWorkerFactory.create(coinType, poolType, COIN_MARKET_CAP, WHAT_TO_MINE);
+            Earnings earnings = worker.calculate(walletAddress);
+            model.addAttribute("coin_info", earnings.getEstimatedReward().getCoinInfo());
+            model.addAttribute("pool_info", poolType);
+            model.addAttribute("usd_balance", earnings.getUsdBalance());
+            model.addAttribute("coin_balance", earnings.getCoinBalance());
+            model.addAttribute("coin_price", earnings.getCoinPrice());
+            model.addAttribute("reward", earnings.getEstimatedReward());
+        } catch (AccountRequestorException e) {
+            LOG.error("Account request error", e);
+            handleAccountError(model, poolType, e);
+        } catch (MarketRequestorException e) {
+            LOG.error("Market request error", e);
+            handleMarketError(model, COIN_MARKET_CAP, e);
+        } catch (RewardRequestorException e) {
+            LOG.error("Reward request error", e);
+            handleRewardError(model, WHAT_TO_MINE, e);
+        } catch (Exception e) {
+            LOG.error("Calculate error", e);
+            handleUnexpectedError(model, e);
+        }
+        model.addAttribute("page", "earnings");
         return "template";
     }
 
@@ -121,16 +153,25 @@ public class SiteController {
      * Requests coin list.
      *
      * @return coin list
-     * @throws MarketRequestorException if there is any error in market requesting
      */
     @ModelAttribute("coin_list")
-    public List<CoinMarket> getCoinList() throws MarketRequestorException {
-        MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP);
-        List<CoinMarket> coinMarketList = new ArrayList<>();
-        coinMarketList.add(marketRequestor.requestEthereumCoin());
-        coinMarketList.add(marketRequestor.requestEthereumClassicCoin());
-        coinMarketList.add(marketRequestor.requestZcashCoin());
-        return coinMarketList;
+    public List<CoinMarket> getCoinList(Model model) {
+        try {
+            MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP);
+            List<CoinMarket> coinMarketList = new ArrayList<>();
+            coinMarketList.add(marketRequestor.requestEthereumCoin());
+            coinMarketList.add(marketRequestor.requestEthereumClassicCoin());
+            coinMarketList.add(marketRequestor.requestZcashCoin());
+            return coinMarketList;
+        } catch (MarketRequestorException e) {
+            LOG.error("Market request error", e);
+            handleMarketError(model, COIN_MARKET_CAP, e);
+            return new ArrayList<>();
+        } catch (Exception e) {
+            LOG.error("Get coin list error", e);
+            handleUnexpectedError(model, e);
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -140,39 +181,68 @@ public class SiteController {
      */
     @ModelAttribute("text")
     public Map<String, String> getText() {
-        Map<String, String> text = new HashMap<>();
-        text.put("project_name", RESOURCES.getString("project_name"));
-        text.put("title", RESOURCES.getString("title"));
-        text.put("description", RESOURCES.getString("description"));
-        text.put("navbar_brand", RESOURCES.getString("navbar_brand"));
-        text.put("telegram_bot_link", RESOURCES.getString("telegram_bot_link"));
-        text.put("github_link", RESOURCES.getString("github_link"));
-        text.put("contact", RESOURCES.getString("contact"));
-        text.put("select_coin_to_calculate", RESOURCES.getString("select_coin_to_calculate"));
-        text.put("select_pool", RESOURCES.getString("select_pool"));
-        text.put("calculate", RESOURCES.getString("calculate"));
-        text.put("enter_wallet_address", RESOURCES.getString("enter_wallet_address"));
-        text.put("coin_info", RESOURCES.getString("coin_info"));
-        text.put("coin_name", RESOURCES.getString("coin_name"));
-        text.put("coin_symbol", RESOURCES.getString("coin_symbol"));
-        text.put("coin_website", RESOURCES.getString("coin_website"));
-        text.put("coin_block_time", RESOURCES.getString("coin_block_time"));
-        text.put("coin_block_reward", RESOURCES.getString("coin_block_reward"));
-        text.put("coin_block_count", RESOURCES.getString("coin_block_count"));
-        text.put("coin_difficulty", RESOURCES.getString("coin_difficulty"));
-        text.put("coin_network_hashrate", RESOURCES.getString("coin_network_hashrate"));
-        text.put("per", RESOURCES.getString("per"));
-        text.put("usd", RESOURCES.getString("usd"));
-        text.put("hour", RESOURCES.getString("hour"));
-        text.put("day", RESOURCES.getString("day"));
-        text.put("week", RESOURCES.getString("week"));
-        text.put("month", RESOURCES.getString("month"));
-        text.put("year", RESOURCES.getString("year"));
-        text.put("your_balance_is", RESOURCES.getString("your_balance_is"));
-        text.put("balance", RESOURCES.getString("balance"));
-        text.put("hashrate", RESOURCES.getString("hashrate"));
-        text.put("estimated_rewards", RESOURCES.getString("estimated_rewards"));
-        return text;
+        return TEXT;
+    }
+
+    /**
+     * Handles unexpected error.
+     *
+     * @param model model attributes
+     * @param exception unexpected error
+     */
+    private void handleUnexpectedError(Model model, Exception exception) {
+        addErrorToModel(model, TEXT.get("error_unexpected"), exception.getMessage());
+    }
+
+    /**
+     * Handles pool account error.
+     *
+     * @param model model attributes
+     * @param poolType pool type
+     * @param requestorException account error
+     */
+    private void handleAccountError(Model model, PoolType poolType, AccountRequestorException requestorException) {
+        String errorMessage = String.format(TEXT.get("error_account"), poolType.getName());
+        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
+        addErrorToModel(model, errorMessage, errorDetails);
+    }
+
+    /**
+     * Handles market error.
+     *
+     * @param model model attributes
+     * @param marketType market type
+     * @param requestorException market error
+     */
+    private void handleMarketError(Model model, MarketType marketType, MarketRequestorException requestorException) {
+        String errorMessage = String.format(TEXT.get("error_market"), marketType.getName());
+        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
+        addErrorToModel(model, errorMessage, errorDetails);
+    }
+
+    /**
+     * Handles reward error.
+     *
+     * @param model model attributes
+     * @param rewardType reward type
+     * @param requestorException reward error
+     */
+    private void handleRewardError(Model model, RewardType rewardType, RewardRequestorException requestorException) {
+        String errorMessage = String.format(TEXT.get("error_reward"), rewardType.getName());
+        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
+        addErrorToModel(model, errorMessage, errorDetails);
+    }
+
+    /**
+     * Adds error message and details to model attributes.
+     *
+     * @param model model attributes
+     * @param errorMessage error message
+     * @param errorDetails error details
+     */
+    private void addErrorToModel(Model model, String errorMessage, String errorDetails) {
+        model.addAttribute("error_message", errorMessage);
+        model.addAttribute("error_details", errorDetails);
     }
 
 }

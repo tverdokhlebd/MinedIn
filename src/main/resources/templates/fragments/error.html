@@ -1,0 +1,12 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <div class="jumbotron d-flex align-items-center">
+        <div class="container text-center">
+            <a class="text-danger" data-target="#detailsCollapse" href="#"><div class="alert alert-danger" role="alert"
+                    data-toggle="collapse" data-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse"
+                    th:text="${error_message}"></div></a>
+            <div class="collapse multi-collapse" id="detailsCollapse">
+                <div class="card card-body" th:text="${error_details}"></div>
+            </div>
+        </div>
+    </div>
+</th:block>

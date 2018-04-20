@@ -5,7 +5,8 @@
 </head>
 <body>
     <th:block layout:include="fragments/navigation" />
-    <th:block layout:include="@{${'pages/' + page}}" />
+    <th:block th:if="${error_message == null}" layout:include="@{${'pages/' + page}}" />
+    <th:block th:if="${error_message != null}" layout:include="fragments/error" />
     <th:block layout:include="fragments/footer" />
     <th:block layout:include="fragments/scripts" />
 </body>
