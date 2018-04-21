@@ -28,8 +28,8 @@ import com.mined.in.pool.PoolType;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.RewardRequestorException;
 import com.mined.in.reward.RewardType;
-import com.mined.in.utils.HashrateConverter;
-import com.mined.in.utils.TimeConverter;
+import com.mined.in.utils.HashrateUtils;
+import com.mined.in.utils.TimeUtils;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
@@ -210,7 +210,7 @@ public class TelegramBotUpdates implements BotUpdates {
         accountMessage = String.format(accountMessage,
                                        stepData.getPoolType().getName(),
                                        coinBalance + " " + stepData.getCoinType().getSymbol(),
-                                       HashrateConverter.convertToReadableHashPower(reward.getReportedHashrate()));
+                                       HashrateUtils.convertToReadableHashPower(reward.getReportedHashrate()));
         BigDecimal perHour = reward.getRewardPerHour().setScale(6, DOWN);
         BigDecimal perDay = reward.getRewardPerDay().setScale(6, DOWN);
         BigDecimal perWeek = reward.getRewardPerWeek().setScale(6, DOWN);
@@ -233,10 +233,10 @@ public class TelegramBotUpdates implements BotUpdates {
         CoinInfo coinInfo = reward.getCoinInfo();
         infoMessage = String.format(infoMessage,
                                     stepData.getRewardType().getName(),
-                                    TimeConverter.convertToReadableTime(coinInfo.getBlockTime()),
+                                    TimeUtils.convertToReadableTime(coinInfo.getBlockTime()),
                                     coinInfo.getBlockCount(),
                                     coinInfo.getBlockReward(),
-                                    HashrateConverter.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
+                                    HashrateUtils.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
         responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage + infoMessage);
     }
 

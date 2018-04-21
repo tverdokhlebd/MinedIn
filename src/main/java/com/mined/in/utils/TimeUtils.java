@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @author Dmitry Tverdokhleb
  *
  */
-public class TimeConverter {
+public class TimeUtils {
 
     /** Text resources. */
     private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");

@@ -18,7 +18,7 @@ import com.mined.in.coin.CoinType;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.Reward.Builder;
 import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.utils.HashrateConverter;
+import com.mined.in.utils.HashrateUtils;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -128,7 +128,7 @@ public abstract class BaseRequestor {
         Reward.Builder rewardBuilder = new Builder();
         rewardBuilder.coinInfo(COIN_INFO);
         if (hashrate != null) {
-            BigDecimal hashrateInMegahashes = HashrateConverter.convertHashesToMegaHashes(hashrate);
+            BigDecimal hashrateInMegahashes = HashrateUtils.convertHashesToMegaHashes(hashrate);
             BigDecimal calculatedRewardPerDay =
                     hashrateInMegahashes.multiply(ESTIMATED_REWARD_PER_DAY).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
             rewardBuilder.setReportedHashrate(hashrate)

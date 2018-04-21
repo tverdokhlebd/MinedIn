@@ -12,7 +12,7 @@
             <div class="w-100"></div>
             <div class="col text-left" th:text="${text.hashrate}"></div>
             <div class="col text-right font-weight-light"
-                th:text="${T(com.mined.in.utils.HashrateConverter).convertToReadableHashPower(reward.reportedHashrate)}"></div>
+                th:text="${T(com.mined.in.utils.HashrateUtils).convertToReadableHashPower(reward.reportedHashrate)}"></div>
         </div>
         <div class="row mx-auto w-75 justify-content-md-center mt-4">
             <div class="col text-center font-weight-light" th:text="${text.estimated_rewards}"></div>

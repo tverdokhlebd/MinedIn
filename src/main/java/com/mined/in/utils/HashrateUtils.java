@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  * @author Dmitry Tverdokhleb
  *
  */
-public class HashrateConverter {
+public class HashrateUtils {
 
     /** 1 kH/s is 1,000 hashes per second. */
     private static final BigDecimal KH_S = BigDecimal.valueOf(1_000);
