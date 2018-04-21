@@ -3,6 +3,7 @@ package com.mined.in.util;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +37,14 @@ public class TimeUtilsTest {
         assertEquals("1h 20s", TimeUtils.convertToReadableTime(sec3620));
         BigDecimal sec3665 = BigDecimal.valueOf(3665);
         assertEquals("1h 1m 5s", TimeUtils.convertToReadableTime(sec3665));
+    }
+
+    @Test
+    public void testAddingMinutes() {
+        Date date = new Date(1524304800000L); // Saturday, April 21, 2018 10:00:00 AM
+        assertEquals(new Date(1524304860000L), TimeUtils.addMinutes(date, 1));
+        assertEquals(new Date(1524306300000L), TimeUtils.addMinutes(date, 25));
+        assertEquals(new Date(1524308400000L), TimeUtils.addMinutes(date, 60));
     }
 
 }

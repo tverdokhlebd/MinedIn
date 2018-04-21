@@ -2,11 +2,14 @@ package com.mined.in.reward.whattomine;
 
 import static com.mined.in.http.ErrorCode.HTTP_ERROR;
 import static com.mined.in.http.ErrorCode.JSON_ERROR;
+import static com.mined.in.utils.TimeUtils.DAYS_IN_MONTH;
+import static com.mined.in.utils.TimeUtils.DAYS_IN_WEEK;
+import static com.mined.in.utils.TimeUtils.DAYS_IN_YEAR;
+import static com.mined.in.utils.TimeUtils.HOURS_IN_DAY;
 import static java.math.RoundingMode.DOWN;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.json.JSONException;
@@ -19,6 +22,7 @@ import com.mined.in.reward.Reward;
 import com.mined.in.reward.Reward.Builder;
 import com.mined.in.reward.RewardRequestorException;
 import com.mined.in.utils.HashrateUtils;
+import com.mined.in.utils.TimeUtils;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -45,14 +49,6 @@ public abstract class BaseRequestor {
     private static BigDecimal ESTIMATED_REWARD_PER_DAY;
     /** Base rewards is for 84.0 MH/s. */
     private static final BigDecimal MEGAHASHES_BASE_REWARD = BigDecimal.valueOf(84);
-    /** Hours in day. */
-    private static final BigDecimal HOURS_IN_DAY = BigDecimal.valueOf(24);
-    /** Days in week. */
-    private static final BigDecimal DAYS_IN_WEEK = BigDecimal.valueOf(7);
-    /** Days in month. */
-    private static final BigDecimal DAYS_IN_MONTH = BigDecimal.valueOf(30);
-    /** Days in year. */
-    private static final BigDecimal DAYS_IN_YEAR = BigDecimal.valueOf(365);
 
     /**
      * Creates the instance.
@@ -125,6 +121,7 @@ public abstract class BaseRequestor {
      * @return estimated reward
      */
     private Reward calculateEstimatedReward(BigDecimal hashrate) {
+
         Reward.Builder rewardBuilder = new Builder();
         rewardBuilder.coinInfo(COIN_INFO);
         if (hashrate != null) {
@@ -147,11 +144,8 @@ public abstract class BaseRequestor {
      * @param jsonResponse JSON response
      */
     private void setNextUpdate(JSONObject jsonResponse) {
-        Long lastUpdated = jsonResponse.getLong("timestamp");
-        Calendar now = Calendar.getInstance();
-        now.setTimeInMillis(lastUpdated * 1000);
-        now.add(Calendar.MINUTE, endpointsUpdate);
-        NEXT_UPDATE = now.getTime();
+        Date lastUpdated = new Date(jsonResponse.getLong("timestamp") * 1000);
+        NEXT_UPDATE = TimeUtils.addMinutes(lastUpdated, endpointsUpdate);
     }
 
 }

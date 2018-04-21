@@ -5,7 +5,6 @@ import static com.mined.in.http.ErrorCode.JSON_ERROR;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.json.JSONArray;
@@ -15,6 +14,7 @@ import org.json.JSONObject;
 import com.mined.in.coin.CoinMarket;
 import com.mined.in.coin.CoinType;
 import com.mined.in.market.MarketRequestorException;
+import com.mined.in.utils.TimeUtils;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -90,11 +90,8 @@ public abstract class BaseRequestor {
      * @param jsonResponse JSON response
      */
     private void setNextUpdate(JSONObject jsonResponse) {
-        Long lastUpdated = jsonResponse.getLong("last_updated");
-        Calendar now = Calendar.getInstance();
-        now.setTimeInMillis(lastUpdated * 1000);
-        now.add(Calendar.MINUTE, endpointsUpdate);
-        NEXT_UPDATE = now.getTime();
+        Date lastUpdated = new Date(jsonResponse.getLong("last_updated") * 1000);
+        NEXT_UPDATE = TimeUtils.addMinutes(lastUpdated, endpointsUpdate);
     }
 
     /**

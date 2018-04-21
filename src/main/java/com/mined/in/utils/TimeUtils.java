@@ -1,6 +1,8 @@
 package com.mined.in.utils;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +14,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeUtils {
 
+    /** Hours in day. */
+    public static final BigDecimal HOURS_IN_DAY = BigDecimal.valueOf(24);
+    /** Days in week. */
+    public static final BigDecimal DAYS_IN_WEEK = BigDecimal.valueOf(7);
+    /** Days in month. */
+    public static final BigDecimal DAYS_IN_MONTH = BigDecimal.valueOf(30);
+    /** Days in year. */
+    public static final BigDecimal DAYS_IN_YEAR = BigDecimal.valueOf(365);
     /** Text resources. */
     private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
 
@@ -39,6 +49,20 @@ public class TimeUtils {
             readableTime.append((readableTime.length() > 0 ? " " : "") + seconds + RESOURCE.getString("second"));
         }
         return readableTime.toString();
+    }
+
+    /**
+     * Adds minutes to date.
+     *
+     * @param currentDate current date
+     * @param amount amount of minutes
+     * @return date with added amount of minutes
+     */
+    public static Date addMinutes(Date currentDate, int amount) {
+        Calendar now = Calendar.getInstance();
+        now.setTime(currentDate);
+        now.add(Calendar.MINUTE, amount);
+        return now.getTime();
     }
 
 }
