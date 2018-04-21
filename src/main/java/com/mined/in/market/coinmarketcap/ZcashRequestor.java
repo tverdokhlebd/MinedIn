@@ -1,5 +1,9 @@
 package com.mined.in.market.coinmarketcap;
 
+import java.util.Date;
+
+import com.mined.in.coin.CoinMarket;
+
 import okhttp3.OkHttpClient;
 
 /**
@@ -10,6 +14,10 @@ import okhttp3.OkHttpClient;
  */
 class ZcashRequestor extends Requestor {
 
+    /** Next update of coin market. */
+    private static Date NEXT_UPDATE = new Date(0);
+    /** Cached coin market. */
+    private static CoinMarket COIN_MARKET;
     /** API url. */
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/zcash";
 
@@ -26,6 +34,26 @@ class ZcashRequestor extends Requestor {
     @Override
     public String getUrl() {
         return API_URL;
+    }
+
+    @Override
+    public Date getCachedNextUpdate() {
+        return NEXT_UPDATE;
+    }
+
+    @Override
+    public void setCachedNextUpdate(Date nextUpdate) {
+        NEXT_UPDATE = nextUpdate;
+    }
+
+    @Override
+    public CoinMarket getCachedCoinMarket() {
+        return COIN_MARKET;
+    }
+
+    @Override
+    public void setCachedCoinMarket(CoinMarket coinMarket) {
+        COIN_MARKET = coinMarket;
     }
 
 }

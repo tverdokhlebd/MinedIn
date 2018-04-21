@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import com.mined.in.coin.CoinInfo;
 import com.mined.in.coin.CoinInfo.CoinInfoBuilder;
 import com.mined.in.coin.CoinType;
-import com.mined.in.http.BaseRequestor;
+import com.mined.in.reward.BaseRewardRequestor;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.Reward.Builder;
 import com.mined.in.reward.RewardRequestorException;
@@ -36,18 +36,12 @@ import okhttp3.ResponseBody;
  * @author Dmitry Tverdokhleb
  *
  */
-abstract class Requestor implements BaseRequestor<BigDecimal, Reward> {
+abstract class Requestor implements BaseRewardRequestor<BigDecimal, Reward> {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
     /** Endpoints update. */
     private final int endpointsUpdate;
-    /** Next update of estimated reward. */
-    private static Date NEXT_UPDATE = new Date(0);
-    /** Cached coin info. */
-    private static CoinInfo COIN_INFO;
-    /** Cached estimated reward per day. */
-    private static BigDecimal ESTIMATED_REWARD_PER_DAY;
     /** Base rewards is for 84.0 MH/s. */
     private static final BigDecimal MEGAHASHES_BASE_REWARD = BigDecimal.valueOf(84);
 
@@ -77,7 +71,7 @@ abstract class Requestor implements BaseRequestor<BigDecimal, Reward> {
      */
     @Override
     public Reward request(BigDecimal hashrate) throws RewardRequestorException {
-        if (new Date().after(NEXT_UPDATE)) {
+        if (new Date().after(getCachedNextUpdate())) {
             Request request = new Request.Builder().url(getUrl()).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -87,7 +81,7 @@ abstract class Requestor implements BaseRequestor<BigDecimal, Reward> {
                     JSONObject jsonResponse = new JSONObject(body.string());
                     setNextUpdate(jsonResponse);
                     createCoinInfo(jsonResponse);
-                    ESTIMATED_REWARD_PER_DAY = BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards"));
+                    setCachedEstimatedRewardPerDay(BigDecimal.valueOf(jsonResponse.getDouble("estimated_rewards")));
                 }
             } catch (JSONException e) {
                 throw new RewardRequestorException(JSON_ERROR, e);
@@ -111,7 +105,7 @@ abstract class Requestor implements BaseRequestor<BigDecimal, Reward> {
                    .blockCount(BigDecimal.valueOf(jsonResponse.getDouble("last_block")))
                    .difficulty(BigDecimal.valueOf(jsonResponse.getDouble("difficulty")))
                    .networkHashrate(BigDecimal.valueOf(jsonResponse.getDouble("nethash")));
-        COIN_INFO = coinBuilder.build();
+        setCachedCoinInfo(coinBuilder.build());
     }
 
     /**
@@ -123,11 +117,11 @@ abstract class Requestor implements BaseRequestor<BigDecimal, Reward> {
     private Reward calculateEstimatedReward(BigDecimal hashrate) {
 
         Reward.Builder rewardBuilder = new Builder();
-        rewardBuilder.coinInfo(COIN_INFO);
+        rewardBuilder.coinInfo(getCachedCoinInfo());
         if (hashrate != null) {
             BigDecimal hashrateInMegahashes = HashrateUtils.convertHashesToMegaHashes(hashrate);
             BigDecimal calculatedRewardPerDay =
-                    hashrateInMegahashes.multiply(ESTIMATED_REWARD_PER_DAY).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
+                    hashrateInMegahashes.multiply(getCachedEstimatedRewardPerDay()).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
             rewardBuilder.setReportedHashrate(hashrate)
                          .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
                          .rewardPerDay(calculatedRewardPerDay)
@@ -145,7 +139,7 @@ abstract class Requestor implements BaseRequestor<BigDecimal, Reward> {
      */
     private void setNextUpdate(JSONObject jsonResponse) {
         Date lastUpdated = new Date(jsonResponse.getLong("timestamp") * 1000);
-        NEXT_UPDATE = TimeUtils.addMinutes(lastUpdated, endpointsUpdate);
+        setCachedNextUpdate(TimeUtils.addMinutes(lastUpdated, endpointsUpdate));
     }
 
 }

@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 import com.mined.in.coin.CoinMarket;
 import com.mined.in.coin.CoinType;
-import com.mined.in.http.BaseRequestor;
+import com.mined.in.market.BaseMarketRequestor;
 import com.mined.in.market.MarketRequestorException;
 import com.mined.in.utils.TimeUtils;
 
@@ -28,16 +28,12 @@ import okhttp3.ResponseBody;
  * @author Dmitry Tverdokhleb
  *
  */
-abstract class Requestor implements BaseRequestor<Object, CoinMarket> {
+abstract class Requestor implements BaseMarketRequestor<Object, CoinMarket> {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
     /** Endpoints update. */
     private final int endpointsUpdate;
-    /** Next update of coin market. */
-    private static Date NEXT_UPDATE = new Date(0);
-    /** Cached coin market. */
-    private static CoinMarket COIN_MARKET;
 
     /**
      * Creates the instance.
@@ -59,7 +55,7 @@ abstract class Requestor implements BaseRequestor<Object, CoinMarket> {
      */
     @Override
     public CoinMarket request() throws MarketRequestorException {
-        if (new Date().after(NEXT_UPDATE)) {
+        if (new Date().after(getCachedNextUpdate())) {
             Request request = new Request.Builder().url(getUrl()).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -76,7 +72,7 @@ abstract class Requestor implements BaseRequestor<Object, CoinMarket> {
                 throw new MarketRequestorException(HTTP_ERROR, e);
             }
         }
-        return COIN_MARKET;
+        return getCachedCoinMarket();
     }
 
     @Override
@@ -91,7 +87,7 @@ abstract class Requestor implements BaseRequestor<Object, CoinMarket> {
      */
     private void setNextUpdate(JSONObject jsonResponse) {
         Date lastUpdated = new Date(jsonResponse.getLong("last_updated") * 1000);
-        NEXT_UPDATE = TimeUtils.addMinutes(lastUpdated, endpointsUpdate);
+        setCachedNextUpdate(TimeUtils.addMinutes(lastUpdated, endpointsUpdate));
     }
 
     /**
@@ -102,7 +98,7 @@ abstract class Requestor implements BaseRequestor<Object, CoinMarket> {
     private void createCoinMarket(JSONObject jsonResponse) {
         BigDecimal price = BigDecimal.valueOf(jsonResponse.getDouble("price_usd"));
         CoinType coinType = CoinType.valueOf(jsonResponse.getString("symbol"));
-        COIN_MARKET = new CoinMarket(coinType, price);
+        setCachedCoinMarket(new CoinMarket(coinType, price));
     }
 
 }
