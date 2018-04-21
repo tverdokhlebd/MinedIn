@@ -19,10 +19,21 @@ public class RewardRequestorFactory {
      * @return estimated reward requestor
      */
     public static RewardRequestor create(RewardType rewardType) {
-        OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+        OkHttpClient httpClient = new OkHttpClient.Builder().build();
+        return create(rewardType, httpClient);
+    }
+
+    /**
+     * Creates estimated reward requestor.
+     * 
+     * @param rewardType estimated reward type
+     * @param httpClient HTTP client
+     * @return estimated reward requestor
+     */
+    public static RewardRequestor create(RewardType rewardType, OkHttpClient httpClient) {
         switch (rewardType) {
         case WHAT_TO_MINE: {
-            return new WhatToMineRewardRequestor(okHttpBuilder.build());
+            return new WhatToMineRewardRequestor(httpClient);
         }
         default:
             throw new IllegalArgumentException(rewardType.name());

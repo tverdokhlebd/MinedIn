@@ -3,6 +3,7 @@ package com.mined.in.pool.account.eth;
 import static com.mined.in.http.ErrorCode.API_ERROR;
 import static com.mined.in.http.ErrorCode.HTTP_ERROR;
 import static com.mined.in.http.ErrorCode.JSON_ERROR;
+import static com.mined.in.pool.PoolType.NANOPOOL;
 import static okhttp3.Protocol.HTTP_2;
 import static org.junit.Assert.assertEquals;
 
@@ -16,7 +17,7 @@ import com.mined.in.Utils;
 import com.mined.in.pool.Account;
 import com.mined.in.pool.AccountRequestor;
 import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.pool.nanopool.NanopoolAccountRequestor;
+import com.mined.in.pool.AccountRequestorFactory;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -53,7 +54,7 @@ public class NanopoolAccountRequestorTest {
             return new Response.Builder().body(body).request(request).protocol(HTTP_2).code(200).message("").build();
         };
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(replaceJSONInterceptor).build();
-        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(NANOPOOL, httpClient, false);
         Account account = accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(0.05288338), account.getWalletBalance());
@@ -64,7 +65,7 @@ public class NanopoolAccountRequestorTest {
     public void testCorrectJsonResponseWithApiError() throws AccountRequestorException {
         JSONObject responseJSON = new JSONObject("{\"status\":false,\"error\":\"Account not found\"}");
         OkHttpClient httpClient = Utils.getHttpClient(responseJSON.toString(), 200);
-        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(NANOPOOL, httpClient, false);
         try {
             accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
@@ -77,7 +78,7 @@ public class NanopoolAccountRequestorTest {
     @Test(expected = AccountRequestorException.class)
     public void test500HttpError() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(NANOPOOL, httpClient, false);
         try {
             accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
@@ -89,7 +90,7 @@ public class NanopoolAccountRequestorTest {
     @Test(expected = AccountRequestorException.class)
     public void testEmptyResponse() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(NANOPOOL, httpClient, false);
         try {
             accountRequestor.requestEthereumAccount(WALLET_ADDRESS);
         } catch (AccountRequestorException e) {
@@ -102,7 +103,7 @@ public class NanopoolAccountRequestorTest {
     public void testWithEmptyWalletAddress() throws AccountRequestorException {
         String errorCode = "BAD_WALLET";
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        AccountRequestor accountRequestor = new NanopoolAccountRequestor(httpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(NANOPOOL, httpClient, false);
         try {
             accountRequestor.requestEthereumAccount("");
         } catch (AccountRequestorException e) {

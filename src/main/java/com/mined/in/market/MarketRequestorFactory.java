@@ -19,10 +19,21 @@ public class MarketRequestorFactory {
      * @return market requestor
      */
     public static MarketRequestor create(MarketType marketType) {
-        OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+        OkHttpClient httpClient = new OkHttpClient.Builder().build();
+        return create(marketType, httpClient);
+    }
+
+    /**
+     * Creates market requestor.
+     *
+     * @param marketType market type
+     * @param httpClient HTTP client
+     * @return market requestor
+     */
+    public static MarketRequestor create(MarketType marketType, OkHttpClient httpClient) {
         switch (marketType) {
         case COIN_MARKET_CAP: {
-            return new CoinMarketCapMarketRequestor(okHttpBuilder.build());
+            return new CoinMarketCapMarketRequestor(httpClient);
         }
         default:
             throw new IllegalArgumentException(marketType.name());

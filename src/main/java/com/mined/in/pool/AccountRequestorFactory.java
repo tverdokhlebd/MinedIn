@@ -17,23 +17,46 @@ public class AccountRequestorFactory {
     /**
      * Creates pool account requestor.
      *
-     * @param pool pool name
+     * @param poolType pool type
      * @return pool account requestor
      */
-    public static AccountRequestor create(PoolType pool) {
+    public static AccountRequestor create(PoolType poolType) {
         OkHttpClient httpClient = new OkHttpClient();
-        switch (pool) {
+        return create(poolType, httpClient);
+    }
+
+    /**
+     * Creates pool account requestor.
+     *
+     * @param poolType pool type
+     * @param httpClient HTTP client
+     * @return pool account requestor
+     */
+    public static AccountRequestor create(PoolType poolType, OkHttpClient httpClient) {
+        return create(poolType, httpClient, true);
+    }
+
+    /**
+     * Creates pool account requestor.
+     *
+     * @param poolType pool type
+     * @param httpClient HTTP client
+     * @param useAccountCaching use accounts caching or not
+     * @return pool account requestor
+     */
+    public static AccountRequestor create(PoolType poolType, OkHttpClient httpClient, boolean useAccountCaching) {
+        switch (poolType) {
         case DWARFPOOL: {
-            return new DwarfpoolAccountRequestor(httpClient);
+            return new DwarfpoolAccountRequestor(httpClient, useAccountCaching);
         }
         case ETHERMINE: {
-            return new EthermineAccountRequestor(httpClient);
+            return new EthermineAccountRequestor(httpClient, useAccountCaching);
         }
         case NANOPOOL: {
-            return new NanopoolAccountRequestor(httpClient);
+            return new NanopoolAccountRequestor(httpClient, useAccountCaching);
         }
         default:
-            throw new IllegalArgumentException(pool.name());
+            throw new IllegalArgumentException(poolType.name());
         }
     }
 

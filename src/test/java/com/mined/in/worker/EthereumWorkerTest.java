@@ -3,6 +3,9 @@ package com.mined.in.worker;
 import static com.mined.in.coin.CoinType.ETH;
 import static com.mined.in.http.ErrorCode.API_ERROR;
 import static com.mined.in.http.ErrorCode.HTTP_ERROR;
+import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
+import static com.mined.in.pool.PoolType.DWARFPOOL;
+import static com.mined.in.reward.RewardType.WHAT_TO_MINE;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -19,13 +22,13 @@ import com.mined.in.earnings.worker.EarningsWorker;
 import com.mined.in.earnings.worker.EarningsWorkerFactory;
 import com.mined.in.market.MarketRequestor;
 import com.mined.in.market.MarketRequestorException;
-import com.mined.in.market.coinmarketcap.CoinMarketCapMarketRequestor;
+import com.mined.in.market.MarketRequestorFactory;
 import com.mined.in.pool.AccountRequestor;
 import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.pool.dwarfpool.DwarfpoolAccountRequestor;
+import com.mined.in.pool.AccountRequestorFactory;
 import com.mined.in.reward.RewardRequestor;
 import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.reward.whattomine.WhatToMineRewardRequestor;
+import com.mined.in.reward.RewardRequestorFactory;
 
 import okhttp3.OkHttpClient;
 
@@ -70,12 +73,12 @@ public class EthereumWorkerTest {
     public void testCorrectJsonResponse() throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         BigDecimal walletBalance = BigDecimal.valueOf(0.78665394);
         OkHttpClient accountHttpClient = Utils.getHttpClient(POOL_RESPONSE.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(DWARFPOOL, accountHttpClient, false);
         BigDecimal coinPrice = BigDecimal.valueOf(536.854);
         OkHttpClient marketHttpClient = Utils.getHttpClient(MARKET_RESPONSE.toString(), 200);
-        MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(marketHttpClient);
+        MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP, marketHttpClient);
         OkHttpClient rewardHttpClient = Utils.getHttpClient(REWARD_RESPONSE.toString(), 200);
-        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(rewardHttpClient);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE, rewardHttpClient);
         EarningsWorker worker = EarningsWorkerFactory.create(ETH, accountRequestor, marketRequestor, rewardRequestor);
         Earnings earnings = worker.calculate(WALLET_ADDRESS);
         assertEquals(walletBalance, earnings.getCoinBalance());
@@ -100,11 +103,11 @@ public class EthereumWorkerTest {
     public void testPoolError() throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         JSONObject poolResponseJSON = new JSONObject("{\"error\": true, \"error_code\": \"API_DOWN\"}");
         OkHttpClient accountHttpClient = Utils.getHttpClient(poolResponseJSON.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(DWARFPOOL, accountHttpClient, false);
         OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(marketHttpClient);
+        MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP, marketHttpClient);
         OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(rewardHttpClient);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE, rewardHttpClient);
         EarningsWorker worker = EarningsWorkerFactory.create(ETH, accountRequestor, marketRequestor, rewardRequestor);
         try {
             worker.calculate(WALLET_ADDRESS);
@@ -118,11 +121,11 @@ public class EthereumWorkerTest {
     @Test(expected = MarketRequestorException.class)
     public void testMarketError() throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         OkHttpClient accountHttpClient = Utils.getHttpClient(POOL_RESPONSE.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(DWARFPOOL, accountHttpClient, false);
         OkHttpClient marketHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(marketHttpClient);
+        MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP, marketHttpClient);
         OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(rewardHttpClient);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE, rewardHttpClient);
         EarningsWorker worker = EarningsWorkerFactory.create(ETH, accountRequestor, marketRequestor, rewardRequestor);
         try {
             worker.calculate(WALLET_ADDRESS);
@@ -135,11 +138,11 @@ public class EthereumWorkerTest {
     @Test(expected = RewardRequestorException.class)
     public void testRewardError() throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
         OkHttpClient accountHttpClient = Utils.getHttpClient(POOL_RESPONSE.toString(), 200);
-        AccountRequestor accountRequestor = new DwarfpoolAccountRequestor(accountHttpClient, false);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(DWARFPOOL, accountHttpClient, false);
         OkHttpClient marketHttpClient = Utils.getHttpClient(MARKET_RESPONSE.toString(), 200);
-        MarketRequestor marketRequestor = new CoinMarketCapMarketRequestor(marketHttpClient);
+        MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP, marketHttpClient);
         OkHttpClient rewardHttpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(rewardHttpClient);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE, rewardHttpClient);
         EarningsWorker worker = EarningsWorkerFactory.create(ETH, accountRequestor, marketRequestor, rewardRequestor);
         try {
             worker.calculate(WALLET_ADDRESS);

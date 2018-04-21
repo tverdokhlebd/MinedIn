@@ -3,6 +3,7 @@ package com.mined.in.reward.whattomine.etc;
 import static com.mined.in.coin.CoinType.ETC;
 import static com.mined.in.http.ErrorCode.HTTP_ERROR;
 import static com.mined.in.http.ErrorCode.JSON_ERROR;
+import static com.mined.in.reward.RewardType.WHAT_TO_MINE;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ import com.mined.in.coin.CoinInfo;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.RewardRequestor;
 import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.reward.whattomine.WhatToMineRewardRequestor;
+import com.mined.in.reward.RewardRequestorFactory;
 
 import okhttp3.OkHttpClient;
 
@@ -43,7 +44,7 @@ public class WhatToMineRewardRequestorTest {
                         + "\"revenue\":\"$2.79\",\"cost\":\"$0.97\",\"profit\":\"$1.82\",\"status\":\"Active\",\"lagging\":false,"
                         + "\"timestamp\":1523983523}");
         OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
-        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE, httpClient);
         Reward reward = rewardRequestor.requestEthereumClassicReward(hashrate);
         CoinInfo coinInfo = reward.getCoinInfo();
         assertEquals(ETC, coinInfo.getCoinType());
@@ -63,7 +64,7 @@ public class WhatToMineRewardRequestorTest {
     @Test(expected = RewardRequestorException.class)
     public void testEmptyResponse() throws RewardRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
-        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE, httpClient);
         try {
             rewardRequestor.requestEthereumClassicReward(BigDecimal.valueOf(174));
         } catch (RewardRequestorException e) {
@@ -75,7 +76,7 @@ public class WhatToMineRewardRequestorTest {
     @Test(expected = RewardRequestorException.class)
     public void test500HttpError() throws RewardRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
-        RewardRequestor rewardRequestor = new WhatToMineRewardRequestor(httpClient);
+        RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE, httpClient);
         try {
             rewardRequestor.requestEthereumClassicReward(BigDecimal.valueOf(174));
         } catch (RewardRequestorException e) {
