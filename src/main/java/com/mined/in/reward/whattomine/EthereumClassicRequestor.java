@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient;
  * @author Dmitry Tverdokhleb
  *
  */
-public class EthereumClassicRequestor extends BaseRequestor {
+class EthereumClassicRequestor extends Requestor {
 
     /** API url. */
     private static final String API_URL = "https://whattomine.com/coins/162.json";
@@ -19,12 +19,12 @@ public class EthereumClassicRequestor extends BaseRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public EthereumClassicRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    EthereumClassicRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super(httpClient, endpointsUpdate);
     }
 
     @Override
-    public String getApiUrl() {
+    public String getUrl() {
         return API_URL;
     }
 

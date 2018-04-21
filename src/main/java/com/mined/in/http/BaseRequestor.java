@@ -19,7 +19,15 @@ public interface BaseRequestor<T, R> {
 
     /**
      * Makes request.
-     * 
+     *
+     * @return response
+     * @throws Exception if there is any error in requesting
+     */
+    R request() throws Exception;
+
+    /**
+     * Makes request.
+     *
      * @param t data
      * @return response
      * @throws Exception if there is any error in requesting

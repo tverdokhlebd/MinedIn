@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import com.mined.in.coin.CoinMarket;
 import com.mined.in.coin.CoinType;
+import com.mined.in.http.BaseRequestor;
 import com.mined.in.market.MarketRequestorException;
 import com.mined.in.utils.TimeUtils;
 
@@ -27,7 +28,7 @@ import okhttp3.ResponseBody;
  * @author Dmitry Tverdokhleb
  *
  */
-public abstract class BaseRequestor {
+abstract class Requestor implements BaseRequestor<Object, CoinMarket> {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
@@ -44,18 +45,11 @@ public abstract class BaseRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public BaseRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    Requestor(OkHttpClient httpClient, int endpointsUpdate) {
         super();
         this.httpClient = httpClient;
         this.endpointsUpdate = endpointsUpdate;
     }
-
-    /**
-     * Gets API url.
-     *
-     * @return API url
-     */
-    public abstract String getApiUrl();
 
     /**
      * Requests coin market.
@@ -63,9 +57,10 @@ public abstract class BaseRequestor {
      * @return coin market
      * @throws MarketRequestorException if there is any error in market requesting
      */
+    @Override
     public CoinMarket request() throws MarketRequestorException {
         if (new Date().after(NEXT_UPDATE)) {
-            Request request = new Request.Builder().url(getApiUrl()).build();
+            Request request = new Request.Builder().url(getUrl()).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new MarketRequestorException(HTTP_ERROR, response.message());
@@ -82,6 +77,11 @@ public abstract class BaseRequestor {
             }
         }
         return COIN_MARKET;
+    }
+
+    @Override
+    public CoinMarket request(Object t) throws Exception {
+        return null;
     }
 
     /**

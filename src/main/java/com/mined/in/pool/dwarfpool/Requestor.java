@@ -48,6 +48,11 @@ abstract class Requestor implements BaseAccountRequestor<String, Account> {
         this.useAccountCaching = useAccountCaching;
     }
 
+    @Override
+    public Account request() throws Exception {
+        return null;
+    }
+
     /**
      * Request pool account.
      *

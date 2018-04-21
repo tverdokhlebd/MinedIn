@@ -49,6 +49,11 @@ abstract class Requestor implements BaseAccountRequestor<String, Account> {
     }
 
     @Override
+    public Account request() throws Exception {
+        return null;
+    }
+
+    @Override
     public Account request(String walletAddress) throws AccountRequestorException {
         if (walletAddress == null || walletAddress.isEmpty()) {
             throw new AccountRequestorException(API_ERROR, "BAD_WALLET");

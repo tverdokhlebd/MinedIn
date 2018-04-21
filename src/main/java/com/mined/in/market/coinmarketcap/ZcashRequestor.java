@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient;
  * @author Dmitry Tverdokhleb
  *
  */
-public class ZcashRequestor extends BaseRequestor {
+class ZcashRequestor extends Requestor {
 
     /** API url. */
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/zcash";
@@ -19,12 +19,12 @@ public class ZcashRequestor extends BaseRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public ZcashRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    ZcashRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super(httpClient, endpointsUpdate);
     }
 
     @Override
-    public String getApiUrl() {
+    public String getUrl() {
         return API_URL;
     }
 

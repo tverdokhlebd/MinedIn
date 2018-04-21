@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient;
  * @author Dmitry Tverdokhleb
  *
  */
-public class EthereumRequestor extends BaseRequestor {
+class EthereumRequestor extends Requestor {
 
     /** API url. */
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/ethereum";
@@ -19,12 +19,12 @@ public class EthereumRequestor extends BaseRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public EthereumRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    EthereumRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super(httpClient, endpointsUpdate);
     }
 
     @Override
-    public String getApiUrl() {
+    public String getUrl() {
         return API_URL;
     }
 

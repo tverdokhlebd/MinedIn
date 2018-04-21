@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import com.mined.in.coin.CoinInfo;
 import com.mined.in.coin.CoinInfo.CoinInfoBuilder;
 import com.mined.in.coin.CoinType;
+import com.mined.in.http.BaseRequestor;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.Reward.Builder;
 import com.mined.in.reward.RewardRequestorException;
@@ -35,7 +36,7 @@ import okhttp3.ResponseBody;
  * @author Dmitry Tverdokhleb
  *
  */
-public abstract class BaseRequestor {
+abstract class Requestor implements BaseRequestor<BigDecimal, Reward> {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
@@ -56,18 +57,16 @@ public abstract class BaseRequestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    public BaseRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    Requestor(OkHttpClient httpClient, int endpointsUpdate) {
         super();
         this.httpClient = httpClient;
         this.endpointsUpdate = endpointsUpdate;
     }
 
-    /**
-     * Gets API url.
-     *
-     * @return API url
-     */
-    public abstract String getApiUrl();
+    @Override
+    public Reward request() throws Exception {
+        return null;
+    }
 
     /**
      * Requests estimated reward.
@@ -76,9 +75,10 @@ public abstract class BaseRequestor {
      * @return estimated reward
      * @throws RewardRequestorException if there is any error in request executing
      */
+    @Override
     public Reward request(BigDecimal hashrate) throws RewardRequestorException {
         if (new Date().after(NEXT_UPDATE)) {
-            Request request = new Request.Builder().url(getApiUrl()).build();
+            Request request = new Request.Builder().url(getUrl()).build();
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new RewardRequestorException(HTTP_ERROR, response.message());
