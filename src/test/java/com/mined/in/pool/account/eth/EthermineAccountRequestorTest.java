@@ -20,7 +20,7 @@ import com.mined.in.pool.ethermine.EthermineAccountRequestor;
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of Ethermine ETH requestor.
+ * Tests of Ethermine ethereum requestor.
  *
  * @author Dmitry Tverdokhleb
  *

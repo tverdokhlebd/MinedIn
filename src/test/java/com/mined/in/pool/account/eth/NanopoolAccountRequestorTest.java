@@ -26,7 +26,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Tests of Nanopool ETH requestor.
+ * Tests of Nanopool ethereum requestor.
  *
  * @author Dmitry Tverdokhleb
  *
