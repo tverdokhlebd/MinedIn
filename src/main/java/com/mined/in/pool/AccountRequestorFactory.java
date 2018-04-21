@@ -1,5 +1,6 @@
 package com.mined.in.pool;
 
+import com.mined.in.http.HttpClientFactory;
 import com.mined.in.pool.dwarfpool.DwarfpoolAccountRequestor;
 import com.mined.in.pool.ethermine.EthermineAccountRequestor;
 import com.mined.in.pool.nanopool.NanopoolAccountRequestor;
@@ -21,7 +22,7 @@ public class AccountRequestorFactory {
      * @return pool account requestor
      */
     public static AccountRequestor create(PoolType poolType) {
-        OkHttpClient httpClient = new OkHttpClient();
+        OkHttpClient httpClient = HttpClientFactory.create();
         return create(poolType, httpClient);
     }
 

@@ -1,5 +1,6 @@
 package com.mined.in.market;
 
+import com.mined.in.http.HttpClientFactory;
 import com.mined.in.market.coinmarketcap.CoinMarketCapMarketRequestor;
 
 import okhttp3.OkHttpClient;
@@ -19,7 +20,7 @@ public class MarketRequestorFactory {
      * @return market requestor
      */
     public static MarketRequestor create(MarketType marketType) {
-        OkHttpClient httpClient = new OkHttpClient.Builder().build();
+        OkHttpClient httpClient = HttpClientFactory.create();
         return create(marketType, httpClient);
     }
 

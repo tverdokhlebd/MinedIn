@@ -1,5 +1,6 @@
 package com.mined.in.reward;
 
+import com.mined.in.http.HttpClientFactory;
 import com.mined.in.reward.whattomine.WhatToMineRewardRequestor;
 
 import okhttp3.OkHttpClient;
@@ -19,13 +20,13 @@ public class RewardRequestorFactory {
      * @return estimated reward requestor
      */
     public static RewardRequestor create(RewardType rewardType) {
-        OkHttpClient httpClient = new OkHttpClient.Builder().build();
+        OkHttpClient httpClient = HttpClientFactory.create();
         return create(rewardType, httpClient);
     }
 
     /**
      * Creates estimated reward requestor.
-     * 
+     *
      * @param rewardType estimated reward type
      * @param httpClient HTTP client
      * @return estimated reward requestor
