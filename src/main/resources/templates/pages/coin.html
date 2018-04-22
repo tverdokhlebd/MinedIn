@@ -3,7 +3,7 @@
         <th:block layout:include="fragments/coin" />
         <div th:if="${coin_info.coinType.enabled}">
             <div class="row input-group mb-3 mx-auto w-75 justify-content-center mt-4 pl-3 pr-3">
-                <input type="text" onkeyup="checkWalletAddressAndPool()" class="form-control" id="walletAddress"
+                <input type="text" onkeyup="checkWalletAddressAndPool()" class="form-control" id="walletAddress" name="address"
                     th:placeholder="${text.enter_wallet_address}" aria-label="WalletAddress" aria-describedby="basic-addon1" />
                 <div class="dropdown input-group-append">
                     <button class="btn btn-outline-dark dropdown-toggle" type="button" id="poolDropdownMenuButton" data-toggle="dropdown"
