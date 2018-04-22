@@ -8,13 +8,15 @@ import com.mined.in.coin.CoinInfo;
 import okhttp3.OkHttpClient;
 
 /**
- * Requestor of zcash estimated reward.
+ * Requestor of monero estimated reward.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-class ZcashRequestor extends Requestor {
+class MoneroRequestor extends Requestor {
 
+    /** Base rewards is 2580 h/s. */
+    private static final BigDecimal BASE_REWARD = BigDecimal.valueOf(2580);
     /** Next update of estimated reward. */
     private static Date NEXT_UPDATE = new Date(0);
     /** Cached coin info. */
@@ -22,7 +24,7 @@ class ZcashRequestor extends Requestor {
     /** Cached estimated reward per day. */
     private static BigDecimal ESTIMATED_REWARD_PER_DAY;
     /** API url. */
-    private static final String API_URL = "https://whattomine.com/coins/166.json";
+    private static final String API_URL = "https://whattomine.com/coins/101.json";
 
     /**
      * Creates the instance.
@@ -30,8 +32,13 @@ class ZcashRequestor extends Requestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    ZcashRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    MoneroRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super(httpClient, endpointsUpdate);
+    }
+
+    @Override
+    public BigDecimal getBaseReward() {
+        return BASE_REWARD;
     }
 
     @Override

@@ -22,7 +22,6 @@ import com.mined.in.reward.BaseRewardRequestor;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.Reward.Builder;
 import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.utils.HashrateUtils;
 import com.mined.in.utils.TimeUtils;
 
 import okhttp3.OkHttpClient;
@@ -42,8 +41,6 @@ abstract class Requestor implements BaseRewardRequestor<BigDecimal, Reward> {
     private final OkHttpClient httpClient;
     /** Endpoints update. */
     private final int endpointsUpdate;
-    /** Base rewards is for 84.0 MH/s. */
-    private static final BigDecimal MEGAHASHES_BASE_REWARD = BigDecimal.valueOf(84);
 
     /**
      * Creates the instance.
@@ -115,13 +112,11 @@ abstract class Requestor implements BaseRewardRequestor<BigDecimal, Reward> {
      * @return estimated reward
      */
     private Reward calculateEstimatedReward(BigDecimal hashrate) {
-
         Reward.Builder rewardBuilder = new Builder();
         rewardBuilder.coinInfo(getCachedCoinInfo());
         if (hashrate != null) {
-            BigDecimal hashrateInMegahashes = HashrateUtils.convertHashesToMegaHashes(hashrate);
             BigDecimal calculatedRewardPerDay =
-                    hashrateInMegahashes.multiply(getCachedEstimatedRewardPerDay()).divide(MEGAHASHES_BASE_REWARD, 6, DOWN);
+                    hashrate.multiply(getCachedEstimatedRewardPerDay()).divide(getBaseReward(), 6, DOWN);
             rewardBuilder.setReportedHashrate(hashrate)
                          .rewardPerHour(calculatedRewardPerDay.divide(HOURS_IN_DAY, DOWN))
                          .rewardPerDay(calculatedRewardPerDay)

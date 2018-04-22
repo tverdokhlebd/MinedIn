@@ -11,6 +11,14 @@ import com.mined.in.coin.CoinMarket;
 public interface MarketRequestor {
 
     /**
+     * Requests bitcoin coin market.
+     *
+     * @return bitcoin coin market
+     * @throws MarketRequestorException if there is any error in market requesting
+     */
+    CoinMarket requestBitcoinCoin() throws MarketRequestorException;
+
+    /**
      * Requests ethereum coin market.
      *
      * @return ethereum coin market
@@ -19,19 +27,11 @@ public interface MarketRequestor {
     CoinMarket requestEthereumCoin() throws MarketRequestorException;
 
     /**
-     * Requests ethereum classic coin market.
+     * Requests monero coin market.
      *
-     * @return ethereum classic coin market
+     * @return monero coin market
      * @throws MarketRequestorException if there is any error in market requesting
      */
-    CoinMarket requestEthereumClassicCoin() throws MarketRequestorException;
-
-    /**
-     * Requests zcash coin market.
-     *
-     * @return zcash coin market
-     * @throws MarketRequestorException if there is any error in market requesting
-     */
-    CoinMarket requestZcashCoin() throws MarketRequestorException;
+    CoinMarket requestMoneroCoin() throws MarketRequestorException;
 
 }

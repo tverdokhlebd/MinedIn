@@ -19,12 +19,12 @@ public class CoinMarketCapMarketRequestor implements MarketRequestor {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;
+    /** Bitcoin coin market lock. */
+    private static final Lock BITCOIN_LOCK = new ReentrantLock();
     /** Ethereum coin market lock. */
     private static final Lock ETHEREUM_LOCK = new ReentrantLock();
-    /** Ethereum classic coin market lock. */
-    private static final Lock ETHEREUM_CLASSIC_LOCK = new ReentrantLock();
-    /** Zcash coin market lock. */
-    private static final Lock ZCASH_LOCK = new ReentrantLock();
+    /** Monero coin market lock. */
+    private static final Lock MONERO_LOCK = new ReentrantLock();
     /** Endpoints update. */
     private static final int ENDPOINTS_UPDATE = 6;
 
@@ -39,6 +39,16 @@ public class CoinMarketCapMarketRequestor implements MarketRequestor {
     }
 
     @Override
+    public CoinMarket requestBitcoinCoin() throws MarketRequestorException {
+        BITCOIN_LOCK.lock();
+        try {
+            return new BitcoinRequestor(httpClient, ENDPOINTS_UPDATE).request();
+        } finally {
+            BITCOIN_LOCK.unlock();
+        }
+    }
+
+    @Override
     public CoinMarket requestEthereumCoin() throws MarketRequestorException {
         ETHEREUM_LOCK.lock();
         try {
@@ -49,22 +59,12 @@ public class CoinMarketCapMarketRequestor implements MarketRequestor {
     }
 
     @Override
-    public CoinMarket requestEthereumClassicCoin() throws MarketRequestorException {
-        ETHEREUM_CLASSIC_LOCK.lock();
+    public CoinMarket requestMoneroCoin() throws MarketRequestorException {
+        MONERO_LOCK.lock();
         try {
-            return new EthereumClassicRequestor(httpClient, ENDPOINTS_UPDATE).request();
+            return new MoneroRequestor(httpClient, ENDPOINTS_UPDATE).request();
         } finally {
-            ETHEREUM_CLASSIC_LOCK.unlock();
-        }
-    }
-
-    @Override
-    public CoinMarket requestZcashCoin() throws MarketRequestorException {
-        ZCASH_LOCK.lock();
-        try {
-            return new ZcashRequestor(httpClient, ENDPOINTS_UPDATE).request();
-        } finally {
-            ZCASH_LOCK.unlock();
+            MONERO_LOCK.unlock();
         }
     }
 

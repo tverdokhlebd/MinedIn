@@ -1,8 +1,9 @@
 package com.mined.in.coin;
 
 import com.mined.in.coin.wallet.AddressValidator;
+import com.mined.in.coin.wallet.BitcoinAddressValidator;
 import com.mined.in.coin.wallet.EthereumAddressValidator;
-import com.mined.in.coin.wallet.ZCashAddressValidator;
+import com.mined.in.coin.wallet.MoneroAddressValidator;
 
 /**
  * Enumerations of supporting coin types.
@@ -12,9 +13,9 @@ import com.mined.in.coin.wallet.ZCashAddressValidator;
  */
 public enum CoinType {
 
-    ETH("Ethereum", "ETH", "https://www.ethereum.org", new EthereumAddressValidator()),
-    ETC("Ethereum Classic", "ETC", "https://ethereumclassic.github.io/", new EthereumAddressValidator()),
-    ZEC("Zcash", "ZEC", "https://z.cash/", new ZCashAddressValidator());
+    BTC("Bitcoin", "BTC", "https://bitcoin.org", false, new BitcoinAddressValidator()),
+    ETH("Ethereum", "ETH", "https://www.ethereum.org", true, new EthereumAddressValidator()),
+    XMR("Monero", "XMR", "https://getmonero.org", false, new MoneroAddressValidator());
 
     /** Coin type name. */
     private String name;
@@ -22,6 +23,8 @@ public enum CoinType {
     private String symbol;
     /** Coin type official site. */
     private String website;
+    /** Enabled for mining statistics or not. */
+    private boolean enabled;
     /** Address validator. */
     private AddressValidator addressValidator;
 
@@ -31,12 +34,14 @@ public enum CoinType {
      * @param name coin type name
      * @param symbol coin type symbol
      * @param website coin type official site
+     * @param enabled enabled for mining statistics or not
      * @param addressValidator address validator
      */
-    private CoinType(String name, String symbol, String website, AddressValidator addressValidator) {
+    private CoinType(String name, String symbol, String website, boolean enabled, AddressValidator addressValidator) {
         this.name = name;
         this.symbol = symbol;
         this.website = website;
+        this.enabled = enabled;
         this.addressValidator = addressValidator;
     }
 
@@ -65,6 +70,15 @@ public enum CoinType {
      */
     public String getWebsite() {
         return website;
+    }
+
+    /**
+     * Checks if is enabled.
+     *
+     * @return true, if is enabled
+     */
+    public boolean isEnabled() {
+        return enabled;
     }
 
     /**

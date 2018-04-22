@@ -7,19 +7,19 @@ import com.mined.in.coin.CoinMarket;
 import okhttp3.OkHttpClient;
 
 /**
- * Requestor of ethereum classic coin market.
+ * Requestor of monero coin market.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-class EthereumClassicRequestor extends Requestor {
+class MoneroRequestor extends Requestor {
 
     /** Next update of coin market. */
     private static Date NEXT_UPDATE = new Date(0);
     /** Cached coin market. */
     private static CoinMarket COIN_MARKET;
     /** API url. */
-    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/ethereum-classic";
+    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/monero";
 
     /**
      * Creates the instance.
@@ -27,7 +27,7 @@ class EthereumClassicRequestor extends Requestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    EthereumClassicRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    MoneroRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super(httpClient, endpointsUpdate);
     }
 

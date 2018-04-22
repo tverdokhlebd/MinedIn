@@ -15,6 +15,8 @@ import okhttp3.OkHttpClient;
  */
 class EthereumRequestor extends Requestor {
 
+    /** Base rewards is 84.0 MH/s. */
+    private static final BigDecimal BASE_REWARD = BigDecimal.valueOf(84000000);
     /** Next update of estimated reward. */
     private static Date NEXT_UPDATE = new Date(0);
     /** Cached coin info. */
@@ -32,6 +34,11 @@ class EthereumRequestor extends Requestor {
      */
     EthereumRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super(httpClient, endpointsUpdate);
+    }
+
+    @Override
+    public BigDecimal getBaseReward() {
+        return BASE_REWARD;
     }
 
     @Override

@@ -1,17 +1,16 @@
 package com.mined.in.coin.wallet;
 
 /**
- * Validator of zcash wallet address.
+ * Validator of bitcoin wallet address.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-public class ZCashAddressValidator implements AddressValidator {
+public class BitcoinAddressValidator implements AddressValidator {
 
     @Override
     public boolean isValidAddress(String walletAddress) {
-        // TODO Implement validation
-        return true;
+        throw new RuntimeException("No impl");
     }
 
 }

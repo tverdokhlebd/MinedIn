@@ -1,6 +1,6 @@
-package com.mined.in.market.coinmarketcap.zec;
+package com.mined.in.market.coinmarketcap.btc;
 
-import static com.mined.in.coin.CoinType.ZEC;
+import static com.mined.in.coin.CoinType.BTC;
 import static com.mined.in.http.ErrorCode.HTTP_ERROR;
 import static com.mined.in.http.ErrorCode.JSON_ERROR;
 import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
@@ -22,7 +22,7 @@ import com.mined.in.market.MarketRequestorFactory;
 import okhttp3.OkHttpClient;
 
 /**
- * Tests of CoinMarketCap zcash requestor.
+ * Tests of CoinMarketCap bitcoin requestor.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -32,16 +32,17 @@ public class CoinMarketCapMarketRequestorTest {
 
     @Test
     public void testCorrectJsonResponse() throws MarketRequestorException {
-        BigDecimal coinPrice = new BigDecimal("231.502");
+        BigDecimal coinPrice = new BigDecimal("8923.57");
         JSONArray marketArray = new JSONArray();
-        marketArray.put(new JSONObject("{ \"id\": \"zcash\", \"name\": \"Zcash\", \"symbol\": \"ZEC\", \"rank\": \"26\", \"price_usd\": "
-                + "\"231.502\", \"price_btc\": \"0.0278008\", \"24h_volume_usd\": \"50470000.0\", \"market_cap_usd\": \"858034672.0\", "
-                + "\"available_supply\": \"3706381.0\", \"total_supply\": \"3706381.0\", \"max_supply\": null, \"percent_change_1h\": "
-                + "\"0.15\", \"percent_change_24h\": \"3.91\", \"percent_change_7d\": \"26.52\", \"last_updated\": \"1523795950\" }"));
+        marketArray.put(new JSONObject("{ \"id\": \"bitcoin\", \"name\": \"Bitcoin\", \"symbol\": \"BTC\", \"rank\": \"1\", \"price_usd\": "
+                + "\"8923.57\", \"price_btc\": \"1.0\", \"24h_volume_usd\": \"6369130000.0\", \"market_cap_usd\": \"151639340456\", "
+                + "\"available_supply\": \"16993125.0\", \"total_supply\": \"16993125.0\", \"max_supply\": \"21000000.0\", "
+                + "\"percent_change_1h\": \"-0.27\", \"percent_change_24h\": \"1.47\", \"percent_change_7d\": \"7.61\", \"last_updated\": "
+                + "\"1524417569\" }"));
         OkHttpClient httpClient = Utils.getHttpClient(marketArray.toString(), 200);
         MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP, httpClient);
-        CoinMarket coinMarket = marketRequestor.requestZcashCoin();
-        assertEquals(ZEC, coinMarket.getCoin());
+        CoinMarket coinMarket = marketRequestor.requestBitcoinCoin();
+        assertEquals(BTC, coinMarket.getCoin());
         assertEquals(coinPrice, coinMarket.getPrice());
     }
 
@@ -50,7 +51,7 @@ public class CoinMarketCapMarketRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 200);
         MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP, httpClient);
         try {
-            marketRequestor.requestEthereumCoin();
+            marketRequestor.requestBitcoinCoin();
         } catch (MarketRequestorException e) {
             assertEquals(JSON_ERROR, e.getErrorCode());
             throw e;
@@ -62,7 +63,7 @@ public class CoinMarketCapMarketRequestorTest {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP, httpClient);
         try {
-            marketRequestor.requestEthereumCoin();
+            marketRequestor.requestBitcoinCoin();
         } catch (MarketRequestorException e) {
             assertEquals(HTTP_ERROR, e.getErrorCode());
             throw e;

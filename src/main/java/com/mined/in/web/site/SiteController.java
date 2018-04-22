@@ -95,14 +95,14 @@ public class SiteController {
             RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE);
             CoinInfo coinInfo = null;
             switch (coinType) {
+            case BTC:
+                coinInfo = rewardRequestor.requestBitcoinReward(null).getCoinInfo();
+                break;
             case ETH:
                 coinInfo = rewardRequestor.requestEthereumReward(null).getCoinInfo();
                 break;
-            case ETC:
-                coinInfo = rewardRequestor.requestEthereumClassicReward(null).getCoinInfo();
-                break;
-            case ZEC:
-                coinInfo = rewardRequestor.requestZcashReward(null).getCoinInfo();
+            case XMR:
+                coinInfo = rewardRequestor.requestMoneroReward(null).getCoinInfo();
                 break;
             default:
                 break;
@@ -171,9 +171,9 @@ public class SiteController {
         try {
             MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP);
             List<CoinMarket> coinMarketList = new ArrayList<>();
+            coinMarketList.add(marketRequestor.requestBitcoinCoin());
             coinMarketList.add(marketRequestor.requestEthereumCoin());
-            coinMarketList.add(marketRequestor.requestEthereumClassicCoin());
-            coinMarketList.add(marketRequestor.requestZcashCoin());
+            coinMarketList.add(marketRequestor.requestMoneroCoin());
             return coinMarketList;
         } catch (MarketRequestorException e) {
             LOG.error("Market request error", e);

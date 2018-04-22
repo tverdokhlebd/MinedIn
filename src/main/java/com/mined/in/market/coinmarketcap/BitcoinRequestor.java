@@ -7,19 +7,19 @@ import com.mined.in.coin.CoinMarket;
 import okhttp3.OkHttpClient;
 
 /**
- * Requestor of zcash coin market.
+ * Requestor of bitcoin coin market.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-class ZcashRequestor extends Requestor {
+class BitcoinRequestor extends Requestor {
 
     /** Next update of coin market. */
     private static Date NEXT_UPDATE = new Date(0);
     /** Cached coin market. */
     private static CoinMarket COIN_MARKET;
     /** API url. */
-    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/zcash";
+    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/bitcoin";
 
     /**
      * Creates the instance.
@@ -27,7 +27,7 @@ class ZcashRequestor extends Requestor {
      * @param httpClient HTTP client
      * @param endpointsUpdate endpoints update
      */
-    ZcashRequestor(OkHttpClient httpClient, int endpointsUpdate) {
+    BitcoinRequestor(OkHttpClient httpClient, int endpointsUpdate) {
         super(httpClient, endpointsUpdate);
     }
 

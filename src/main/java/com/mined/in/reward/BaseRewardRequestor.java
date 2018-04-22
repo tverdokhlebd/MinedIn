@@ -17,6 +17,13 @@ import com.mined.in.http.BaseRequestor;
 public interface BaseRewardRequestor<T, R> extends BaseRequestor<T, R> {
 
     /**
+     * Gets base reward.
+     *
+     * @return base reward
+     */
+    BigDecimal getBaseReward();
+
+    /**
      * Gets cached next update.
      *
      * @return cached next update

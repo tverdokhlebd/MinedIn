@@ -11,6 +11,15 @@ import java.math.BigDecimal;
 public interface RewardRequestor {
 
     /**
+     * Requests estimated reward for bitcoin.
+     *
+     * @param hashrate reported hashrate in H/s
+     * @return estimated reward for bitcoin
+     * @throws RewardRequestorException if there is any error in request executing
+     */
+    Reward requestBitcoinReward(BigDecimal hashrate) throws RewardRequestorException;
+
+    /**
      * Requests estimated reward for ethereum.
      *
      * @param hashrate reported hashrate in H/s
@@ -20,21 +29,12 @@ public interface RewardRequestor {
     Reward requestEthereumReward(BigDecimal hashrate) throws RewardRequestorException;
 
     /**
-     * Requests estimated reward for ethereum classic.
+     * Requests estimated reward for monero.
      *
      * @param hashrate reported hashrate in H/s
-     * @return estimated reward for ethereum classic
+     * @return estimated reward for monero
      * @throws RewardRequestorException if there is any error in request executing
      */
-    Reward requestEthereumClassicReward(BigDecimal hashrate) throws RewardRequestorException;
-
-    /**
-     * Requests estimated reward for zcash.
-     *
-     * @param hashrate reported hashrate in H/s
-     * @return estimated reward for zcash
-     * @throws RewardRequestorException if there is any error in request executing
-     */
-    Reward requestZcashReward(BigDecimal hashrate) throws RewardRequestorException;
+    Reward requestMoneroReward(BigDecimal hashrate) throws RewardRequestorException;
 
 }
