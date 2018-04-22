@@ -12,9 +12,10 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mined.in.http.BaseRequestor;
 import com.mined.in.pool.Account;
+import com.mined.in.pool.AccountCaching;
 import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.pool.BaseAccountRequestor;
 import com.mined.in.utils.TimeUtils;
 
 import okhttp3.OkHttpClient;
@@ -28,7 +29,7 @@ import okhttp3.ResponseBody;
  * @author Dmitry Tverdokhleb
  *
  */
-abstract class Requestor implements BaseAccountRequestor<String, Account> {
+abstract class Requestor implements BaseRequestor<String, Account>, AccountCaching {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;

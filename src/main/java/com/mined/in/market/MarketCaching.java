@@ -3,17 +3,14 @@ package com.mined.in.market;
 import java.util.Date;
 
 import com.mined.in.coin.CoinMarket;
-import com.mined.in.http.BaseRequestor;
 
 /**
- * Base market requestor.
+ * Interface for market caching.
  *
  * @author Dmitry Tverdokhleb
  *
- * @param <T> type of the argument
- * @param <R> type of the result
  */
-public interface BaseMarketRequestor<T, R> extends BaseRequestor<T, R> {
+public interface MarketCaching {
 
     /**
      * Gets cached next update.

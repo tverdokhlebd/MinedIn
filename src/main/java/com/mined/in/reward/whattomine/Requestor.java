@@ -18,9 +18,10 @@ import org.json.JSONObject;
 import com.mined.in.coin.CoinInfo;
 import com.mined.in.coin.CoinInfo.CoinInfoBuilder;
 import com.mined.in.coin.CoinType;
-import com.mined.in.reward.BaseRewardRequestor;
+import com.mined.in.http.BaseRequestor;
 import com.mined.in.reward.Reward;
 import com.mined.in.reward.Reward.Builder;
+import com.mined.in.reward.RewardCaching;
 import com.mined.in.reward.RewardRequestorException;
 import com.mined.in.utils.TimeUtils;
 
@@ -35,7 +36,7 @@ import okhttp3.ResponseBody;
  * @author Dmitry Tverdokhleb
  *
  */
-abstract class Requestor implements BaseRewardRequestor<BigDecimal, Reward> {
+abstract class Requestor implements BaseRequestor<BigDecimal, Reward>, RewardCaching {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;

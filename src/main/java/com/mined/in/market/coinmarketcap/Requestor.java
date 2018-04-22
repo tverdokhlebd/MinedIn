@@ -13,7 +13,8 @@ import org.json.JSONObject;
 
 import com.mined.in.coin.CoinMarket;
 import com.mined.in.coin.CoinType;
-import com.mined.in.market.BaseMarketRequestor;
+import com.mined.in.http.BaseRequestor;
+import com.mined.in.market.MarketCaching;
 import com.mined.in.market.MarketRequestorException;
 import com.mined.in.utils.TimeUtils;
 
@@ -28,7 +29,7 @@ import okhttp3.ResponseBody;
  * @author Dmitry Tverdokhleb
  *
  */
-abstract class Requestor implements BaseMarketRequestor<Object, CoinMarket> {
+abstract class Requestor implements BaseRequestor<Object, CoinMarket>, MarketCaching {
 
     /** HTTP client. */
     private final OkHttpClient httpClient;

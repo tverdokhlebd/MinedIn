@@ -4,17 +4,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.mined.in.coin.CoinInfo;
-import com.mined.in.http.BaseRequestor;
 
 /**
- * Base reward requestor.
+ * Interface for reward caching.
  *
  * @author Dmitry Tverdokhleb
  *
- * @param <T> type of the argument
- * @param <R> type of the result
  */
-public interface BaseRewardRequestor<T, R> extends BaseRequestor<T, R> {
+public interface RewardCaching {
 
     /**
      * Gets base reward.

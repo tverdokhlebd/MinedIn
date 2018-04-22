@@ -4,17 +4,13 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Date;
 import java.util.Map;
 
-import com.mined.in.http.BaseRequestor;
-
 /**
- * Base account requestor.
- * 
+ * Interface for account caching.
+ *
  * @author Dmitry Tverdokhleb
  *
- * @param <T> type of the argument
- * @param <R> type of the result
  */
-public interface BaseAccountRequestor<T, R> extends BaseRequestor<T, R> {
+public interface AccountCaching {
 
     /**
      * Gets cached account map.
