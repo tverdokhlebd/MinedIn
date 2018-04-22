@@ -1,10 +1,10 @@
 <th:block xmlns:th="http://www.thymeleaf.org">
     <div class="container mt-4">
         <th:block layout:include="fragments/coin" />
-        <div class="row mx-auto w-75 justify-content-md-center mt-4">
+        <div class="row mx-auto w-75 justify-content-center mt-4">
             <h3 th:text="@{${text.your_balance_is + #numbers.formatDecimal(usd_balance, 1, 2)}}"></h3>
         </div>
-        <div class="row mx-auto w-75 justify-content-md-center mt-4">
+        <div class="row mx-auto w-75 justify-content-center mt-4">
             <div class="col text-center font-weight-light" th:text="${pool_info.name}"></div>
             <div class="w-100"></div>
             <div class="col text-left" th:text="${text.balance}"></div>
@@ -14,7 +14,7 @@
             <div class="col text-right font-weight-light"
                 th:text="${T(com.mined.in.utils.HashrateUtils).convertToReadableHashPower(reward.reportedHashrate)}"></div>
         </div>
-        <div class="row mx-auto w-75 justify-content-md-center mt-4">
+        <div class="row mx-auto w-75 justify-content-center mt-4">
             <div class="col text-center font-weight-light" th:text="${text.estimated_rewards}"></div>
             <table class="table table-borderless">
                 <thead>
