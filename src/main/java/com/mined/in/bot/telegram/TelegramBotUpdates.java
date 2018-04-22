@@ -139,7 +139,9 @@ public class TelegramBotUpdates implements BotUpdates {
      * Creates supporting coin types message.
      */
     private void createSupportingCoinsMessage() {
-        List<CoinType> coinList = Arrays.asList(CoinType.values());
+        List<CoinType> coinList = Arrays.asList(CoinType.values()).stream().filter(coin -> {
+            return coin.isEnabled();
+        }).collect(Collectors.toList());
         InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[coinList.size()][1];
         for (int i = 0; i < coinList.size(); i++) {
             CoinType coin = coinList.get(i);
