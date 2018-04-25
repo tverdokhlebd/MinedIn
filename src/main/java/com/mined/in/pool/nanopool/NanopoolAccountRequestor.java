@@ -47,4 +47,9 @@ public class NanopoolAccountRequestor implements AccountRequestor {
         return new EthereumRequestor(httpClient, useAccountCaching).request(walletAddress);
     }
 
+    @Override
+    public Account requestMoneroAccount(String walletAddress) throws AccountRequestorException {
+        return new MoneroRequestor(httpClient, useAccountCaching).request(walletAddress);
+    }
+
 }

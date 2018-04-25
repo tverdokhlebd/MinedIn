@@ -50,6 +50,9 @@ public class EarningsWorkerFactory {
         case ETH: {
             return new EthereumWorker(accountRequestor, marketRequestor, rewardRequestor);
         }
+        case XMR: {
+            return new MoneroWorker(accountRequestor, marketRequestor, rewardRequestor);
+        }
         default:
             throw new IllegalArgumentException(coinType.name());
         }

@@ -1,9 +1,8 @@
-package com.mined.in.pool.nanopool;
+package com.mined.in.pool.dwarfpool;
 
 import static com.mined.in.utils.TaskUtils.startRepeatedTask;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Date;
 import java.util.Map;
@@ -11,25 +10,24 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mined.in.pool.Account;
-import com.mined.in.utils.HashrateUtils;
 
 import okhttp3.OkHttpClient;
 
 /**
- * Ethereum account requestor.
+ * Monero account requestor.
  *
  * @author Dmitry Tverdokhleb
  *
  */
-class EthereumRequestor extends Requestor {
+class MoneroRequestor extends Requestor {
 
     /** API url. */
-    private static final String API_URL = "https://api.nanopool.org/v1/eth";
+    private static final String API_URL = "http://dwarfpool.com/xmr/api?wallet=";
     /** Cached accounts. */
     private static final Map<String, SimpleEntry<Account, Date>> ACCOUNT_MAP = new ConcurrentHashMap<>();
     /** Repeated task for removing cached accounts. */
     static {
-        startRepeatedTask(EthereumRequestor.class.getName(), new TimerTask() {
+        startRepeatedTask(MoneroRequestor.class.getName(), new TimerTask() {
 
             @Override
             public void run() {
@@ -45,7 +43,7 @@ class EthereumRequestor extends Requestor {
      * @param httpClient HTTP client
      * @param useAccountCaching use accounts caching or not
      */
-    EthereumRequestor(OkHttpClient httpClient, boolean useAccountCaching) {
+    MoneroRequestor(OkHttpClient httpClient, boolean useAccountCaching) {
         super(httpClient, useAccountCaching);
     }
 
@@ -57,11 +55,6 @@ class EthereumRequestor extends Requestor {
     @Override
     public Map<String, SimpleEntry<Account, Date>> getCachedAccountMap() {
         return ACCOUNT_MAP;
-    }
-
-    @Override
-    protected BigDecimal convertToHashes(BigDecimal reportedHashrate) {
-        return HashrateUtils.convertMegaHashesToHashes(reportedHashrate);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.mined.in.pool;
 
 import static com.mined.in.coin.CoinType.ETH;
+import static com.mined.in.coin.CoinType.XMR;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +16,9 @@ import com.mined.in.coin.CoinType;
  */
 public enum PoolType {
 
-    DWARFPOOL("Dwarfpool", "https://dwarfpool.com", Arrays.asList(ETH)),
+    DWARFPOOL("Dwarfpool", "https://dwarfpool.com", Arrays.asList(ETH, XMR)),
     ETHERMINE("Ethermine", "https://ethermine.org", Arrays.asList(ETH)),
-    NANOPOOL("Nanopool", "https://nanopool.org", Arrays.asList(ETH));
+    NANOPOOL("Nanopool", "https://nanopool.org", Arrays.asList(ETH, XMR));
 
     /** Pool type name. */
     private String name;

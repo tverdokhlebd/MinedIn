@@ -15,7 +15,7 @@ public enum CoinType {
 
     BTC("Bitcoin", "BTC", "https://bitcoin.org", false, new BitcoinAddressValidator()),
     ETH("Ethereum", "ETH", "https://www.ethereum.org", true, new EthereumAddressValidator()),
-    XMR("Monero", "XMR", "https://getmonero.org", false, new MoneroAddressValidator());
+    XMR("Monero", "XMR", "https://getmonero.org", true, new MoneroAddressValidator());
 
     /** Coin type name. */
     private String name;

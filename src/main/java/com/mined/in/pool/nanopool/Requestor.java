@@ -17,7 +17,6 @@ import com.mined.in.http.BaseRequestor;
 import com.mined.in.pool.Account;
 import com.mined.in.pool.AccountCaching;
 import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.utils.HashrateUtils;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -73,6 +72,16 @@ abstract class Requestor implements BaseRequestor<String, Account>, AccountCachi
     }
 
     /**
+     * Converts reported hashrate to specified hash power.
+     *
+     * @param reportedHashrate reported hashrate
+     * @return converted hashrate
+     */
+    protected BigDecimal convertToHashes(BigDecimal reportedHashrate) {
+        return reportedHashrate;
+    }
+
+    /**
      * Requests ethereum pool account.
      *
      * @param walletAddress the wallet address
@@ -82,7 +91,7 @@ abstract class Requestor implements BaseRequestor<String, Account>, AccountCachi
     private Account requestAccount(String walletAddress) throws AccountRequestorException {
         Account account = requestAccountWithBalance(walletAddress);
         BigDecimal reportedHashrate = requestReportedHashrate(walletAddress);
-        reportedHashrate = HashrateUtils.convertMegaHashesToHashes(reportedHashrate);
+        reportedHashrate = convertToHashes(reportedHashrate);
         account.setReportedHashrate(reportedHashrate);
         return account;
     }

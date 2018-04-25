@@ -47,4 +47,9 @@ public class EthermineAccountRequestor implements AccountRequestor {
         return new EthereumRequestor(httpClient, useAccountCaching).request(walletAddress);
     }
 
+    @Override
+    public Account requestMoneroAccount(String walletAddress) throws AccountRequestorException {
+        throw new RuntimeException("Not supported");
+    }
+
 }
