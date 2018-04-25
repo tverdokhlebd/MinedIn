@@ -12,7 +12,7 @@ import com.mined.in.coin.CoinType;
 
 /**
  * JSON serializer for coin types.
- * 
+ *
  * @author Dmitry Tverdokhleb
  *
  */
@@ -26,6 +26,7 @@ public class CoinTypeJsonSerializer extends JsonSerializer<CoinType> {
         gen.writeStringField("name", value.getName());
         gen.writeStringField("symbol", value.getSymbol());
         gen.writeStringField("website", value.getWebsite());
+        gen.writeBooleanField("enabled", value.isEnabled());
         gen.writeEndObject();
     }
 
