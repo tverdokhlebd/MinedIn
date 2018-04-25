@@ -14,7 +14,9 @@ If you want to develop own app see https://github.com/tverdokhlebd/MinedIn/wiki/
 Public API of services are listed below. New public API of services will be added with time.
 
 Coins:
+- <a href="https://bitcoin.org">BTC</a>
 - <a href="https://www.ethereum.org">ETH</a>
+- <a href="https://getmonero.org">XMR</a>
 
 Pools:
 - <a href="https://dwarfpool.com">DWARFPOOL</a>
