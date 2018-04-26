@@ -101,8 +101,14 @@ public class SiteController {
             case ETH:
                 coinInfo = rewardRequestor.requestEthereumReward(null).getCoinInfo();
                 break;
+            case ETC:
+                coinInfo = rewardRequestor.requestEthereumClassicReward(null).getCoinInfo();
+                break;
             case XMR:
                 coinInfo = rewardRequestor.requestMoneroReward(null).getCoinInfo();
+                break;
+            case ZEC:
+                coinInfo = rewardRequestor.requestZcashReward(null).getCoinInfo();
                 break;
             default:
                 break;
@@ -174,6 +180,8 @@ public class SiteController {
             coinMarketList.add(marketRequestor.requestBitcoinCoin());
             coinMarketList.add(marketRequestor.requestEthereumCoin());
             coinMarketList.add(marketRequestor.requestMoneroCoin());
+            coinMarketList.add(marketRequestor.requestEthereumClassicCoin());
+            coinMarketList.add(marketRequestor.requestZcashCoin());
             return coinMarketList;
         } catch (MarketRequestorException e) {
             LOG.error("Market request error", e);
