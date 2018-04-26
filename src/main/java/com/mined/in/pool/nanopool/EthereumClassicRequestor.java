@@ -3,6 +3,7 @@ package com.mined.in.pool.nanopool;
 import static com.mined.in.utils.TaskUtils.startRepeatedTask;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
+import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Date;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mined.in.pool.Account;
+import com.mined.in.utils.HashrateUtils;
 
 import okhttp3.OkHttpClient;
 
@@ -55,6 +57,11 @@ class EthereumClassicRequestor extends Requestor {
     @Override
     public Map<String, SimpleEntry<Account, Date>> getCachedAccountMap() {
         return ACCOUNT_MAP;
+    }
+
+    @Override
+    protected BigDecimal convertToHashes(BigDecimal reportedHashrate) {
+        return HashrateUtils.convertMegaHashesToHashes(reportedHashrate);
     }
 
 }

@@ -10,9 +10,9 @@ public enum CoinType {
 
     BTC("Bitcoin", "BTC", "https://bitcoin.org", false),
     ETH("Ethereum", "ETH", "https://www.ethereum.org", true),
-    ETC("Ethereum Classic", "ETC", "https://ethereumclassic.github.io", false),
+    ETC("Ethereum Classic", "ETC", "https://ethereumclassic.github.io", true),
     XMR("Monero", "XMR", "https://getmonero.org", true),
-    ZEC("Zcash", "ZEC", "https://z.cash", false);
+    ZEC("Zcash", "ZEC", "https://z.cash", true);
 
     /** Coin type name. */
     private String name;
