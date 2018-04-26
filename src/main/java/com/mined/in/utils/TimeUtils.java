@@ -23,7 +23,7 @@ public class TimeUtils {
     /** Days in year. */
     public static final BigDecimal DAYS_IN_YEAR = BigDecimal.valueOf(365);
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
+    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
 
     /**
      * Converts time to readable time format.

@@ -36,7 +36,7 @@ public class HashrateUtils {
     /** Digits number of 1 PH/s. */
     private static final int PH_S_DIGITS_NUMBER = PH_S.toPlainString().length();
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
+    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
 
     /**
      * Converts hashrate to readable hash power format.

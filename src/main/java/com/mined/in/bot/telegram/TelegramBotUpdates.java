@@ -57,7 +57,7 @@ public class TelegramBotUpdates implements BotUpdates {
     /** Logger. */
     private final static Logger LOG = LoggerFactory.getLogger(TelegramBotUpdates.class);
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
+    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
 
     /**
      * Creates the instance.

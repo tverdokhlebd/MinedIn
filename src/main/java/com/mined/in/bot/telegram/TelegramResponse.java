@@ -27,7 +27,7 @@ public class TelegramResponse {
     /** Keyboard markup. */
     private InlineKeyboardMarkup keyboardMarkup;
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("text");
+    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
 
     /**
      * Creates the instance.
