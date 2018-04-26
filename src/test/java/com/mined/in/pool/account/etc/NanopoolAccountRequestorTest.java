@@ -58,7 +58,7 @@ public class NanopoolAccountRequestorTest {
         Account account = accountRequestor.requestEthereumClassicAccount(WALLET_ADDRESS);
         assertEquals(WALLET_ADDRESS, account.getWalletAddress());
         assertEquals(BigDecimal.valueOf(2.4388690613122), account.getWalletBalance());
-        assertEquals(BigDecimal.valueOf(8249.964), account.getReportedHashrate());
+        assertEquals(new BigDecimal("8.249964e+9"), account.getReportedHashrate());
     }
 
     @Test(expected = AccountRequestorException.class)
