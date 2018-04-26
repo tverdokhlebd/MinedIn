@@ -48,7 +48,7 @@ public class MoneroAddressValidator implements AddressValidator {
         return true;
     }
 
-    public boolean validateIntegratedAddress(String integratedAddress) {
+    private boolean validateIntegratedAddress(String integratedAddress) {
         if (integratedAddress.length() != INTEGRATED_ADDRESS_LENGTH) {
             return false;
         }
