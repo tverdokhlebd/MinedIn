@@ -1,10 +1,5 @@
 package com.mined.in.coin;
 
-import com.mined.in.coin.wallet.AddressValidator;
-import com.mined.in.coin.wallet.BitcoinAddressValidator;
-import com.mined.in.coin.wallet.EthereumAddressValidator;
-import com.mined.in.coin.wallet.MoneroAddressValidator;
-
 /**
  * Enumerations of supporting coin types.
  *
@@ -13,11 +8,11 @@ import com.mined.in.coin.wallet.MoneroAddressValidator;
  */
 public enum CoinType {
 
-    BTC("Bitcoin", "BTC", "https://bitcoin.org", false, new BitcoinAddressValidator()),
-    ETH("Ethereum", "ETH", "https://www.ethereum.org", true, new EthereumAddressValidator()),
-    ETC("Ethereum Classic", "ETC", "https://ethereumclassic.github.io", false, new EthereumAddressValidator()),
-    XMR("Monero", "XMR", "https://getmonero.org", true, new MoneroAddressValidator()),
-    ZEC("Zcash", "ZEC", "https://z.cash", false, new MoneroAddressValidator());
+    BTC("Bitcoin", "BTC", "https://bitcoin.org", false),
+    ETH("Ethereum", "ETH", "https://www.ethereum.org", true),
+    ETC("Ethereum Classic", "ETC", "https://ethereumclassic.github.io", false),
+    XMR("Monero", "XMR", "https://getmonero.org", true),
+    ZEC("Zcash", "ZEC", "https://z.cash", false);
 
     /** Coin type name. */
     private String name;
@@ -27,8 +22,6 @@ public enum CoinType {
     private String website;
     /** Enabled for mining statistics or not. */
     private boolean enabled;
-    /** Address validator. */
-    private AddressValidator addressValidator;
 
     /**
      * Creates the instance.
@@ -37,14 +30,12 @@ public enum CoinType {
      * @param symbol coin type symbol
      * @param website coin type official site
      * @param enabled enabled for mining statistics or not
-     * @param addressValidator address validator
      */
-    private CoinType(String name, String symbol, String website, boolean enabled, AddressValidator addressValidator) {
+    private CoinType(String name, String symbol, String website, boolean enabled) {
         this.name = name;
         this.symbol = symbol;
         this.website = website;
         this.enabled = enabled;
-        this.addressValidator = addressValidator;
     }
 
     /**
@@ -81,15 +72,6 @@ public enum CoinType {
      */
     public boolean isEnabled() {
         return enabled;
-    }
-
-    /**
-     * Gets the address validator.
-     *
-     * @return the address validator
-     */
-    public AddressValidator getAddressValidator() {
-        return addressValidator;
     }
 
     /**

@@ -88,7 +88,6 @@ public class TelegramBotUpdates implements BotUpdates {
                 break;
             }
             case COIN: {
-                validateWalletAddress();
                 createSupportingPoolsMessage();
                 break;
             }
@@ -240,20 +239,6 @@ public class TelegramBotUpdates implements BotUpdates {
                                     coinInfo.getBlockReward(),
                                     HashrateUtils.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
         responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage + infoMessage);
-    }
-
-    /**
-     * Validates wallet address.
-     *
-     * @throws RuntimeException if wallet address is incorrect
-     */
-    private void validateWalletAddress() throws RuntimeException {
-        CoinType coinType = responseMessage.getStepData().getCoinType();
-        String walletAddress = incomingMessage.replyToMessage().text();
-        if (!coinType.getAddressValidator().isValidAddress(walletAddress)) {
-            String errorMessage = "invalid_" + coinType.getSymbol().toLowerCase() + "_address";
-            throw new RuntimeException(RESOURCE.getString(errorMessage));
-        }
     }
 
     /**
