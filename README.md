@@ -17,6 +17,8 @@ Coins:
 - <a href="https://bitcoin.org">BTC</a>
 - <a href="https://www.ethereum.org">ETH</a>
 - <a href="https://getmonero.org">XMR</a>
+- <a href="https://ethereumclassic.github.io">ETC</a>
+- <a href="https://z.cash">ZEC</a>
 
 Pools:
 - <a href="https://dwarfpool.com">DWARFPOOL</a>
