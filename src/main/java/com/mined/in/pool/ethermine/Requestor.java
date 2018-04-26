@@ -125,6 +125,12 @@ abstract class Requestor implements BaseRequestor<String, Account>, AccountCachi
             String errorMessage = jsonResponse.getString("error");
             throw new AccountRequestorException(API_ERROR, errorMessage);
         }
+        try {
+            String data = jsonResponse.getString("data");
+            throw new AccountRequestorException(API_ERROR, data);
+        } catch (JSONException e) {
+            // Skip
+        }
     }
 
 }

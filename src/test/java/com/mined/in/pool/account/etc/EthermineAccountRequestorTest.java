@@ -61,6 +61,20 @@ public class EthermineAccountRequestorTest {
     }
 
     @Test(expected = AccountRequestorException.class)
+    public void testCorrectJsonResponseWithNoDataError() throws AccountRequestorException {
+        JSONObject response = new JSONObject("{\"status\":\"OK\",\"data\":\"NO DATA\"}");
+        OkHttpClient httpClient = Utils.getHttpClient(response.toString(), 200);
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(ETHERMINE, httpClient, false);
+        try {
+            accountRequestor.requestEthereumClassicAccount(WALLET_ADDRESS);
+        } catch (AccountRequestorException e) {
+            assertEquals(API_ERROR, e.getErrorCode());
+            assertEquals("NO DATA", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Test(expected = AccountRequestorException.class)
     public void test500HttpError() throws AccountRequestorException {
         OkHttpClient httpClient = Utils.getHttpClient(new JSONObject().toString(), 500);
         AccountRequestor accountRequestor = AccountRequestorFactory.create(ETHERMINE, httpClient, false);
