@@ -48,8 +48,18 @@ public class DwarfpoolAccountRequestor implements AccountRequestor {
     }
 
     @Override
+    public Account requestEthereumClassicAccount(String walletAddress) throws AccountRequestorException {
+        throw new RuntimeException("Not supported");
+    }
+
+    @Override
     public Account requestMoneroAccount(String walletAddress) throws AccountRequestorException {
         return new MoneroRequestor(httpClient, useAccountCaching).request(walletAddress);
+    }
+
+    @Override
+    public Account requestZcashAccount(String walletAddress) throws AccountRequestorException {
+        return new ZcashRequestor(httpClient, useAccountCaching).request(walletAddress);
     }
 
 }
