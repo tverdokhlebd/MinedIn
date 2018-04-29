@@ -150,6 +150,8 @@ public class SiteController {
             model.addAttribute("coin_balance", earnings.getCoinBalance());
             model.addAttribute("coin_price", earnings.getCoinPrice());
             model.addAttribute("reward", earnings.getEstimatedReward());
+            model.addAttribute("affiliate_link", TEXT.get("bestchange_affiliate_link"));
+            model.addAttribute("click_to_exchange", TEXT.get("click_to_exchange"));
         } catch (AccountRequestorException e) {
             LOG.error("Account request error", e);
             handleAccountError(model, poolType, e);

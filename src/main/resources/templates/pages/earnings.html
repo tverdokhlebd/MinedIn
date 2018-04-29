@@ -4,6 +4,11 @@
         <div class="row mx-auto w-75 justify-content-center mt-4">
             <h3 th:text="@{${text.your_balance_is + #numbers.formatDecimal(usd_balance, 1, 2)}}"></h3>
         </div>
+        <div class="row mx-auto w-75 justify-content-center">
+            <h6>
+                <a target="_blank" th:href="${affiliate_link}" th:text="${click_to_exchange}"> </a>
+            </h6>
+        </div>
         <div class="row mx-auto w-75 justify-content-center mt-4">
             <div class="col text-center font-weight-light" th:text="${pool_info.name}"></div>
             <div class="w-100"></div>
