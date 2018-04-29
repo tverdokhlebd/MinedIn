@@ -71,6 +71,16 @@ public class SiteController {
     }
 
     /**
+     * Requests google verification page.
+     *
+     * @return google verification page
+     */
+    @GetMapping("/google78d9213fe4e57443.html")
+    public String getGoogle() {
+        return "pages/google78d9213fe4e57443";
+    }
+
+    /**
      * Requests contact page.
      *
      * @param model model attributes
