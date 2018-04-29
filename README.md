@@ -33,6 +33,6 @@ Estimated rewards:
 ---
 There are ready implementations:
 - <a href="https://t.me/MinedInBot">TELEGRAM BOT</a>
-- <a href="https://minedin.herokuapp.com">WEB VERSION</a>
+- <a href="https://minedin.info/">WEB VERSION</a>
 ---
 If you have any questions please contact me by email tverdokhlebd@gmail.com
