@@ -2,7 +2,10 @@ package com.mined.in.earnings;
 
 import java.math.BigDecimal;
 
-import com.mined.in.reward.Reward;
+import com.tverdokhlebd.coin.info.CoinInfo;
+import com.tverdokhlebd.coin.market.CoinMarket;
+import com.tverdokhlebd.coin.reward.CoinReward;
+import com.tverdokhlebd.mining.pool.Account;
 
 /**
  * Earnings of pool account. It uses as final result of calculations.
@@ -12,65 +15,78 @@ import com.mined.in.reward.Reward;
  */
 public class Earnings {
 
-    /** Balance of coins. */
-    private final BigDecimal coinBalance;
     /** Balance in USD. */
     private final BigDecimal usdBalance;
-    /** Coin price. */
-    private final BigDecimal coinPrice;
-    /** Estimated rewards. */
-    private final Reward estimatedReward;
+    /** Pool account. */
+    private final Account account;
+    /** Coin info. */
+    private final CoinInfo coinInfo;
+    /** Coin market. */
+    private final CoinMarket coinMarket;
+    /** Coin reward. */
+    private final CoinReward coinReward;
 
     /**
-     * Creates the instance.
+     * Creates instance.
      *
-     * @param coinBalance balance of coins
      * @param usdBalance balance in USD
-     * @param coinPrice buy price
-     * @param estimatedReward estimated reward
+     * @param account pool account
+     * @param coinInfo general info about coin
+     * @param coinMarket market info about coin
+     * @param coinReward reward for coin
      */
-    public Earnings(BigDecimal coinBalance, BigDecimal usdBalance, BigDecimal coinPrice, Reward estimatedReward) {
+    public Earnings(BigDecimal usdBalance, Account account, CoinInfo coinInfo, CoinMarket coinMarket, CoinReward coinReward) {
         super();
-        this.coinBalance = coinBalance;
         this.usdBalance = usdBalance;
-        this.coinPrice = coinPrice;
-        this.estimatedReward = estimatedReward;
+        this.account = account;
+        this.coinInfo = coinInfo;
+        this.coinMarket = coinMarket;
+        this.coinReward = coinReward;
     }
 
     /**
-     * Gets the coins balance.
+     * Gets USD balance.
      *
-     * @return the coins balance
-     */
-    public BigDecimal getCoinBalance() {
-        return coinBalance;
-    }
-
-    /**
-     * Gets the USD balance.
-     *
-     * @return the USD balance
+     * @return USD balance
      */
     public BigDecimal getUsdBalance() {
         return usdBalance;
     }
 
     /**
-     * Gets the coin price.
+     * Gets account.
      *
-     * @return the coin price
+     * @return account
      */
-    public BigDecimal getCoinPrice() {
-        return coinPrice;
+    public Account getAccount() {
+        return account;
     }
 
     /**
-     * Gets the estimated rewards.
+     * Gets coin info.
      *
-     * @return the estimated rewards
+     * @return coin info
      */
-    public Reward getEstimatedReward() {
-        return estimatedReward;
+    public CoinInfo getCoinInfo() {
+        return coinInfo;
+    }
+
+    /**
+     * Gets coin market.
+     *
+     * @return coin market
+     */
+    public CoinMarket getCoinMarket() {
+        return coinMarket;
+    }
+
+    /**
+     * Gets coin reward.
+     *
+     * @return coin reward
+     */
+    public CoinReward getCoinReward() {
+        return coinReward;
     }
 
 }

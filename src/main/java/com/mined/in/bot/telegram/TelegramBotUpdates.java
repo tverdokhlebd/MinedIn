@@ -1,8 +1,7 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.bot.telegram.TelegramStepData.Step.REWARD;
-import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
-import static com.mined.in.reward.RewardType.WHAT_TO_MINE;
+import static com.mined.in.bot.telegram.TelegramStepData.Step.SELECT_COIN_REWARD;
+import static com.mined.in.description.CoinMarketDescription.COIN_MARKET_CAP;
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static java.math.RoundingMode.DOWN;
 
@@ -16,20 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mined.in.bot.BotUpdates;
-import com.mined.in.coin.CoinInfo;
-import com.mined.in.coin.CoinType;
+import com.mined.in.description.CoinInfoDescription;
+import com.mined.in.description.CoinMarketDescription;
+import com.mined.in.description.CoinRewardDescription;
+import com.mined.in.description.CoinTypeDescription;
+import com.mined.in.description.PoolTypeDescription;
 import com.mined.in.earnings.Earnings;
 import com.mined.in.earnings.worker.EarningsWorker;
 import com.mined.in.earnings.worker.EarningsWorkerFactory;
-import com.mined.in.market.MarketRequestorException;
-import com.mined.in.market.MarketType;
-import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.pool.PoolType;
-import com.mined.in.reward.Reward;
-import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.reward.RewardType;
-import com.mined.in.utils.HashrateUtils;
-import com.mined.in.utils.TimeUtils;
+import com.mined.in.utils.ReadableHashrateUtil;
+import com.mined.in.utils.ReadableTimeUtil;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
@@ -39,6 +34,12 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
+import com.tverdokhlebd.coin.info.CoinInfo;
+import com.tverdokhlebd.coin.info.requestor.CoinInfoRequestorException;
+import com.tverdokhlebd.coin.market.requestor.CoinMarketRequestorException;
+import com.tverdokhlebd.coin.reward.CoinReward;
+import com.tverdokhlebd.coin.reward.requestor.CoinRewardRequestorException;
+import com.tverdokhlebd.mining.pool.requestor.AccountRequestorException;
 
 /**
  * Handler of incoming updates from Telegram bot.
@@ -83,22 +84,24 @@ public class TelegramBotUpdates implements BotUpdates {
                 createStartMessage();
                 break;
             }
-            case WALLET: {
+            case ENTER_WALLET: {
                 createSupportingCoinsMessage();
                 break;
             }
-            case COIN: {
+            case SELECT_COIN_TYPE: {
                 createSupportingPoolsMessage();
                 break;
             }
-            case POOL: {
+            case SELECT_POOL_ACCOUNT: {
                 // The default values, since they are the only ones
-                stepData.setMarketType(COIN_MARKET_CAP);
-                stepData.setRewardType(WHAT_TO_MINE);
-                stepData.setStep(REWARD);
+                stepData.setCoinInfo(CoinInfoDescription.WHAT_TO_MINE);
+                stepData.setMarketInfo(COIN_MARKET_CAP);
+                stepData.setRewardInfo(CoinRewardDescription.WHAT_TO_MINE);
+                stepData.setStep(SELECT_COIN_REWARD);
             }
-            case MARKET:
-            case REWARD: {
+            case SELECT_COIN_INFO:
+            case SELECT_COIN_MARKET:
+            case SELECT_COIN_REWARD: {
                 responseMessage.parsePreviousResultMessage(incomingMessage);
                 String walletAddress = incomingMessage.replyToMessage().text();
                 Earnings earnings = calculateEarnings(walletAddress);
@@ -109,10 +112,10 @@ public class TelegramBotUpdates implements BotUpdates {
         } catch (AccountRequestorException e) {
             responseMessage.setError(String.format(RESOURCE.getString("pool_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
-        } catch (MarketRequestorException e) {
+        } catch (CoinMarketRequestorException e) {
             responseMessage.setError(String.format(RESOURCE.getString("market_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
-        } catch (RewardRequestorException e) {
+        } catch (CoinRewardRequestorException e) {
             responseMessage.setError(String.format(RESOURCE.getString("reward_error"), e.getMessage()));
             LOG.error("Incoming updates processing error", e);
         } catch (Exception e) {
@@ -135,16 +138,16 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Creates supporting coin types message.
+     * Creates supporting mining coin types message.
      */
     private void createSupportingCoinsMessage() {
-        List<CoinType> coinList = Arrays.asList(CoinType.values()).stream().filter(coin -> {
+        List<CoinTypeDescription> coinInfoList = Arrays.asList(CoinTypeDescription.values()).stream().filter(coin -> {
             return coin.isEnabled();
         }).collect(Collectors.toList());
-        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[coinList.size()][1];
-        for (int i = 0; i < coinList.size(); i++) {
-            CoinType coin = coinList.get(i);
-            String coinSymbol = coin.getSymbol();
+        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[coinInfoList.size()][1];
+        for (int i = 0; i < coinInfoList.size(); i++) {
+            CoinTypeDescription miningCoinType = coinInfoList.get(i);
+            String coinSymbol = miningCoinType.name();
             keyboardButtonArray[i][0] = new InlineKeyboardButton(coinSymbol).callbackData(coinSymbol);
         }
         responseMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
@@ -155,17 +158,16 @@ public class TelegramBotUpdates implements BotUpdates {
      * Creates supporting pool types message.
      */
     private void createSupportingPoolsMessage() {
-        CoinType coinType = responseMessage.getStepData().getCoinType();
-        List<PoolType> poolList = Arrays.asList(PoolType.values()).stream().filter(pool -> {
-            return pool.getCoinTypeList().indexOf(coinType) != -1;
+        CoinTypeDescription coinType = responseMessage.getStepData().getCoinType();
+        List<PoolTypeDescription> poolInfoList = Arrays.asList(PoolTypeDescription.values()).stream().filter(pool -> {
+            return pool.getPoolType().getCoinTypeList().indexOf(coinType.getCoinType()) != -1;
         }).collect(Collectors.toList());
-        poolList.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[poolList.size()][1];
-        for (int i = 0; i < poolList.size(); i++) {
-            PoolType pool = poolList.get(i);
-            String poolName = pool.getName();
-            String callbackData = responseMessage.getStepData().getCoinType().getSymbol() + "_" + poolName;
-            keyboardButtonArray[i][0] = new InlineKeyboardButton(poolName).callbackData(callbackData);
+        poolInfoList.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[poolInfoList.size()][1];
+        for (int i = 0; i < poolInfoList.size(); i++) {
+            PoolTypeDescription poolInfo = poolInfoList.get(i);
+            String callbackData = responseMessage.getStepData().getCoinType().name() + "-" + poolInfo.name();
+            keyboardButtonArray[i][0] = new InlineKeyboardButton(poolInfo.getName()).callbackData(callbackData);
         }
         responseMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
         responseMessage.setMessage(RESOURCE.getString("select_pool"));
@@ -177,18 +179,20 @@ public class TelegramBotUpdates implements BotUpdates {
      * @param walletAddress wallet address
      * @return earnings of pool account
      * @throws AccountRequestorException if there is any error in account requesting
-     * @throws MarketRequestorException if there is any error in market requesting
-     * @throws RewardRequestorException if there is any error in estimated reward requesting
+     * @throws CoinInfoRequestorException if there is any error in coin info requesting
+     * @throws CoinMarketRequestorException if there is any error in coin market requesting
+     * @throws CoinRewardRequestorException if there is any error in coin reward requesting
      */
     private Earnings calculateEarnings(String walletAddress)
-            throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
+            throws AccountRequestorException, CoinMarketRequestorException, CoinRewardRequestorException, CoinInfoRequestorException {
         TelegramStepData stepData = responseMessage.getStepData();
-        CoinType coinType = stepData.getCoinType();
-        PoolType poolType = stepData.getPoolType();
-        MarketType marketType = stepData.getMarketType();
-        RewardType rewardType = stepData.getRewardType();
-        EarningsWorker minedWorker = EarningsWorkerFactory.create(coinType, poolType, marketType, rewardType);
-        return minedWorker.calculate(walletAddress);
+        CoinTypeDescription coinType = stepData.getCoinType();
+        CoinInfoDescription coinInfo = stepData.getCoinInfo();
+        PoolTypeDescription poolInfo = stepData.getPoolInfo();
+        CoinMarketDescription marketInfo = stepData.getMarketInfo();
+        CoinRewardDescription rewardInfo = stepData.getRewardInfo();
+        EarningsWorker minedWorker = EarningsWorkerFactory.create(poolInfo, coinInfo, marketInfo, rewardInfo);
+        return minedWorker.calculate(coinType, walletAddress);
     }
 
     /**
@@ -198,20 +202,20 @@ public class TelegramBotUpdates implements BotUpdates {
      */
     private void createMinedEarningsMessage(Earnings earnings) {
         TelegramStepData stepData = responseMessage.getStepData();
-        BigDecimal coinBalance = earnings.getCoinBalance().setScale(8, DOWN);
+        BigDecimal coinBalance = earnings.getAccount().getWalletBalance().setScale(8, DOWN);
         BigDecimal usdBalance = earnings.getUsdBalance().setScale(2, DOWN);
-        BigDecimal coinPrice = earnings.getCoinPrice().setScale(2, DOWN);
+        BigDecimal coinPrice = earnings.getCoinMarket().getPrice().setScale(2, DOWN);
         String balanceMessage = RESOURCE.getString("balance");
         balanceMessage = String.format(balanceMessage,
-                                       stepData.getMarketType().getName(),
+                                       stepData.getMarketInfo().getName(),
                                        "$" + usdBalance,
                                        "$" + coinPrice);
-        Reward reward = earnings.getEstimatedReward();
+        CoinReward reward = earnings.getCoinReward();
         String accountMessage = RESOURCE.getString("account");
         accountMessage = String.format(accountMessage,
-                                       stepData.getPoolType().getName(),
-                                       coinBalance + " " + stepData.getCoinType().getSymbol(),
-                                       HashrateUtils.convertToReadableHashPower(reward.getReportedHashrate()));
+                                       stepData.getPoolInfo().getName(),
+                                       coinBalance + " " + stepData.getCoinType().name(),
+                                       ReadableHashrateUtil.convertToReadableHashPower(reward.getReportedHashrate()));
         BigDecimal perHour = reward.getRewardPerHour().setScale(6, DOWN);
         BigDecimal perDay = reward.getRewardPerDay().setScale(6, DOWN);
         BigDecimal perWeek = reward.getRewardPerWeek().setScale(6, DOWN);
@@ -219,7 +223,7 @@ public class TelegramBotUpdates implements BotUpdates {
         BigDecimal perYear = reward.getRewardPerYear().setScale(6, DOWN);
         String rewardsMessage = RESOURCE.getString("rewards");
         rewardsMessage = String.format(rewardsMessage,
-                                       stepData.getRewardType().getName(),
+                                       stepData.getRewardInfo().getName(),
                                        perHour,
                                        "$" + perHour.multiply(coinPrice).setScale(2, DOWN),
                                        perDay,
@@ -231,13 +235,13 @@ public class TelegramBotUpdates implements BotUpdates {
                                        perYear,
                                        "$" + perYear.multiply(coinPrice).setScale(2, DOWN));
         String infoMessage = RESOURCE.getString("info");
-        CoinInfo coinInfo = reward.getCoinInfo();
+        CoinInfo coinInfo = earnings.getCoinInfo();
         infoMessage = String.format(infoMessage,
-                                    stepData.getRewardType().getName(),
-                                    TimeUtils.convertToReadableTime(coinInfo.getBlockTime()),
+                                    stepData.getRewardInfo().getName(),
+                                    ReadableTimeUtil.convertToReadableTime(coinInfo.getBlockTime()),
                                     coinInfo.getBlockCount(),
                                     coinInfo.getBlockReward(),
-                                    HashrateUtils.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
+                                    ReadableHashrateUtil.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
         responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage + infoMessage);
     }
 

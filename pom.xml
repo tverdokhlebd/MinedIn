@@ -59,6 +59,41 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-devtools</artifactId>
 		</dependency>
+      <dependency>
+          <groupId>com.tverdokhlebd</groupId>
+          <artifactId>mining-commons-library</artifactId>
+          <version>1.0.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/mining-commons-library-1.0.0.jar</systemPath>
+      </dependency>
+      <dependency>
+          <groupId>com.tverdokhlebd</groupId>
+          <artifactId>mining-pool-library</artifactId>
+          <version>1.0.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/mining-pool-library-1.0.0.jar</systemPath>
+      </dependency>
+      <dependency>
+          <groupId>com.tverdokhlebd</groupId>
+          <artifactId>coin-info-library</artifactId>
+          <version>1.0.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/coin-info-library-1.0.0.jar</systemPath>
+      </dependency>
+      <dependency>
+          <groupId>com.tverdokhlebd</groupId>
+          <artifactId>coin-market-library</artifactId>
+          <version>1.0.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/coin-market-library-1.0.0.jar</systemPath>
+      </dependency>
+      <dependency>
+          <groupId>com.tverdokhlebd</groupId>
+          <artifactId>coin-reward-library</artifactId>
+          <version>1.0.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/coin-reward-library-1.0.0.jar</systemPath>
+      </dependency>
 	</dependencies>
 
 	<build>

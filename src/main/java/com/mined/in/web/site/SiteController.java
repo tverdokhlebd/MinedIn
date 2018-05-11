@@ -1,7 +1,10 @@
 package com.mined.in.web.site;
 
-import static com.mined.in.market.MarketType.COIN_MARKET_CAP;
-import static com.mined.in.reward.RewardType.WHAT_TO_MINE;
+import static com.tverdokhlebd.mining.commons.coin.CoinType.BTC;
+import static com.tverdokhlebd.mining.commons.coin.CoinType.ETC;
+import static com.tverdokhlebd.mining.commons.coin.CoinType.ETH;
+import static com.tverdokhlebd.mining.commons.coin.CoinType.XMR;
+import static com.tverdokhlebd.mining.commons.coin.CoinType.ZEC;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,22 +23,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.mined.in.coin.CoinInfo;
-import com.mined.in.coin.CoinMarket;
-import com.mined.in.coin.CoinType;
+import com.mined.in.description.CoinInfoDescription;
+import com.mined.in.description.CoinMarketDescription;
+import com.mined.in.description.CoinRewardDescription;
+import com.mined.in.description.CoinTypeDescription;
+import com.mined.in.description.PoolTypeDescription;
 import com.mined.in.earnings.Earnings;
 import com.mined.in.earnings.worker.EarningsWorker;
 import com.mined.in.earnings.worker.EarningsWorkerFactory;
-import com.mined.in.market.MarketRequestor;
-import com.mined.in.market.MarketRequestorException;
-import com.mined.in.market.MarketRequestorFactory;
-import com.mined.in.market.MarketType;
-import com.mined.in.pool.AccountRequestorException;
-import com.mined.in.pool.PoolType;
-import com.mined.in.reward.RewardRequestor;
-import com.mined.in.reward.RewardRequestorException;
-import com.mined.in.reward.RewardRequestorFactory;
-import com.mined.in.reward.RewardType;
+import com.tverdokhlebd.coin.info.CoinInfo;
+import com.tverdokhlebd.coin.info.CoinInfoType;
+import com.tverdokhlebd.coin.info.requestor.CoinInfoRequestor;
+import com.tverdokhlebd.coin.info.requestor.CoinInfoRequestorException;
+import com.tverdokhlebd.coin.info.requestor.CoinInfoRequestorFactory;
+import com.tverdokhlebd.coin.market.CoinMarket;
+import com.tverdokhlebd.coin.market.CoinMarketType;
+import com.tverdokhlebd.coin.market.requestor.CoinMarketRequestor;
+import com.tverdokhlebd.coin.market.requestor.CoinMarketRequestorException;
+import com.tverdokhlebd.coin.market.requestor.CoinMarketRequestorFactory;
+import com.tverdokhlebd.coin.reward.requestor.CoinRewardRequestorException;
+import com.tverdokhlebd.mining.pool.requestor.AccountRequestorException;
 
 /**
  * Site controller.
@@ -100,37 +107,19 @@ public class SiteController {
      * @return coin info page
      */
     @GetMapping("/{coinType}")
-    public String getCoinInfo(Model model, @PathVariable CoinType coinType) throws RewardRequestorException {
+    public String getCoinInfo(Model model, @PathVariable CoinTypeDescription coinType) {
         try {
-            RewardRequestor rewardRequestor = RewardRequestorFactory.create(WHAT_TO_MINE);
-            CoinInfo coinInfo = null;
-            switch (coinType) {
-            case BTC:
-                coinInfo = rewardRequestor.requestBitcoinReward(null).getCoinInfo();
-                break;
-            case ETH:
-                coinInfo = rewardRequestor.requestEthereumReward(null).getCoinInfo();
-                break;
-            case ETC:
-                coinInfo = rewardRequestor.requestEthereumClassicReward(null).getCoinInfo();
-                break;
-            case XMR:
-                coinInfo = rewardRequestor.requestMoneroReward(null).getCoinInfo();
-                break;
-            case ZEC:
-                coinInfo = rewardRequestor.requestZcashReward(null).getCoinInfo();
-                break;
-            default:
-                break;
-            }
-            List<PoolType> poolTypeList = Arrays.asList(PoolType.values()).stream().filter(pool -> {
-                return pool.getCoinTypeList().indexOf(coinType) != -1;
+            CoinInfoRequestor coinInfoRequestor = CoinInfoRequestorFactory.create(CoinInfoType.WHAT_TO_MINE);
+            CoinInfo coinInfo = coinInfoRequestor.requestCoinInfo(coinType.getCoinType());
+            List<PoolTypeDescription> poolTypeList = Arrays.asList(PoolTypeDescription.values()).stream().filter(pool -> {
+                return pool.getPoolType().getCoinTypeList().indexOf(coinType.getCoinType()) != -1;
             }).collect(Collectors.toList());
+            model.addAttribute("coin_type", coinType);
             model.addAttribute("coin_info", coinInfo);
             model.addAttribute("pool_list", poolTypeList);
-        } catch (RewardRequestorException e) {
+        } catch (CoinInfoRequestorException e) {
             LOG.error("Reward request error", e);
-            handleRewardError(model, WHAT_TO_MINE, e);
+            handleCoinInfoError(model, CoinInfoDescription.WHAT_TO_MINE, e);
         } catch (Exception e) {
             LOG.error("Get coin info error", e);
             handleUnexpectedError(model, e);
@@ -149,26 +138,33 @@ public class SiteController {
      * @return calculation page
      */
     @GetMapping("/{coinType}/{poolType}/{walletAddress}")
-    public String calculate(Model model, @PathVariable CoinType coinType, @PathVariable PoolType poolType,
-            @PathVariable String walletAddress) throws AccountRequestorException, MarketRequestorException, RewardRequestorException {
+    public String calculate(Model model, @PathVariable CoinTypeDescription coinType, @PathVariable PoolTypeDescription poolType,
+            @PathVariable String walletAddress) {
         try {
-            EarningsWorker worker = EarningsWorkerFactory.create(coinType, poolType, COIN_MARKET_CAP, WHAT_TO_MINE);
-            Earnings earnings = worker.calculate(walletAddress);
-            model.addAttribute("coin_info", earnings.getEstimatedReward().getCoinInfo());
+            EarningsWorker worker = EarningsWorkerFactory.create(poolType,
+                                                                 CoinInfoDescription.WHAT_TO_MINE,
+                                                                 CoinMarketDescription.COIN_MARKET_CAP,
+                                                                 CoinRewardDescription.WHAT_TO_MINE);
+            Earnings earnings = worker.calculate(coinType, walletAddress);
+            model.addAttribute("coin_type", coinType);
+            model.addAttribute("coin_info", earnings.getCoinInfo());
             model.addAttribute("pool_info", poolType);
             model.addAttribute("usd_balance", earnings.getUsdBalance());
-            model.addAttribute("coin_balance", earnings.getCoinBalance());
-            model.addAttribute("coin_price", earnings.getCoinPrice());
-            model.addAttribute("reward", earnings.getEstimatedReward());
+            model.addAttribute("coin_balance", earnings.getAccount().getWalletBalance());
+            model.addAttribute("coin_price", earnings.getCoinMarket().getPrice());
+            model.addAttribute("reward", earnings.getCoinReward());
         } catch (AccountRequestorException e) {
             LOG.error("Account request error", e);
             handleAccountError(model, poolType, e);
-        } catch (MarketRequestorException e) {
+        } catch (CoinInfoRequestorException e) {
+            LOG.error("Info request error", e);
+            handleCoinInfoError(model, CoinInfoDescription.WHAT_TO_MINE, e);
+        } catch (CoinMarketRequestorException e) {
             LOG.error("Market request error", e);
-            handleMarketError(model, COIN_MARKET_CAP, e);
-        } catch (RewardRequestorException e) {
+            handleCoinMarketError(model, CoinMarketDescription.COIN_MARKET_CAP, e);
+        } catch (CoinRewardRequestorException e) {
             LOG.error("Reward request error", e);
-            handleRewardError(model, WHAT_TO_MINE, e);
+            handleCoinRewardError(model, CoinRewardDescription.WHAT_TO_MINE, e);
         } catch (Exception e) {
             LOG.error("Calculate error", e);
             handleUnexpectedError(model, e);
@@ -178,30 +174,40 @@ public class SiteController {
     }
 
     /**
-     * Requests coin list.
+     * Requests market coin list.
      *
-     * @return coin list
+     * @return market coin list
      */
-    @ModelAttribute("coin_list")
-    public List<CoinMarket> getCoinList(Model model) {
+    @ModelAttribute("coin_market_list")
+    public List<CoinMarket> getCoinMarketList(Model model) {
         try {
-            MarketRequestor marketRequestor = MarketRequestorFactory.create(COIN_MARKET_CAP);
+            CoinMarketRequestor coinMarketRequestor = CoinMarketRequestorFactory.create(CoinMarketType.COIN_MARKET_CAP);
             List<CoinMarket> coinMarketList = new ArrayList<>();
-            coinMarketList.add(marketRequestor.requestBitcoinCoin());
-            coinMarketList.add(marketRequestor.requestEthereumCoin());
-            coinMarketList.add(marketRequestor.requestMoneroCoin());
-            coinMarketList.add(marketRequestor.requestEthereumClassicCoin());
-            coinMarketList.add(marketRequestor.requestZcashCoin());
+            coinMarketList.add(coinMarketRequestor.requestCoinMarket(BTC));
+            coinMarketList.add(coinMarketRequestor.requestCoinMarket(ETH));
+            coinMarketList.add(coinMarketRequestor.requestCoinMarket(XMR));
+            coinMarketList.add(coinMarketRequestor.requestCoinMarket(ETC));
+            coinMarketList.add(coinMarketRequestor.requestCoinMarket(ZEC));
             return coinMarketList;
-        } catch (MarketRequestorException e) {
+        } catch (CoinMarketRequestorException e) {
             LOG.error("Market request error", e);
-            handleMarketError(model, COIN_MARKET_CAP, e);
+            handleCoinMarketError(model, CoinMarketDescription.COIN_MARKET_CAP, e);
             return new ArrayList<>();
         } catch (Exception e) {
             LOG.error("Get coin list error", e);
             handleUnexpectedError(model, e);
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Requests coin type list.
+     *
+     * @return coin type list
+     */
+    @ModelAttribute("coin_type_list")
+    public List<CoinTypeDescription> getCoinTypeList(Model model) {
+        return Arrays.asList(CoinTypeDescription.values());
     }
 
     /**
@@ -229,36 +235,51 @@ public class SiteController {
      *
      * @param model model attributes
      * @param poolType pool type
-     * @param requestorException account error
+     * @param requestorException pool account error
      */
-    private void handleAccountError(Model model, PoolType poolType, AccountRequestorException requestorException) {
+    private void handleAccountError(Model model, PoolTypeDescription poolType, AccountRequestorException requestorException) {
         String errorMessage = String.format(TEXT.get("error_account"), poolType.getName());
         String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
         addErrorToModel(model, errorMessage, errorDetails);
     }
 
     /**
-     * Handles market error.
+     * Handles coin info error.
      *
      * @param model model attributes
-     * @param marketType market type
-     * @param requestorException market error
+     * @param coinInfoDescription coin info description
+     * @param requestorException coin info error
      */
-    private void handleMarketError(Model model, MarketType marketType, MarketRequestorException requestorException) {
-        String errorMessage = String.format(TEXT.get("error_market"), marketType.getName());
+    private void handleCoinInfoError(Model model, CoinInfoDescription coinInfoDescription, CoinInfoRequestorException requestorException) {
+        String errorMessage = String.format(TEXT.get("error_info"), coinInfoDescription.getName());
         String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
         addErrorToModel(model, errorMessage, errorDetails);
     }
 
     /**
-     * Handles reward error.
+     * Handles coin market error.
      *
      * @param model model attributes
-     * @param rewardType reward type
-     * @param requestorException reward error
+     * @param coinMarketDescription coin market description
+     * @param requestorException coin market error
      */
-    private void handleRewardError(Model model, RewardType rewardType, RewardRequestorException requestorException) {
-        String errorMessage = String.format(TEXT.get("error_reward"), rewardType.getName());
+    private void handleCoinMarketError(Model model, CoinMarketDescription coinMarketDescription,
+            CoinMarketRequestorException requestorException) {
+        String errorMessage = String.format(TEXT.get("error_market"), coinMarketDescription.getName());
+        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
+        addErrorToModel(model, errorMessage, errorDetails);
+    }
+
+    /**
+     * Handles coin reward error.
+     *
+     * @param model model attributes
+     * @param coinRewardDescription coin reward description
+     * @param requestorException coin reward error
+     */
+    private void handleCoinRewardError(Model model, CoinRewardDescription coinRewardDescription,
+            CoinRewardRequestorException requestorException) {
+        String errorMessage = String.format(TEXT.get("error_reward"), coinRewardDescription.getName());
         String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
         addErrorToModel(model, errorMessage, errorDetails);
     }

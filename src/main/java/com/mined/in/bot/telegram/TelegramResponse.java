@@ -63,17 +63,19 @@ public class TelegramResponse {
         case START:
             createSimpleResultMessage(resultMessage);
             break;
-        case WALLET:
+        case ENTER_WALLET:
             createSimpleResultMessage(resultMessage);
             break;
-        case COIN:
+        case SELECT_COIN_TYPE:
             createSimpleResultMessage(resultMessage);
             break;
-        case POOL:
+        case SELECT_POOL_ACCOUNT:
             break;
-        case MARKET:
+        case SELECT_COIN_INFO:
             break;
-        case REWARD: {
+        case SELECT_COIN_MARKET:
+            break;
+        case SELECT_COIN_REWARD: {
             boolean firstMessageWithError = error != null && message == null;
             if (firstMessageWithError) {
                 message = String.format(RESOURCE.getString("no_result"));
@@ -99,7 +101,7 @@ public class TelegramResponse {
      */
     public boolean onlySendMessage() {
         TelegramStepData.Step currentStep = stepData.getStep();
-        return currentStep == TelegramStepData.Step.START || currentStep == TelegramStepData.Step.WALLET;
+        return currentStep == TelegramStepData.Step.START || currentStep == TelegramStepData.Step.ENTER_WALLET;
     }
 
     /**
