@@ -1,7 +1,7 @@
 <th:block xmlns:th="http://www.thymeleaf.org">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/" th:text="${text.navbar_brand}"></a>
+            <a class="navbar-brand" href="/" th:text="${resources.navbar_brand}"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -10,7 +10,7 @@
                 <ul class="nav navbar-nav">
                     <tr th:each="coin : ${coin_market_list}">
                         <li class="nav-item"><a class="nav-link" th:href="@{${'/' + coin.coin.name()}}"><img
-                                th:text="@{${'$' + #numbers.formatDecimal(coin.price, 1, 2)}}"
+                                th:text="@{${'$' + #numbers.formatDecimal(coin.getPrice(), 1, 2)}}"
                                 th:src="@{${'/img/' + #strings.toLowerCase(coin.coin.name()) + '.png'}}" width="24" height="24"
                                 class="d-inline-block align-top" /></a></li>
                     </tr>
@@ -18,11 +18,11 @@
             </div>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" th:href="${text.telegram_bot_link}" target="_blank"><img
+                    <li class="nav-item"><a class="nav-link" th:href="${resources.bot_telegram_link}" target="_blank"><img
                             src="/img/telegram.png" width="24" height="24" class="d-inline-block align-top" /></a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="${text.github_link}" target="_blank"><img
+                    <li class="nav-item"><a class="nav-link" th:href="${resources.source_github_link}" target="_blank"><img
                             src="/img/github.png" width="24" height="24" class="d-inline-block align-top" /></a></li>
-                    <li class="nav-item"><a class="nav-link" th:text="${text.contact}" href="/contact"></a></li>
+                    <li class="nav-item"><a class="nav-link" th:text="${resources.contact}" href="/contact"></a></li>
                 </ul>
             </div>
         </div>

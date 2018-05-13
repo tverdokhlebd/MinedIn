@@ -1,30 +1,30 @@
 <th:block xmlns:th="http://www.thymeleaf.org">
     <div class="row mx-auto w-75 justify-content-center">
-        <div class="col text-center font-weight-light" th:text="${text.coin_info}"></div>
+        <div class="col text-center font-weight-light" th:text="${resources.coin_info}"></div>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_name}"></div>
+        <div class="col text-left" th:text="${resources.coin_name}"></div>
         <div class="col text-right font-weight-light" th:text="${coin_type.getName()}"></div>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_symbol}"></div>
+        <div class="col text-left" th:text="${resources.coin_symbol}"></div>
         <div class="col text-right font-weight-light" th:text="${coin_type.name()}"></div>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_website}"></div>
+        <div class="col text-left" th:text="${resources.coin_website}"></div>
         <a class="col text-right font-weight-light" th:text="${coin_type.getWebsite()}" th:href="${coin_type.getWebsite()}" target="_blank"></a>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_block_time}"></div>
+        <div class="col text-left" th:text="${resources.coin_block_time}"></div>
         <div class="col text-right font-weight-light"
             th:text="${T(com.mined.in.utils.ReadableTimeUtil).convertToReadableTime(coin_info.getBlockTime())}"></div>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_block_reward}"></div>
+        <div class="col text-left" th:text="${resources.coin_block_reward}"></div>
         <div class="col text-right font-weight-light" th:text="${#numbers.formatDecimal(coin_info.getBlockReward(), 1, 2)}"></div>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_block_count}"></div>
+        <div class="col text-left" th:text="${resources.coin_block_count}"></div>
         <div class="col text-right font-weight-light" th:text="${#numbers.formatDecimal(coin_info.getBlockCount(), 1, 'COMMA', 0, 'POINT')}"></div>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_difficulty}"></div>
+        <div class="col text-left" th:text="${resources.coin_difficulty}"></div>
         <div class="col text-right font-weight-light" th:text="${#numbers.formatDecimal(coin_info.getDifficulty(), 1, 'COMMA', 0, 'POINT')}"></div>
         <div class="w-100"></div>
-        <div class="col text-left" th:text="${text.coin_network_hashrate}"></div>
+        <div class="col text-left" th:text="${resources.coin_network_hashrate}"></div>
         <div class="col text-right font-weight-light"
             th:text="${T(com.mined.in.utils.ReadableHashrateUtil).convertToReadableHashPower(coin_info.getNetworkHashrate())}"></div>
     </div>

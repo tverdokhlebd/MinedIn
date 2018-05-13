@@ -53,17 +53,17 @@ import com.tverdokhlebd.mining.pool.requestor.AccountRequestorException;
 @Controller
 public class SiteController {
 
-    /** Logger. */
-    private final static Logger LOG = LoggerFactory.getLogger(SiteController.class);
     /** Text resources. */
-    private final static Map<String, String> TEXT = new HashMap<>();
+    private final static Map<String, String> RESOURCES = new HashMap<>();
     /** Loading text resources. */
     static {
-        ResourceBundle resources = ResourceBundle.getBundle("web");
+        ResourceBundle resources = ResourceBundle.getBundle(SiteController.class.getName());
         Collections.list(resources.getKeys()).forEach(key -> {
-            TEXT.put(key, resources.getString(key));
+            RESOURCES.put(key, resources.getString(key));
         });
     }
+    /** Logger. */
+    private final static Logger LOG = LoggerFactory.getLogger(SiteController.class);
 
     /**
      * Requests index page.
@@ -75,16 +75,6 @@ public class SiteController {
     public String getIndex(Model model) {
         model.addAttribute("page", "index");
         return "template";
-    }
-
-    /**
-     * Requests google verification page.
-     *
-     * @return google verification page
-     */
-    @GetMapping("/google78d9213fe4e57443.html")
-    public String getGoogle() {
-        return "pages/google78d9213fe4e57443";
     }
 
     /**
@@ -118,7 +108,7 @@ public class SiteController {
             model.addAttribute("coin_info", coinInfo);
             model.addAttribute("pool_list", poolTypeList);
         } catch (CoinInfoRequestorException e) {
-            LOG.error("Reward request error", e);
+            LOG.error("Coin info request error", e);
             handleCoinInfoError(model, CoinInfoDescription.WHAT_TO_MINE, e);
         } catch (Exception e) {
             LOG.error("Get coin info error", e);
@@ -147,23 +137,23 @@ public class SiteController {
                                                                  CoinRewardDescription.WHAT_TO_MINE);
             Earnings earnings = worker.calculate(coinType, walletAddress);
             model.addAttribute("coin_type", coinType);
-            model.addAttribute("coin_info", earnings.getCoinInfo());
             model.addAttribute("pool_info", poolType);
+            model.addAttribute("coin_info", earnings.getCoinInfo());
+            model.addAttribute("coin_reward", earnings.getCoinReward());
             model.addAttribute("usd_balance", earnings.getUsdBalance());
             model.addAttribute("coin_balance", earnings.getAccount().getWalletBalance());
             model.addAttribute("coin_price", earnings.getCoinMarket().getPrice());
-            model.addAttribute("reward", earnings.getCoinReward());
         } catch (AccountRequestorException e) {
             LOG.error("Account request error", e);
             handleAccountError(model, poolType, e);
         } catch (CoinInfoRequestorException e) {
-            LOG.error("Info request error", e);
+            LOG.error("Coin info request error", e);
             handleCoinInfoError(model, CoinInfoDescription.WHAT_TO_MINE, e);
         } catch (CoinMarketRequestorException e) {
-            LOG.error("Market request error", e);
+            LOG.error("Coin market request error", e);
             handleCoinMarketError(model, CoinMarketDescription.COIN_MARKET_CAP, e);
         } catch (CoinRewardRequestorException e) {
-            LOG.error("Reward request error", e);
+            LOG.error("Coin reward request error", e);
             handleCoinRewardError(model, CoinRewardDescription.WHAT_TO_MINE, e);
         } catch (Exception e) {
             LOG.error("Calculate error", e);
@@ -174,30 +164,38 @@ public class SiteController {
     }
 
     /**
-     * Requests market coin list.
+     * Requests google verification page.
      *
-     * @return market coin list
+     * @return google verification page
+     */
+    @GetMapping("/google78d9213fe4e57443.html")
+    public String getGoogle() {
+        return "pages/google78d9213fe4e57443";
+    }
+
+    /**
+     * Requests coin market list.
+     *
+     * @return coin market list
      */
     @ModelAttribute("coin_market_list")
     public List<CoinMarket> getCoinMarketList(Model model) {
+        List<CoinMarket> coinMarketList = new ArrayList<>();
         try {
             CoinMarketRequestor coinMarketRequestor = CoinMarketRequestorFactory.create(CoinMarketType.COIN_MARKET_CAP);
-            List<CoinMarket> coinMarketList = new ArrayList<>();
             coinMarketList.add(coinMarketRequestor.requestCoinMarket(BTC));
             coinMarketList.add(coinMarketRequestor.requestCoinMarket(ETH));
             coinMarketList.add(coinMarketRequestor.requestCoinMarket(XMR));
             coinMarketList.add(coinMarketRequestor.requestCoinMarket(ETC));
             coinMarketList.add(coinMarketRequestor.requestCoinMarket(ZEC));
-            return coinMarketList;
         } catch (CoinMarketRequestorException e) {
-            LOG.error("Market request error", e);
+            LOG.error("Coin market request error", e);
             handleCoinMarketError(model, CoinMarketDescription.COIN_MARKET_CAP, e);
-            return new ArrayList<>();
         } catch (Exception e) {
-            LOG.error("Get coin list error", e);
+            LOG.error("Get coin market list error", e);
             handleUnexpectedError(model, e);
-            return new ArrayList<>();
         }
+        return coinMarketList;
     }
 
     /**
@@ -215,19 +213,19 @@ public class SiteController {
      *
      * @return text resources
      */
-    @ModelAttribute("text")
+    @ModelAttribute("resources")
     public Map<String, String> getText() {
-        return TEXT;
+        return RESOURCES;
     }
 
     /**
      * Handles unexpected error.
      *
      * @param model model attributes
-     * @param exception unexpected error
+     * @param exception unexpected exception
      */
     private void handleUnexpectedError(Model model, Exception exception) {
-        addErrorToModel(model, TEXT.get("error_unexpected"), exception.getMessage());
+        addErrorToModel(model, RESOURCES.get("error_unexpected"), exception);
     }
 
     /**
@@ -235,53 +233,47 @@ public class SiteController {
      *
      * @param model model attributes
      * @param poolType pool type
-     * @param requestorException account error
+     * @param requestorException requestor exception
      */
     private void handleAccountError(Model model, PoolTypeDescription poolType, AccountRequestorException requestorException) {
-        String errorMessage = String.format(TEXT.get("error_account"), poolType.getName());
-        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
-        addErrorToModel(model, errorMessage, errorDetails);
+        String errorMessage = String.format(RESOURCES.get("error_account"), poolType.getName());
+        addErrorToModel(model, errorMessage, requestorException);
     }
 
     /**
      * Handles coin info error.
      *
      * @param model model attributes
-     * @param coinInfoDescription coin info description
-     * @param requestorException coin info error
+     * @param coinInfo coin info
+     * @param requestorException requestor exception
      */
-    private void handleCoinInfoError(Model model, CoinInfoDescription coinInfoDescription, CoinInfoRequestorException requestorException) {
-        String errorMessage = String.format(TEXT.get("error_info"), coinInfoDescription.getName());
-        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
-        addErrorToModel(model, errorMessage, errorDetails);
+    private void handleCoinInfoError(Model model, CoinInfoDescription coinInfo, CoinInfoRequestorException requestorException) {
+        String errorMessage = String.format(RESOURCES.get("error_coin_info"), coinInfo.getName());
+        addErrorToModel(model, errorMessage, requestorException);
     }
 
     /**
      * Handles coin market error.
      *
      * @param model model attributes
-     * @param coinMarketDescription coin market description
-     * @param requestorException coin market error
+     * @param coinMarket coin market
+     * @param requestorException requestor exception
      */
-    private void handleCoinMarketError(Model model, CoinMarketDescription coinMarketDescription,
-            CoinMarketRequestorException requestorException) {
-        String errorMessage = String.format(TEXT.get("error_market"), coinMarketDescription.getName());
-        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
-        addErrorToModel(model, errorMessage, errorDetails);
+    private void handleCoinMarketError(Model model, CoinMarketDescription coinMarket, CoinMarketRequestorException requestorException) {
+        String errorMessage = String.format(RESOURCES.get("error_coin_market"), coinMarket.getName());
+        addErrorToModel(model, errorMessage, requestorException);
     }
 
     /**
      * Handles coin reward error.
      *
      * @param model model attributes
-     * @param coinRewardDescription coin reward description
-     * @param requestorException coin reward error
+     * @param coinReward coin reward
+     * @param requestorException requestor exception
      */
-    private void handleCoinRewardError(Model model, CoinRewardDescription coinRewardDescription,
-            CoinRewardRequestorException requestorException) {
-        String errorMessage = String.format(TEXT.get("error_reward"), coinRewardDescription.getName());
-        String errorDetails = String.format(TEXT.get("error_details"), requestorException.getMessage());
-        addErrorToModel(model, errorMessage, errorDetails);
+    private void handleCoinRewardError(Model model, CoinRewardDescription coinReward, CoinRewardRequestorException requestorException) {
+        String errorMessage = String.format(RESOURCES.get("error_coin_reward"), coinReward.getName());
+        addErrorToModel(model, errorMessage, requestorException);
     }
 
     /**
@@ -289,11 +281,11 @@ public class SiteController {
      *
      * @param model model attributes
      * @param errorMessage error message
-     * @param errorDetails error details
+     * @param exception exception
      */
-    private void addErrorToModel(Model model, String errorMessage, String errorDetails) {
+    private void addErrorToModel(Model model, String errorMessage, Exception exception) {
         model.addAttribute("error_message", errorMessage);
-        model.addAttribute("error_details", errorDetails);
+        model.addAttribute("error_details", String.format(RESOURCES.get("error_details"), exception.getMessage()));
     }
 
 }
