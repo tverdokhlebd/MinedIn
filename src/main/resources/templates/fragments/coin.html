@@ -13,7 +13,7 @@
         <div class="w-100"></div>
         <div class="col text-left" th:text="${resources.coin_block_time}"></div>
         <div class="col text-right font-weight-light"
-            th:text="${T(com.mined.in.utils.ReadableTimeUtil).convertToReadableTime(coin_info.getBlockTime())}"></div>
+            th:text="${T(com.tverdokhlebd.minedin.utils.ReadableTimeUtil).convertToReadableTime(coin_info.getBlockTime())}"></div>
         <div class="w-100"></div>
         <div class="col text-left" th:text="${resources.coin_block_reward}"></div>
         <div class="col text-right font-weight-light" th:text="${#numbers.formatDecimal(coin_info.getBlockReward(), 1, 2)}"></div>
@@ -26,6 +26,6 @@
         <div class="w-100"></div>
         <div class="col text-left" th:text="${resources.coin_network_hashrate}"></div>
         <div class="col text-right font-weight-light"
-            th:text="${T(com.mined.in.utils.ReadableHashrateUtil).convertToReadableHashPower(coin_info.getNetworkHashrate())}"></div>
+            th:text="${T(com.tverdokhlebd.minedin.utils.ReadableHashrateUtil).convertToReadableHashPower(coin_info.getNetworkHashrate())}"></div>
     </div>
 </th:block>
