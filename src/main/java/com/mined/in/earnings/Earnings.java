@@ -31,9 +31,9 @@ public class Earnings {
      *
      * @param usdBalance balance in USD
      * @param account account
-     * @param coinInfo general info about coin
-     * @param coinMarket market info about coin
-     * @param coinReward reward for coin
+     * @param coinInfo coin info
+     * @param coinMarket coin market
+     * @param coinReward coin reward
      */
     public Earnings(BigDecimal usdBalance, Account account, CoinInfo coinInfo, CoinMarket coinMarket, CoinReward coinReward) {
         super();

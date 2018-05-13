@@ -18,15 +18,15 @@ public interface EarningsWorker {
     /**
      * Calculates earnings.
      *
-     * @param coin type of coin
+     * @param coinType type of coin
      * @param walletAddress wallet address
-     * @return earnings
+     * @return calculated earnings
      * @throws AccountRequestorException if there is any error in account requesting
      * @throws CoinInfoRequestorException if there is any error in coin info requesting
      * @throws CoinMarketRequestorException if there is any error in coin market requesting
      * @throws CoinRewardRequestorException if there is any error in coin reward requesting
      */
-    Earnings calculate(CoinTypeDescription coin, String walletAddress)
+    Earnings calculate(CoinTypeDescription coinType, String walletAddress)
             throws AccountRequestorException, CoinInfoRequestorException, CoinMarketRequestorException, CoinRewardRequestorException;
 
 }

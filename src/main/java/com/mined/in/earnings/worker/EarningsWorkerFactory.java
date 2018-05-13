@@ -24,18 +24,18 @@ public class EarningsWorkerFactory {
     /**
      * Creates earnings worker.
      *
-     * @param poolInfo pool info
+     * @param poolType pool type
      * @param coinInfo coin info
-     * @param marketInfo market info
-     * @param rewardInfo reward info
+     * @param coinMarket coin market
+     * @param coinReward coin reward
      * @return earnings worker
      */
-    public static EarningsWorker create(PoolTypeDescription poolInfo, CoinInfoDescription coinInfo, CoinMarketDescription marketInfo,
-            CoinRewardDescription rewardInfo) {
-        AccountRequestor accountRequestor = AccountRequestorFactory.create(poolInfo.getPoolType());
+    public static EarningsWorker create(PoolTypeDescription poolType, CoinInfoDescription coinInfo, CoinMarketDescription coinMarket,
+            CoinRewardDescription coinReward) {
+        AccountRequestor accountRequestor = AccountRequestorFactory.create(poolType.getPoolType());
         CoinInfoRequestor coinInfoRequestor = CoinInfoRequestorFactory.create(coinInfo.getCoinInfoType());
-        CoinMarketRequestor coinMarketRequestor = CoinMarketRequestorFactory.create(marketInfo.getCoinMarketType());
-        CoinRewardRequestor coinRewardRequestor = CoinRewardRequestorFactory.create(rewardInfo.getCoinRewardType());
+        CoinMarketRequestor coinMarketRequestor = CoinMarketRequestorFactory.create(coinMarket.getCoinMarketType());
+        CoinRewardRequestor coinRewardRequestor = CoinRewardRequestorFactory.create(coinReward.getCoinRewardType());
         return new MinedInWorker(accountRequestor, coinInfoRequestor, coinMarketRequestor, coinRewardRequestor);
     }
 
