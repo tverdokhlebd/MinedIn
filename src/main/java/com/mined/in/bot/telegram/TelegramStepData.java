@@ -1,6 +1,6 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.bot.telegram.TelegramStepData.Step.ENTER_WALLET;
+import static com.mined.in.bot.telegram.TelegramStepData.Step.ENTERED_WALLET;
 import static com.mined.in.bot.telegram.TelegramStepData.Step.START;
 
 import com.mined.in.description.CoinInfoDescription;
@@ -23,12 +23,12 @@ public class TelegramStepData {
     private CoinTypeDescription coinType;
     /** Selected coin info. */
     private CoinInfoDescription coinInfo;
-    /** Selected pool info. */
-    private PoolTypeDescription poolInfo;
-    /** Selected market info. */
-    private CoinMarketDescription marketInfo;
-    /** Selected reward info. */
-    private CoinRewardDescription rewardInfo;
+    /** Selected pool type. */
+    private PoolTypeDescription poolType;
+    /** Selected coin market. */
+    private CoinMarketDescription coinMarket;
+    /** Selected coin reward. */
+    private CoinRewardDescription coinReward;
 
     /**
      * Enumeration of steps.
@@ -38,25 +38,13 @@ public class TelegramStepData {
      */
     public static enum Step {
 
-        START(0),
-        ENTER_WALLET(0),
-        SELECT_COIN_TYPE(1),
-        SELECT_POOL_ACCOUNT(2),
-        SELECT_COIN_INFO(3),
-        SELECT_COIN_MARKET(4),
-        SELECT_COIN_REWARD(5);
-
-        /** Step position. */
-        private int position;
-
-        /**
-         * Creates instance.
-         *
-         * @param position step position
-         */
-        private Step(int position) {
-            this.position = position;
-        }
+        START,
+        ENTERED_WALLET,
+        SELECTED_COIN_TYPE,
+        SELECTED_POOL_ACCOUNT,
+        SELECTED_COIN_INFO,
+        SELECTED_COIN_MARKET,
+        SELECTED_COIN_REWARD;
 
         /**
          * Gets step by position.
@@ -65,14 +53,11 @@ public class TelegramStepData {
          * @return step by position
          */
         public static Step getByPosition(int position) {
-            Step[] currentStepArray = Step.values();
-            for (int i = 0; i < currentStepArray.length; i++) {
-                Step currentStep = currentStepArray[i];
-                if (currentStep.position == position) {
-                    return currentStep;
-                }
+            Step[] stepArray = Step.values();
+            if (position < 0 || position > stepArray.length) {
+                throw new IllegalArgumentException("No step with position " + position);
             }
-            throw new IllegalArgumentException("No step with position " + position);
+            return stepArray[position];
         }
 
     }
@@ -86,7 +71,7 @@ public class TelegramStepData {
     public TelegramStepData(String data, boolean simpleMessage) {
         super();
         if (simpleMessage) {
-            step = data.equalsIgnoreCase("/start") ? START : ENTER_WALLET;
+            step = data.equalsIgnoreCase("/start") ? START : ENTERED_WALLET;
         } else {
             // "COIN_TYPE-POOL_ACCOUNT-COIN_INFO-COIN_MARKET-COIN_REWARD" ("ETH-DWARFPOOL-WHAT_TO_MINE-COIN_MARKET_CAP-WHAT_TO_MINE")
             String[] splittedData = data.split("-");
@@ -95,18 +80,19 @@ public class TelegramStepData {
                 coinType = CoinTypeDescription.valueOf(splittedData[0]);
             }
             if (splittedDataLength > 1) {
-                poolInfo = PoolTypeDescription.valueOf(splittedData[1]);
+                poolType = PoolTypeDescription.valueOf(splittedData[1]);
             }
             if (splittedDataLength > 2) {
                 coinInfo = CoinInfoDescription.valueOf(splittedData[2]);
             }
             if (splittedDataLength > 3) {
-                marketInfo = CoinMarketDescription.valueOf(splittedData[3]);
+                coinMarket = CoinMarketDescription.valueOf(splittedData[3]);
             }
             if (splittedDataLength > 4) {
-                rewardInfo = CoinRewardDescription.valueOf(splittedData[4]);
+                coinReward = CoinRewardDescription.valueOf(splittedData[4]);
             }
-            step = Step.getByPosition(splittedDataLength);
+            // Skip START and ENTERED_WALLET steps
+            step = Step.getByPosition(splittedDataLength + 1);
         }
     }
 
@@ -116,7 +102,7 @@ public class TelegramStepData {
      * @return callback query data
      */
     public String getCallbackQueryData() {
-        return coinType.name() + "-" + poolInfo.name() + "-" + coinInfo.name() + "-" + marketInfo.name() + "-" + rewardInfo.name();
+        return coinType.name() + "-" + poolType.name() + "-" + coinInfo.name() + "-" + coinMarket.name() + "-" + coinReward.name();
     }
 
     /**
@@ -147,30 +133,30 @@ public class TelegramStepData {
     }
 
     /**
-     * Gets pool info.
+     * Gets pool type.
      *
-     * @return pool info
+     * @return pool type
      */
-    public PoolTypeDescription getPoolInfo() {
-        return poolInfo;
+    public PoolTypeDescription getPoolType() {
+        return poolType;
     }
 
     /**
-     * Gets market info.
+     * Gets coin market.
      *
-     * @return market info
+     * @return coin market
      */
-    public CoinMarketDescription getMarketInfo() {
-        return marketInfo;
+    public CoinMarketDescription getCoinMarket() {
+        return coinMarket;
     }
 
     /**
-     * Gets reward info.
+     * Gets coin reward.
      *
-     * @return reward info
+     * @return coin reward
      */
-    public CoinRewardDescription getRewardInfo() {
-        return rewardInfo;
+    public CoinRewardDescription getCoinReward() {
+        return coinReward;
     }
 
     /**
@@ -192,21 +178,21 @@ public class TelegramStepData {
     }
 
     /**
-     * Sets market info.
+     * Sets coin market.
      *
-     * @param marketInfo new market info
+     * @param coinMarket new coin market
      */
-    public void setMarketInfo(CoinMarketDescription marketInfo) {
-        this.marketInfo = marketInfo;
+    public void setMarketInfo(CoinMarketDescription coinMarket) {
+        this.coinMarket = coinMarket;
     }
 
     /**
-     * Sets reward info.
+     * Sets coin reward.
      *
-     * @param rewardInfo new reward info
+     * @param coinReward new coin reward
      */
-    public void setRewardInfo(CoinRewardDescription rewardInfo) {
-        this.rewardInfo = rewardInfo;
+    public void setRewardInfo(CoinRewardDescription coinReward) {
+        this.coinReward = coinReward;
     }
 
 }

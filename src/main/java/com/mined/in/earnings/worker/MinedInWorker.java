@@ -26,7 +26,7 @@ import com.tverdokhlebd.mining.pool.requestor.AccountRequestorException;
  */
 class MinedInWorker implements EarningsWorker {
 
-    /** Pool account requestor. */
+    /** Account requestor. */
     private final AccountRequestor accountRequestor;
     /** Coin info requestor. */
     private final CoinInfoRequestor coinInfoRequestor;
@@ -38,7 +38,7 @@ class MinedInWorker implements EarningsWorker {
     /**
      * Creates instance.
      *
-     * @param accountRequestor pool account requestor
+     * @param accountRequestor account requestor
      * @param coinInfoRequestor coin info requestor
      * @param coinMarketRequestor coin market requestor
      * @param coinRewardRequestor coin reward requestor

@@ -8,7 +8,7 @@ import com.tverdokhlebd.coin.reward.requestor.CoinRewardRequestorException;
 import com.tverdokhlebd.mining.pool.requestor.AccountRequestorException;
 
 /**
- * Interface of worker for calculating earnings of pool account.
+ * Interface of worker for calculating earnings.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -16,7 +16,7 @@ import com.tverdokhlebd.mining.pool.requestor.AccountRequestorException;
 public interface EarningsWorker {
 
     /**
-     * Calculates earnings of pool account.
+     * Calculates earnings.
      *
      * @param coin type of coin
      * @param walletAddress wallet address

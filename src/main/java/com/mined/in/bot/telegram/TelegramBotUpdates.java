@@ -1,7 +1,6 @@
 package com.mined.in.bot.telegram;
 
-import static com.mined.in.bot.telegram.TelegramStepData.Step.SELECT_COIN_REWARD;
-import static com.mined.in.description.CoinMarketDescription.COIN_MARKET_CAP;
+import static com.mined.in.bot.telegram.TelegramStepData.Step.SELECTED_COIN_REWARD;
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static java.math.RoundingMode.DOWN;
 
@@ -21,7 +20,6 @@ import com.mined.in.description.CoinRewardDescription;
 import com.mined.in.description.CoinTypeDescription;
 import com.mined.in.description.PoolTypeDescription;
 import com.mined.in.earnings.Earnings;
-import com.mined.in.earnings.worker.EarningsWorker;
 import com.mined.in.earnings.worker.EarningsWorkerFactory;
 import com.mined.in.utils.ReadableHashrateUtil;
 import com.mined.in.utils.ReadableTimeUtil;
@@ -58,10 +56,10 @@ public class TelegramBotUpdates implements BotUpdates {
     /** Logger. */
     private final static Logger LOG = LoggerFactory.getLogger(TelegramBotUpdates.class);
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
+    private final static ResourceBundle RESOURCES = ResourceBundle.getBundle(TelegramBotUpdates.class.getName());
 
     /**
-     * Creates the instance.
+     * Creates instance.
      *
      * @param token telegram token
      */
@@ -84,24 +82,24 @@ public class TelegramBotUpdates implements BotUpdates {
                 createStartMessage();
                 break;
             }
-            case ENTER_WALLET: {
+            case ENTERED_WALLET: {
                 createSupportingCoinsMessage();
                 break;
             }
-            case SELECT_COIN_TYPE: {
+            case SELECTED_COIN_TYPE: {
                 createSupportingPoolsMessage();
                 break;
             }
-            case SELECT_POOL_ACCOUNT: {
+            case SELECTED_POOL_ACCOUNT: {
                 // The default values, since they are the only ones
                 stepData.setCoinInfo(CoinInfoDescription.WHAT_TO_MINE);
-                stepData.setMarketInfo(COIN_MARKET_CAP);
+                stepData.setMarketInfo(CoinMarketDescription.COIN_MARKET_CAP);
                 stepData.setRewardInfo(CoinRewardDescription.WHAT_TO_MINE);
-                stepData.setStep(SELECT_COIN_REWARD);
+                stepData.setStep(SELECTED_COIN_REWARD);
             }
-            case SELECT_COIN_INFO:
-            case SELECT_COIN_MARKET:
-            case SELECT_COIN_REWARD: {
+            case SELECTED_COIN_INFO:
+            case SELECTED_COIN_MARKET:
+            case SELECTED_COIN_REWARD: {
                 responseMessage.parsePreviousResultMessage(incomingMessage);
                 String walletAddress = incomingMessage.replyToMessage().text();
                 Earnings earnings = calculateEarnings(walletAddress);
@@ -109,18 +107,12 @@ public class TelegramBotUpdates implements BotUpdates {
                 break;
             }
             }
-        } catch (AccountRequestorException e) {
-            responseMessage.setError(String.format(RESOURCE.getString("pool_error"), e.getMessage()));
-            LOG.error("Incoming updates processing error", e);
-        } catch (CoinMarketRequestorException e) {
-            responseMessage.setError(String.format(RESOURCE.getString("market_error"), e.getMessage()));
-            LOG.error("Incoming updates processing error", e);
-        } catch (CoinRewardRequestorException e) {
-            responseMessage.setError(String.format(RESOURCE.getString("reward_error"), e.getMessage()));
-            LOG.error("Incoming updates processing error", e);
+        } catch (AccountRequestorException | CoinInfoRequestorException | CoinMarketRequestorException | CoinRewardRequestorException e) {
+            responseMessage.setError(String.format(RESOURCES.getString(e.getClass().getSimpleName()), e.getMessage()));
+            LOG.error("Request exception", e);
         } catch (Exception e) {
-            responseMessage.setError(String.format(RESOURCE.getString("common_error"), e.getMessage()));
-            LOG.error("Incoming updates processing error", e);
+            responseMessage.setError(String.format(RESOURCES.getString(e.getClass().getSimpleName()), e.getMessage()));
+            LOG.error("Exception", e);
         } finally {
             if (responseMessage.onlySendMessage()) {
                 sendMessage();
@@ -134,11 +126,11 @@ public class TelegramBotUpdates implements BotUpdates {
      * Creates welcome message.
      */
     private void createStartMessage() {
-        responseMessage.setMessage(RESOURCE.getString("start"));
+        responseMessage.setMessage(RESOURCES.getString("start"));
     }
 
     /**
-     * Creates supporting mining coin types message.
+     * Creates supporting coin types message.
      */
     private void createSupportingCoinsMessage() {
         List<CoinTypeDescription> coinInfoList = Arrays.asList(CoinTypeDescription.values()).stream().filter(coin -> {
@@ -151,7 +143,7 @@ public class TelegramBotUpdates implements BotUpdates {
             keyboardButtonArray[i][0] = new InlineKeyboardButton(coinSymbol).callbackData(coinSymbol);
         }
         responseMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
-        responseMessage.setMessage(RESOURCE.getString("select_coin"));
+        responseMessage.setMessage(RESOURCES.getString("select_coin"));
     }
 
     /**
@@ -159,94 +151,92 @@ public class TelegramBotUpdates implements BotUpdates {
      */
     private void createSupportingPoolsMessage() {
         CoinTypeDescription coinType = responseMessage.getStepData().getCoinType();
-        List<PoolTypeDescription> poolInfoList = Arrays.asList(PoolTypeDescription.values()).stream().filter(pool -> {
+        List<PoolTypeDescription> poolTypeList = Arrays.asList(PoolTypeDescription.values()).stream().filter(pool -> {
             return pool.getPoolType().getCoinTypeList().indexOf(coinType.getCoinType()) != -1;
         }).collect(Collectors.toList());
-        poolInfoList.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[poolInfoList.size()][1];
-        for (int i = 0; i < poolInfoList.size(); i++) {
-            PoolTypeDescription poolInfo = poolInfoList.get(i);
+        InlineKeyboardButton[][] keyboardButtonArray = new InlineKeyboardButton[poolTypeList.size()][1];
+        for (int i = 0; i < poolTypeList.size(); i++) {
+            PoolTypeDescription poolInfo = poolTypeList.get(i);
             String callbackData = responseMessage.getStepData().getCoinType().name() + "-" + poolInfo.name();
             keyboardButtonArray[i][0] = new InlineKeyboardButton(poolInfo.getName()).callbackData(callbackData);
         }
         responseMessage.setKeyboardMarkup(new InlineKeyboardMarkup(keyboardButtonArray));
-        responseMessage.setMessage(RESOURCE.getString("select_pool"));
+        responseMessage.setMessage(RESOURCES.getString("select_pool"));
     }
 
     /**
-     * Calculates earnings of pool account.
+     * Calculates earnings.
      *
      * @param walletAddress wallet address
-     * @return earnings of pool account
+     * @return earnings
      * @throws AccountRequestorException if there is any error in account requesting
      * @throws CoinInfoRequestorException if there is any error in coin info requesting
      * @throws CoinMarketRequestorException if there is any error in coin market requesting
      * @throws CoinRewardRequestorException if there is any error in coin reward requesting
      */
     private Earnings calculateEarnings(String walletAddress)
-            throws AccountRequestorException, CoinMarketRequestorException, CoinRewardRequestorException, CoinInfoRequestorException {
+            throws AccountRequestorException, CoinInfoRequestorException, CoinMarketRequestorException, CoinRewardRequestorException {
         TelegramStepData stepData = responseMessage.getStepData();
         CoinTypeDescription coinType = stepData.getCoinType();
         CoinInfoDescription coinInfo = stepData.getCoinInfo();
-        PoolTypeDescription poolInfo = stepData.getPoolInfo();
-        CoinMarketDescription marketInfo = stepData.getMarketInfo();
-        CoinRewardDescription rewardInfo = stepData.getRewardInfo();
-        EarningsWorker minedWorker = EarningsWorkerFactory.create(poolInfo, coinInfo, marketInfo, rewardInfo);
-        return minedWorker.calculate(coinType, walletAddress);
+        PoolTypeDescription poolType = stepData.getPoolType();
+        CoinMarketDescription coinMarket = stepData.getCoinMarket();
+        CoinRewardDescription coinReward = stepData.getCoinReward();
+        return EarningsWorkerFactory.create(poolType, coinInfo, coinMarket, coinReward).calculate(coinType, walletAddress);
     }
 
     /**
-     * Creates earnings of pool account message.
+     * Creates message about earnings.
      *
-     * @param earnings earnings of pool account
+     * @param earnings calculated earnings
      */
     private void createMinedEarningsMessage(Earnings earnings) {
         TelegramStepData stepData = responseMessage.getStepData();
         BigDecimal coinBalance = earnings.getAccount().getWalletBalance().setScale(8, DOWN);
         BigDecimal usdBalance = earnings.getUsdBalance().setScale(2, DOWN);
         BigDecimal coinPrice = earnings.getCoinMarket().getPrice().setScale(2, DOWN);
-        String balanceMessage = RESOURCE.getString("balance");
+        String balanceMessage = RESOURCES.getString("balance");
         balanceMessage = String.format(balanceMessage,
-                                       stepData.getMarketInfo().getName(),
+                                       stepData.getCoinMarket().getName(),
                                        "$" + usdBalance,
                                        "$" + coinPrice);
-        CoinReward reward = earnings.getCoinReward();
-        String accountMessage = RESOURCE.getString("account");
+        CoinReward coinReward = earnings.getCoinReward();
+        String accountMessage = RESOURCES.getString("account");
         accountMessage = String.format(accountMessage,
-                                       stepData.getPoolInfo().getName(),
+                                       stepData.getPoolType().getName(),
                                        coinBalance + " " + stepData.getCoinType().name(),
-                                       ReadableHashrateUtil.convertToReadableHashPower(reward.getReportedHashrate()));
-        BigDecimal perHour = reward.getRewardPerHour().setScale(6, DOWN);
-        BigDecimal perDay = reward.getRewardPerDay().setScale(6, DOWN);
-        BigDecimal perWeek = reward.getRewardPerWeek().setScale(6, DOWN);
-        BigDecimal perMonth = reward.getRewardPerMonth().setScale(6, DOWN);
-        BigDecimal perYear = reward.getRewardPerYear().setScale(6, DOWN);
-        String rewardsMessage = RESOURCE.getString("rewards");
-        rewardsMessage = String.format(rewardsMessage,
-                                       stepData.getRewardInfo().getName(),
-                                       perHour,
-                                       "$" + perHour.multiply(coinPrice).setScale(2, DOWN),
-                                       perDay,
-                                       "$" + perDay.multiply(coinPrice).setScale(2, DOWN),
-                                       perWeek,
-                                       "$" + perWeek.multiply(coinPrice).setScale(2, DOWN),
-                                       perMonth,
-                                       "$" + perMonth.multiply(coinPrice).setScale(2, DOWN),
-                                       perYear,
-                                       "$" + perYear.multiply(coinPrice).setScale(2, DOWN));
-        String infoMessage = RESOURCE.getString("info");
+                                       ReadableHashrateUtil.convertToReadableHashPower(coinReward.getReportedHashrate()));
+        BigDecimal perHour = coinReward.getRewardPerHour().setScale(6, DOWN);
+        BigDecimal perDay = coinReward.getRewardPerDay().setScale(6, DOWN);
+        BigDecimal perWeek = coinReward.getRewardPerWeek().setScale(6, DOWN);
+        BigDecimal perMonth = coinReward.getRewardPerMonth().setScale(6, DOWN);
+        BigDecimal perYear = coinReward.getRewardPerYear().setScale(6, DOWN);
+        String rewardMessage = RESOURCES.getString("reward");
+        rewardMessage = String.format(rewardMessage,
+                                      stepData.getCoinReward().getName(),
+                                      perHour,
+                                      "$" + perHour.multiply(coinPrice).setScale(2, DOWN),
+                                      perDay,
+                                      "$" + perDay.multiply(coinPrice).setScale(2, DOWN),
+                                      perWeek,
+                                      "$" + perWeek.multiply(coinPrice).setScale(2, DOWN),
+                                      perMonth,
+                                      "$" + perMonth.multiply(coinPrice).setScale(2, DOWN),
+                                      perYear,
+                                      "$" + perYear.multiply(coinPrice).setScale(2, DOWN));
+        String infoMessage = RESOURCES.getString("info");
         CoinInfo coinInfo = earnings.getCoinInfo();
         infoMessage = String.format(infoMessage,
-                                    stepData.getRewardInfo().getName(),
+                                    stepData.getCoinReward().getName(),
                                     ReadableTimeUtil.convertToReadableTime(coinInfo.getBlockTime()),
                                     coinInfo.getBlockCount(),
                                     coinInfo.getBlockReward(),
                                     ReadableHashrateUtil.convertToReadableHashPower(coinInfo.getNetworkHashrate()));
-        responseMessage.setMessage(balanceMessage + accountMessage + rewardsMessage + infoMessage);
+        responseMessage.setMessage(balanceMessage + accountMessage + rewardMessage + infoMessage);
     }
 
     /**
-     * Sends a message.
+     * Sends message.
      */
     private void sendMessage() {
         SendMessage request = new SendMessage(incomingMessage.chat().id(), responseMessage.getFormattedMessage());
@@ -262,7 +252,7 @@ public class TelegramBotUpdates implements BotUpdates {
     }
 
     /**
-     * Edits a message.
+     * Edits message.
      */
     private void editMessage() {
         String finalMessage = responseMessage.getFormattedMessage();

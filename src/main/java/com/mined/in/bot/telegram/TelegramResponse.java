@@ -27,10 +27,10 @@ public class TelegramResponse {
     /** Keyboard markup. */
     private InlineKeyboardMarkup keyboardMarkup;
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
+    private final static ResourceBundle RESOURCES = ResourceBundle.getBundle(TelegramBotUpdates.class.getName());
 
     /**
-     * Creates the instance.
+     * Creates instance.
      *
      * @param stepData data of current step
      */
@@ -40,22 +40,22 @@ public class TelegramResponse {
     }
 
     /**
-     * Parse previous result message.
+     * Parses previous result message.
      *
      * @param resultMessage previous result message
      */
     public void parsePreviousResultMessage(Message resultMessage) {
         InlineKeyboardButton[] keyboardButtonArray = new InlineKeyboardButton[1];
         String callbackQueryData = stepData.getCallbackQueryData();
-        keyboardButtonArray[0] = new InlineKeyboardButton(RESOURCE.getString("update")).callbackData(callbackQueryData);
+        keyboardButtonArray[0] = new InlineKeyboardButton(RESOURCES.getString("update")).callbackData(callbackQueryData);
         keyboardMarkup = new InlineKeyboardMarkup(keyboardButtonArray);
         parseHtmlMarkup(resultMessage);
     }
 
     /**
-     * Gets the formatted message.
+     * Gets formatted message.
      *
-     * @return the formatted message
+     * @return formatted message
      */
     public String getFormattedMessage() {
         StringBuilder resultMessage = new StringBuilder();
@@ -63,26 +63,26 @@ public class TelegramResponse {
         case START:
             createSimpleResultMessage(resultMessage);
             break;
-        case ENTER_WALLET:
+        case ENTERED_WALLET:
             createSimpleResultMessage(resultMessage);
             break;
-        case SELECT_COIN_TYPE:
+        case SELECTED_COIN_TYPE:
             createSimpleResultMessage(resultMessage);
             break;
-        case SELECT_POOL_ACCOUNT:
+        case SELECTED_POOL_ACCOUNT:
             break;
-        case SELECT_COIN_INFO:
+        case SELECTED_COIN_INFO:
             break;
-        case SELECT_COIN_MARKET:
+        case SELECTED_COIN_MARKET:
             break;
-        case SELECT_COIN_REWARD: {
+        case SELECTED_COIN_REWARD: {
             boolean firstMessageWithError = error != null && message == null;
             if (firstMessageWithError) {
-                message = String.format(RESOURCE.getString("no_result"));
+                message = String.format(RESOURCES.getString("no_result"));
             }
             resultMessage.append("<pre>" + message + "</pre>");
             resultMessage.append("\n");
-            String formattedDate = String.format(RESOURCE.getString("last_update"), getCurrentDate());
+            String formattedDate = String.format(RESOURCES.getString("last_update"), getCurrentDate());
             resultMessage.append("<pre>" + formattedDate + "</pre>");
             if (error != null) {
                 resultMessage.append("\n");
@@ -101,58 +101,58 @@ public class TelegramResponse {
      */
     public boolean onlySendMessage() {
         TelegramStepData.Step currentStep = stepData.getStep();
-        return currentStep == TelegramStepData.Step.START || currentStep == TelegramStepData.Step.ENTER_WALLET;
+        return currentStep == TelegramStepData.Step.START || currentStep == TelegramStepData.Step.ENTERED_WALLET;
     }
 
     /**
-     * Sets the message.
+     * Sets message.
      *
-     * @param message the new message
+     * @param message new message
      */
     public void setMessage(String message) {
         this.message = message;
     }
 
     /**
-     * Sets the error.
+     * Sets error.
      *
-     * @param error the new error
+     * @param error new error
      */
     public void setError(String error) {
         this.error = error;
     }
 
     /**
-     * Gets the keyboard markup.
+     * Gets keyboard markup.
      *
-     * @return the keyboard markup
+     * @return keyboard markup
      */
     public InlineKeyboardMarkup getKeyboardMarkup() {
         return keyboardMarkup;
     }
 
     /**
-     * Sets the keyboard markup.
+     * Sets keyboard markup.
      *
-     * @param keyboardMarkup the new keyboard markup
+     * @param keyboardMarkup new keyboard markup
      */
     public void setKeyboardMarkup(InlineKeyboardMarkup keyboardMarkup) {
         this.keyboardMarkup = keyboardMarkup;
     }
 
     /**
-     * Gets the step data.
+     * Gets step data.
      *
-     * @return the step data
+     * @return step data
      */
     public TelegramStepData getStepData() {
         return stepData;
     }
 
     /**
-     * Sets the step data.
+     * Sets step data.
      *
-     * @param stepData the new step data
+     * @param stepData new step data
      */
     public void setStepData(TelegramStepData stepData) {
         this.stepData = stepData;
@@ -193,14 +193,14 @@ public class TelegramResponse {
     }
 
     /**
-     * Gets current date with set user time zone.
+     * Gets current date.
      *
-     * @return current date with set user time zone
+     * @return current date
      */
     private String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return dateFormat.format(new Date());
+        return dateFormat.format(new Date()) + " UTC";
     }
 
     /**

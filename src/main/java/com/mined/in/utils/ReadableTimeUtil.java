@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class ReadableTimeUtil {
 
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
+    private final static ResourceBundle RESOURCES = ResourceBundle.getBundle(ReadableTimeUtil.class.getName());
 
     /**
      * Converts time to readable time format.
@@ -30,13 +30,13 @@ public class ReadableTimeUtil {
         long seconds = TimeUnit.SECONDS.toSeconds(duration);
         StringBuilder readableTime = new StringBuilder();
         if (hours != 0) {
-            readableTime.append(hours + RESOURCE.getString("hour"));
+            readableTime.append(hours + RESOURCES.getString("hour"));
         }
         if (minutes != 0) {
-            readableTime.append((readableTime.length() > 0 ? " " : "") + minutes + RESOURCE.getString("minute"));
+            readableTime.append((readableTime.length() > 0 ? " " : "") + minutes + RESOURCES.getString("minute"));
         }
         if (seconds != 0) {
-            readableTime.append((readableTime.length() > 0 ? " " : "") + seconds + RESOURCE.getString("second"));
+            readableTime.append((readableTime.length() > 0 ? " " : "") + seconds + RESOURCES.getString("second"));
         }
         return readableTime.toString();
     }

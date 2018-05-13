@@ -26,7 +26,7 @@ public class ReadableHashrateUtil {
     /** Digits number of 1 PH/s. */
     private static final int PH_S_DIGITS_NUMBER = HashrateUtils.PH_S.toPlainString().length();
     /** Text resources. */
-    private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("bot");
+    private final static ResourceBundle RESOURCES = ResourceBundle.getBundle(ReadableHashrateUtil.class.getName());
 
     /**
      * Converts hashrate to readable hash power format.
@@ -37,21 +37,21 @@ public class ReadableHashrateUtil {
     public static String convertToReadableHashPower(BigDecimal hashrate) {
         int digitsNumber = hashrate.setScale(0, DOWN).toPlainString().length();
         if (digitsNumber <= KH_S_DIGITS_NUMBER + 2) {
-            return hashrate.divide(HashrateUtils.KH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("kh_s");
+            return hashrate.divide(HashrateUtils.KH_S, 2, DOWN).toPlainString() + " " + RESOURCES.getString("kh_s");
         }
         if (digitsNumber >= MH_S_DIGITS_NUMBER && digitsNumber <= MH_S_DIGITS_NUMBER + 2) {
-            return hashrate.divide(HashrateUtils.MH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("mh_s");
+            return hashrate.divide(HashrateUtils.MH_S, 2, DOWN).toPlainString() + " " + RESOURCES.getString("mh_s");
         }
         if (digitsNumber >= GH_S_DIGITS_NUMBER && digitsNumber <= GH_S_DIGITS_NUMBER + 2) {
-            return hashrate.divide(HashrateUtils.GH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("gh_s");
+            return hashrate.divide(HashrateUtils.GH_S, 2, DOWN).toPlainString() + " " + RESOURCES.getString("gh_s");
         }
         if (digitsNumber >= TH_S_DIGITS_NUMBER && digitsNumber <= TH_S_DIGITS_NUMBER + 2) {
-            return hashrate.divide(HashrateUtils.TH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("th_s");
+            return hashrate.divide(HashrateUtils.TH_S, 2, DOWN).toPlainString() + " " + RESOURCES.getString("th_s");
         }
         if (digitsNumber >= PH_S_DIGITS_NUMBER && digitsNumber <= PH_S_DIGITS_NUMBER + 2) {
-            return hashrate.divide(HashrateUtils.PH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("ph_s");
+            return hashrate.divide(HashrateUtils.PH_S, 2, DOWN).toPlainString() + " " + RESOURCES.getString("ph_s");
         }
-        return hashrate.divide(HashrateUtils.EH_S, 2, DOWN).toPlainString() + " " + RESOURCE.getString("eh_s");
+        return hashrate.divide(HashrateUtils.EH_S, 2, DOWN).toPlainString() + " " + RESOURCES.getString("eh_s");
     }
 
 }

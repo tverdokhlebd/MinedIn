@@ -231,11 +231,11 @@ public class SiteController {
     }
 
     /**
-     * Handles pool account error.
+     * Handles account error.
      *
      * @param model model attributes
      * @param poolType pool type
-     * @param requestorException pool account error
+     * @param requestorException account error
      */
     private void handleAccountError(Model model, PoolTypeDescription poolType, AccountRequestorException requestorException) {
         String errorMessage = String.format(TEXT.get("error_account"), poolType.getName());

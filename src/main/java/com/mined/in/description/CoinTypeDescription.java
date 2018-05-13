@@ -11,8 +11,8 @@ import com.tverdokhlebd.mining.commons.coin.CoinType;
 public enum CoinTypeDescription {
 
     BTC("Bitcoin", "https://bitcoin.org", false, CoinType.BTC),
-    ETH("Ethereum", "https://www.ethereum.org", true, CoinType.ETH),
     ETC("Ethereum Classic", "https://ethereumclassic.github.io", true, CoinType.ETC),
+    ETH("Ethereum", "https://www.ethereum.org", true, CoinType.ETH),
     XMR("Monero", "https://getmonero.org", true, CoinType.XMR),
     ZEC("Zcash", "https://z.cash", true, CoinType.ZEC);
 

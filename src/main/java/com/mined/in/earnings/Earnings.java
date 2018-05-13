@@ -8,7 +8,7 @@ import com.tverdokhlebd.coin.reward.CoinReward;
 import com.tverdokhlebd.mining.pool.Account;
 
 /**
- * Earnings of pool account. It uses as final result of calculations.
+ * Calculated earnings. It uses as final result of calculations.
  *
  * @author Dmitry Tverdokhleb
  *
@@ -17,7 +17,7 @@ public class Earnings {
 
     /** Balance in USD. */
     private final BigDecimal usdBalance;
-    /** Pool account. */
+    /** Account. */
     private final Account account;
     /** Coin info. */
     private final CoinInfo coinInfo;
@@ -30,7 +30,7 @@ public class Earnings {
      * Creates instance.
      *
      * @param usdBalance balance in USD
-     * @param account pool account
+     * @param account account
      * @param coinInfo general info about coin
      * @param coinMarket market info about coin
      * @param coinReward reward for coin
