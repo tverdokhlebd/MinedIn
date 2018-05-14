@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tverdokhlebd/MinedIn.svg?branch=master)](https://travis-ci.org/tverdokhlebd/MinedIn)
+[![Build Status](https://travis-ci.org/tverdokhlebd/mined-in.svg?branch=master)](https://travis-ci.org/tverdokhlebd/mined-in)
 # MinedIn
 This is an open source project for calculating the mined earnings in USD. It uses public API of services (Pools, markets and etc) for receiving necessary information.
 
@@ -7,9 +7,6 @@ Besides the mined earnings in USD it also provides next useful information:
 - pool balance and reported hashrate
 - estimated rewards per hour/day/week/month/year
 - coin information (block time, last block, difficulty, nethash and etc)
-
-If you want to develop own app see https://github.com/tverdokhlebd/MinedIn/wiki/JSON-API-Documentation.
-
 ---
 Public API of services are listed below. New public API of services will be added with time.
 
