@@ -5,6 +5,7 @@ import static com.tverdokhlebd.mining.commons.coin.CoinType.ETC;
 import static com.tverdokhlebd.mining.commons.coin.CoinType.ETH;
 import static com.tverdokhlebd.mining.commons.coin.CoinType.XMR;
 import static com.tverdokhlebd.mining.commons.coin.CoinType.ZEC;
+import static java.math.RoundingMode.DOWN;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,13 +137,15 @@ public class SiteController {
                                                                  CoinMarketDescription.COIN_MARKET_CAP,
                                                                  CoinRewardDescription.WHAT_TO_MINE);
             Earnings earnings = worker.calculate(coinType, walletAddress);
+            CoinMarket btcCoinMarket = CoinMarketRequestorFactory.create(CoinMarketType.COIN_MARKET_CAP).requestCoinMarket(BTC);
             model.addAttribute("coin_type", coinType);
             model.addAttribute("pool_info", poolType);
             model.addAttribute("coin_info", earnings.getCoinInfo());
-            model.addAttribute("coin_reward", earnings.getCoinReward());
-            model.addAttribute("usd_balance", earnings.getUsdBalance());
-            model.addAttribute("coin_balance", earnings.getAccount().getWalletBalance());
             model.addAttribute("coin_price", earnings.getCoinMarket().getPrice());
+            model.addAttribute("coin_reward", earnings.getCoinReward());
+            model.addAttribute("coin_balance", earnings.getAccount().getWalletBalance());
+            model.addAttribute("usd_balance", earnings.getUsdBalance());
+            model.addAttribute("coin_in_btc", btcCoinMarket.getPrice().divide(earnings.getCoinMarket().getPrice(), DOWN));
         } catch (AccountRequestorException e) {
             LOG.error("Account request error", e);
             handleAccountError(model, poolType, e);
