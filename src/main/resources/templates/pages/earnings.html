@@ -35,31 +35,31 @@
                         <td th:text="${resources.hour}"></td>
                         <td th:text="${coin_reward.getRewardPerHour()}"></td>
                         <td th:text="@{${coin_reward.getRewardPerHour() / coin_in_btc}}"></td>
-                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerHour() * coin_price, 1, 6)}}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerHour() * coin_price, 1, 2)}}"></td>
                     </tr>
                     <tr>
                         <td th:text="${resources.day}"></td>
                         <td th:text="${coin_reward.getRewardPerDay()}"></td>
                         <td th:text="@{${coin_reward.getRewardPerDay() / coin_in_btc}}"></td>
-                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerDay() * coin_price, 1, 6)}}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerDay() * coin_price, 1, 2)}}"></td>
                     </tr>
                     <tr>
                         <td th:text="${resources.week}"></td>
                         <td th:text="${coin_reward.getRewardPerWeek()}"></td>
                         <td th:text="@{${coin_reward.getRewardPerWeek() / coin_in_btc}}"></td>
-                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerWeek() * coin_price, 1, 6)}}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerWeek() * coin_price, 1, 2)}}"></td>
                     </tr>
                     <tr>
                         <td th:text="${resources.month}"></td>
                         <td th:text="${coin_reward.getRewardPerMonth()}"></td>
                         <td th:text="@{${coin_reward.getRewardPerMonth() / coin_in_btc}}"></td>
-                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerMonth() * coin_price, 1, 6)}}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerMonth() * coin_price, 1, 2)}}"></td>
                     </tr>
                     <tr>
                         <td th:text="${resources.year}"></td>
                         <td th:text="${coin_reward.getRewardPerYear()}"></td>
                         <td th:text="@{${coin_reward.getRewardPerYear() / coin_in_btc}}"></td>
-                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerYear() * coin_price, 1, 6)}}"></td>
+                        <td th:text="@{${#numbers.formatDecimal(coin_reward.getRewardPerYear() * coin_price, 1, 2)}}"></td>
                     </tr>
                 </tbody>
             </table>
