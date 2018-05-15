@@ -3,12 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mining</groupId>
-	<artifactId>MiningProfit</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<groupId>com.tverdokhlebd</groupId>
+	<artifactId>mined-in</artifactId>
+	<version>1.0.0</version>
 
-	<name>MiningProfit</name>
+	<name>Mined In</name>
 	<description></description>
 
     <parent>
@@ -64,35 +63,35 @@
           <artifactId>mining-commons-library</artifactId>
           <version>1.0.0</version>
           <scope>system</scope>
-          <systemPath>${project.basedir}/lib/mining-commons-library-1.0.0.jar</systemPath>
+          <systemPath>${pom.basedir}/lib/mining-commons-library-1.0.0.jar</systemPath>
       </dependency>
       <dependency>
           <groupId>com.tverdokhlebd</groupId>
           <artifactId>mining-pool-library</artifactId>
           <version>1.0.0</version>
           <scope>system</scope>
-          <systemPath>${project.basedir}/lib/mining-pool-library-1.0.0.jar</systemPath>
+          <systemPath>${pom.basedir}/lib/mining-pool-library-1.0.0.jar</systemPath>
       </dependency>
       <dependency>
           <groupId>com.tverdokhlebd</groupId>
           <artifactId>coin-info-library</artifactId>
           <version>1.0.0</version>
           <scope>system</scope>
-          <systemPath>${project.basedir}/lib/coin-info-library-1.0.0.jar</systemPath>
+          <systemPath>${pom.basedir}/lib/coin-info-library-1.0.0.jar</systemPath>
       </dependency>
       <dependency>
           <groupId>com.tverdokhlebd</groupId>
           <artifactId>coin-market-library</artifactId>
           <version>1.0.0</version>
           <scope>system</scope>
-          <systemPath>${project.basedir}/lib/coin-market-library-1.0.0.jar</systemPath>
+          <systemPath>${pom.basedir}/lib/coin-market-library-1.0.0.jar</systemPath>
       </dependency>
       <dependency>
           <groupId>com.tverdokhlebd</groupId>
           <artifactId>coin-reward-library</artifactId>
           <version>1.0.0</version>
           <scope>system</scope>
-          <systemPath>${project.basedir}/lib/coin-reward-library-1.0.0.jar</systemPath>
+          <systemPath>${pom.basedir}/lib/coin-reward-library-1.0.0.jar</systemPath>
       </dependency>
 	</dependencies>
 
