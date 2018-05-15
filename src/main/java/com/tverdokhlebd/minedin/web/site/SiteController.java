@@ -79,18 +79,6 @@ public class SiteController {
     }
 
     /**
-     * Requests contact page.
-     *
-     * @param model model attributes
-     * @return contact page
-     */
-    @GetMapping("/contact")
-    public String getContact(Model model) {
-        model.addAttribute("page", "contact");
-        return "template";
-    }
-
-    /**
      * Requests coin info page.
      *
      * @param model model attributes
