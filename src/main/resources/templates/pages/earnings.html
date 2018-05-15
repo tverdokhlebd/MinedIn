@@ -10,7 +10,7 @@
             </h6>
         </div>
         <div class="row mx-auto w-75 justify-content-center mt-4">
-            <div class="col text-center font-weight-light" th:text="${pool_info.name()}"></div>
+            <div class="col text-center font-weight-light" th:text="@{${resources.pool_info + ' (' + pool_info.getName() + ')'}}"></div>
             <div class="w-100"></div>
             <div class="col text-left" th:text="${resources.balance}"></div>
             <div class="col text-right font-weight-light" th:text="@{${coin_balance + ' ' + coin_type.name()}}"></div>
