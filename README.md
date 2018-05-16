@@ -20,4 +20,4 @@ This project consist of:
 - <a href="https://github.com/tverdokhlebd/coin-reward-library">coin reward library</a>
 - <a href="https://github.com/tverdokhlebd/coin-info-library">coin info library</a>
 
-If you want to help development of the project write me at <a href="mailto:tverdokhlebd@gmail.com?Subject=Hello%20again" target="_blank">tverdokhlebd@gmail.com</a>
+If you want to help development of the project write me at <a href="mailto:tverdokhlebd@gmail.com">tverdokhlebd@gmail.com</a> with subject "MinedIn development".
