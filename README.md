@@ -12,5 +12,11 @@ Features:
 Where to see:
 - Website <a href="https://minedin.info">https://minedin.info</a>
 - Telegram bot <a href="https://t.me/MinedInBot">MinedInBot</a>
-
 ---
+# Development
+
+This project consist of:
+- mining pool library (https://github.com/tverdokhlebd/mining-pool-library)
+- coin market library (https://github.com/tverdokhlebd/coin-market-library)
+- coin reward library (https://github.com/tverdokhlebd/coin-reward-library)
+- coin info library (https://github.com/tverdokhlebd/coin-info-library)
