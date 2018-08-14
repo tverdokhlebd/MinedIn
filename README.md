@@ -14,7 +14,7 @@ Where to see:
 - Telegram bot <a href="https://t.me/MinedInBot">MinedInBot</a>
 
 # Development
-This project consist of:
+This project consists of:
 - <a href="https://github.com/tverdokhlebd/mining-pool-library">mining pool library</a>
 - <a href="https://github.com/tverdokhlebd/coin-market-library">coin market library</a>
 - <a href="https://github.com/tverdokhlebd/coin-reward-library">coin reward library</a>
