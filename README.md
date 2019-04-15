@@ -10,7 +10,7 @@ Features:
 - general coin information (block time, block count, difficulty, network hashrate and etc)
 
 Where to see:
-- Website <a href="https://minedin.info">https://minedin.info</a>
+- Website <a href="https://minedin.herokuapp.com">https://minedin.herokuapp.com</a>
 - Telegram bot <a href="https://t.me/MinedInBot">MinedInBot</a>
 
 # Development
